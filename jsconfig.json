@@ -9,7 +9,8 @@
       "@routers/*": ["src/routers/*"],
       "@hooks/*": ["src/hooks/*"],
       "@contexts/*": ["src/contexts/*"],
-      "@apis/*": ["src/apis/*"]
+      "@apis/*": ["src/apis/*"],
+      "@pages/*": ["src/pages/*"]
     }
   },
   "include": ["src/**/*"]

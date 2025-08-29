@@ -5,18 +5,33 @@
 }
 * {
   margin: 0;
+  padding: 0;
 }
 
 html,
 body {
   height: 100%;
 }
+
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  background-color: #ffffff;
+  color: #111827;
 }
 
+/* Biến màu chủ đạo */
+:root {
+  --primary: #2eb2c1;
+  --gray-dark: #292d32;
+  --gray-light: #f3f4f6;
+  --text: #111827;
+}
+
+/* Reset media elements */
 img,
 picture,
 video,
@@ -25,6 +40,8 @@ svg {
   display: block;
   max-width: 100%;
 }
+
+/* Reset form elements */
 input,
 button,
 textarea,
@@ -32,7 +49,27 @@ select {
   font: inherit;
   outline: none;
   border: none;
+  background: none;
 }
+
+/* Button style cơ bản */
+button {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px 16px;
+  background-color: var(--primary);
+  color: white;
+  transition: all 0.2s ease;
+}
+button:hover {
+  opacity: 0.9;
+}
+button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Text */
 p,
 h1,
 h2,
@@ -41,4 +78,30 @@ h4,
 h5,
 h6 {
   overflow-wrap: break-word;
+}
+
+/* Link */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1200px; /* hợp lý cho web */
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Scrollbar custom */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }

@@ -1,10 +1,14 @@
-import { Routes } from "react-router-dom";
+import { AuthProvider } from "@contexts/authContext";
+import { Route, Routes } from "react-router-dom";
+import SignUpPage from "@pages/SignUpPage";
 
 function App() {
   return (
-    <div>
-      <Routes></Routes>;
-    </div>
+    <AuthProvider>
+      <Routes>
+        <Route path="/signup" element={<SignUpPage />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
