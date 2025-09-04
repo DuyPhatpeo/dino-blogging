@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { Mail, Lock, User } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import logo from "@assets/logo.png";
 
 import Field from "@components/field";
@@ -10,7 +10,7 @@ import Input from "@components/input";
 import Button from "@components/button";
 import ExtraText from "@components/extraText";
 
-const SignUpPageStyles = styled.div`
+const SignInPageStyles = styled.div`
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -54,30 +54,20 @@ const SignUpPageStyles = styled.div`
   }
 `;
 
-const SignUpPage = () => {
+const SignInPage = () => {
   const { control, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
-    console.log("Form data:", data);
+    console.log("Login data:", data);
   };
 
   return (
-    <SignUpPageStyles>
+    <SignInPageStyles>
       <div className="wrapper">
-        <img src={logo} alt="dinobblogging" className="logo" />
-        <h1 className="heading">Create Your Account</h1>
+        <img src={logo} alt="dinoblogging" className="logo" />
+        <h1 className="heading">Welcome Back</h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Field>
-            <Label htmlFor="fullname">Full name</Label>
-            <Input
-              name="fullname"
-              control={control}
-              placeholder="Enter your full name"
-              icon={User}
-            />
-          </Field>
-
           <Field>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -101,14 +91,14 @@ const SignUpPage = () => {
           </Field>
 
           <ExtraText>
-            Already have an account? <a href="/signin">Sign in</a>
+            Don’t have an account? <a href="/signup">Sign up</a>
           </ExtraText>
 
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit">Sign In</Button>
         </form>
       </div>
-    </SignUpPageStyles>
+    </SignInPageStyles>
   );
 };
 
-export default SignUpPage;
+export default SignInPage;
