@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import { Mail, Lock, User } from "lucide-react";
 import logo from "@assets/logo.png";
 
-import Field from "@components/Field";
-import Label from "@components/Label";
-import Input from "@components/Input";
-import Button from "@components/Button";
-import ExtraText from "@components/ExtraText";
+import Field from "@components/field/Field";
+import Label from "@components/label/Label";
+import Input from "@components/input/Input";
+import Button from "@components/button/Button";
+import ExtraText from "@components/extraText/ExtraText";
 
 const SignUpPageStyles = styled.div`
   min-height: 100vh;
