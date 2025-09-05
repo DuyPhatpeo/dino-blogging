@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Mail, Lock, User } from "lucide-react";
+import { toast } from "react-toastify";
 import logo from "@assets/logo.png";
 
 import Field from "@components/field/Field";
@@ -19,53 +20,26 @@ const SignUpPageStyles = styled.div`
   justify-content: center;
   background: linear-gradient(135deg, #f0f4ff, #e0f7fa);
   padding: 40px;
-
   .wrapper {
     width: 100%;
     max-width: 520px;
     text-align: center;
   }
-
   .logo {
     display: block;
     margin: 0 auto 30px;
     width: 90px;
   }
-
   .heading {
     font-size: 36px;
     font-weight: 800;
     margin-bottom: 40px;
     color: ${(props) => props.theme.primary};
   }
-
-  .extra-text {
-    margin-top: 25px;
-    font-size: 16px;
-    color: #374151;
-  }
-
-  .extra-text a {
-    color: ${(props) => props.theme.primary};
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .extra-text a:hover {
-    text-decoration: underline;
-  }
-
   .button-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-  }
-
-  .error {
-    color: red;
-    font-size: 14px;
-    margin-top: 6px;
-    text-align: left;
   }
 `;
 
@@ -87,12 +61,25 @@ const schema = yup.object().shape({
 });
 
 const SignUpPage = () => {
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
+  // 🔥 Bắn toast khi có lỗi
+  useEffect(() => {
+    if (errors.fullname) toast.error(errors.fullname.message);
+    if (errors.email) toast.error(errors.email.message);
+    if (errors.password) toast.error(errors.password.message);
+    if (errors.confirmPassword) toast.error(errors.confirmPassword.message);
+  }, [errors]);
+
   const onSubmit = (data) => {
     console.log("Form data:", data);
+    toast.success("Sign up successfully!");
   };
 
   return (

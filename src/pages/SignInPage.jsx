@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Mail, Lock } from "lucide-react";
+import { toast } from "react-toastify"; // ✅ import toast
 import logo from "@assets/logo.png";
 
 import Field from "@components/field/Field";
@@ -37,22 +40,6 @@ const SignInPageStyles = styled.div`
     color: ${(props) => props.theme.primary};
   }
 
-  .extra-text {
-    margin-top: 25px;
-    font-size: 16px;
-    color: #374151;
-  }
-
-  .extra-text a {
-    color: ${(props) => props.theme.primary};
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .extra-text a:hover {
-    text-decoration: underline;
-  }
-
   .button-wrapper {
     display: flex;
     justify-content: center;
@@ -60,17 +47,42 @@ const SignInPageStyles = styled.div`
   }
 `;
 
+// ✅ Yup schema in English
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
+
 const SignInPage = () => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const onSubmit = (data) => {
     console.log("Login data:", data);
+    // ✅ Example: login successful -> show toast
+    toast.success("Signed in successfully!");
+    // 👉 Replace with real API call
+    // If login fails: toast.error("Invalid email or password!");
   };
+
+  // ✅ Show validation errors via toast
+  React.useEffect(() => {
+    if (errors.email) toast.error(errors.email.message);
+    if (errors.password) toast.error(errors.password.message);
+  }, [errors]);
 
   return (
     <SignInPageStyles>
       <div className="wrapper">
-        <img src={logo} alt="dinoblogging" className="logo" />
+        <img src={logo} alt="dinobblogging" className="logo" />
         <h1 className="heading">Welcome Back</h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
