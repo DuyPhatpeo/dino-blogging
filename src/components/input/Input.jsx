@@ -105,9 +105,26 @@ const Input = ({ name, control, type = "text", placeholder, icon: Icon }) => {
 
 Input.propTypes = {
   name: PropTypes.string.isRequired,
+
   control: PropTypes.object.isRequired,
-  type: PropTypes.string,
+
+  type: PropTypes.oneOf([
+    "text",
+    "email",
+    "password",
+    "number",
+    "tel",
+    "url",
+    "search",
+    "date",
+    "datetime-local",
+    "month",
+    "time",
+    "week",
+  ]),
+
   placeholder: PropTypes.string,
+
   icon: PropTypes.elementType,
 };
 

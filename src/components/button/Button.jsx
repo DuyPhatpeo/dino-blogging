@@ -1,5 +1,6 @@
 import LoadingSpinner from "@components/loading/LoadingSpinner";
 import React from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const ButtonStyles = styled.button`
@@ -36,6 +37,21 @@ const Button = ({ children, isLoading = false, ...props }) => {
       {isLoading ? <LoadingSpinner size="20px" borderSize="3px" /> : children}
     </ButtonStyles>
   );
+};
+
+Button.propTypes = {
+  children: PropTypes.node.isRequired,
+  isLoading: PropTypes.bool,
+  disabled: PropTypes.bool,
+  type: PropTypes.oneOf(["button", "submit", "reset"]),
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+};
+
+Button.defaultProps = {
+  isLoading: false,
+  disabled: false,
+  type: "button",
 };
 
 export default Button;

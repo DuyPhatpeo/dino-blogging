@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const FieldStyles = styled.div`
   position: relative;
@@ -13,6 +14,10 @@ const FieldStyles = styled.div`
 
 const Field = ({ children }) => {
   return <FieldStyles>{children}</FieldStyles>;
+};
+
+Field.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default Field;

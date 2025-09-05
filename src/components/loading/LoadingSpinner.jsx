@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
+import PropTypes from "prop-types";
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }
@@ -12,8 +13,6 @@ const SpinnerStyles = styled.div`
   border-radius: 50%;
   display: inline-block;
   animation: ${spin} 1s ease-in-out infinite;
-
-  /* tạo vòng quay gradient */
   background: conic-gradient(
     from 0deg,
     #4facfe,
@@ -24,12 +23,15 @@ const SpinnerStyles = styled.div`
   );
   mask: radial-gradient(farthest-side, transparent 60%, black 61%);
   -webkit-mask: radial-gradient(farthest-side, transparent 60%, black 61%);
-
   box-shadow: 0 0 15px rgba(79, 172, 254, 0.6);
 `;
 
 const LoadingSpinner = ({ size = "50px" }) => {
   return <SpinnerStyles size={size} />;
+};
+
+LoadingSpinner.propTypes = {
+  size: PropTypes.string,
 };
 
 export default LoadingSpinner;
