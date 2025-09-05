@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Mail, Lock, User } from "lucide-react";
 import logo from "@assets/logo.png";
 
@@ -52,10 +54,42 @@ const SignUpPageStyles = styled.div`
   .extra-text a:hover {
     text-decoration: underline;
   }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: 6px;
+    text-align: left;
+  }
 `;
 
+// ✅ Yup schema inline
+const schema = yup.object().shape({
+  fullname: yup.string().required("Full name is required"),
+  email: yup
+    .string()
+    .email("Invalid email format")
+    .required("Email is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be at least 6 characters"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords do not match")
+    .required("Confirm Password is required"),
+});
+
 const SignUpPage = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const onSubmit = (data) => {
     console.log("Form data:", data);
@@ -100,11 +134,24 @@ const SignUpPage = () => {
             />
           </Field>
 
+          <Field>
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              name="confirmPassword"
+              type="password"
+              control={control}
+              placeholder="Confirm your password"
+              icon={Lock}
+            />
+          </Field>
+
           <ExtraText>
             Already have an account? <a href="/signin">Sign in</a>
           </ExtraText>
 
-          <Button type="submit">Sign Up</Button>
+          <div className="button-wrapper">
+            <Button type="submit">Sign Up</Button>
+          </div>
         </form>
       </div>
     </SignUpPageStyles>

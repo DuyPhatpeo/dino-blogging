@@ -1,8 +1,9 @@
+import LoadingSpinner from "@components/loading/LoadingSpinner";
 import React from "react";
 import styled from "styled-components";
 
 const ButtonStyles = styled.button`
-  padding: 14px;
+  padding: 14px 32px;
   border-radius: 14px;
   background: ${(props) => props.theme.primary};
   color: white;
@@ -12,15 +13,29 @@ const ButtonStyles = styled.button`
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   &:hover {
     background: ${(props) => props.theme.primaryHover || "#23939f"};
     transform: translateY(-3px);
   }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
 `;
 
-const Button = ({ children, ...props }) => {
-  return <ButtonStyles {...props}>{children}</ButtonStyles>;
+const Button = ({ children, isLoading = false, ...props }) => {
+  return (
+    <ButtonStyles {...props} disabled={isLoading || props.disabled}>
+      {isLoading ? <LoadingSpinner size="20px" borderSize="3px" /> : children}
+    </ButtonStyles>
+  );
 };
 
 export default Button;

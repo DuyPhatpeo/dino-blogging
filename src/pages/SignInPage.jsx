@@ -52,6 +52,12 @@ const SignInPageStyles = styled.div`
   .extra-text a:hover {
     text-decoration: underline;
   }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
 `;
 
 const SignInPage = () => {
@@ -94,7 +100,9 @@ const SignInPage = () => {
             Don’t have an account? <a href="/signup">Sign up</a>
           </ExtraText>
 
-          <Button type="submit">Sign In</Button>
+          <div className="button-wrapper">
+            <Button type="submit">Sign In</Button>
+          </div>
         </form>
       </div>
     </SignInPageStyles>
