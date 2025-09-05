@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -43,7 +43,7 @@ const SignUpPageStyles = styled.div`
   }
 `;
 
-// ✅ Yup schema inline
+// ✅ Yup schema
 const schema = yup.object().shape({
   fullname: yup.string().required("Full name is required"),
   email: yup
@@ -60,6 +60,18 @@ const schema = yup.object().shape({
     .required("Confirm Password is required"),
 });
 
+// 👉 Hàm signup giả lập API
+const handleSignUp = (values) => {
+  const isValid = true;
+  if (!isValid) return;
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 5000);
+  });
+};
+
 const SignUpPage = () => {
   const {
     control,
@@ -69,7 +81,9 @@ const SignUpPage = () => {
     resolver: yupResolver(schema),
   });
 
-  // 🔥 Bắn toast khi có lỗi
+  const [loading, setLoading] = useState(false);
+
+  // 🔥 Hiện toast khi có lỗi
   useEffect(() => {
     if (errors.fullname) toast.error(errors.fullname.message);
     if (errors.email) toast.error(errors.email.message);
@@ -77,9 +91,18 @@ const SignUpPage = () => {
     if (errors.confirmPassword) toast.error(errors.confirmPassword.message);
   }, [errors]);
 
-  const onSubmit = (data) => {
+  // 👉 Xử lý submit
+  const onSubmit = async (data) => {
     console.log("Form data:", data);
-    toast.success("Sign up successfully!");
+    try {
+      setLoading(true);
+      await handleSignUp(data); // giả lập call API
+      toast.success("Sign up successfully!");
+    } catch (error) {
+      toast.error("Sign up failed!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -137,7 +160,9 @@ const SignUpPage = () => {
           </ExtraText>
 
           <div className="button-wrapper">
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" isLoading={loading}>
+              Sign Up
+            </Button>
           </div>
         </form>
       </div>

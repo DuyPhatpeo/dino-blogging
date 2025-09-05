@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Mail, Lock } from "lucide-react";
-import { toast } from "react-toastify"; // ✅ import toast
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // ✅ chuyển trang
 import logo from "@assets/logo.png";
 
 import Field from "@components/field/Field";
@@ -57,6 +58,9 @@ const schema = yup.object().shape({
 });
 
 const SignInPage = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const {
     control,
     handleSubmit,
@@ -65,12 +69,22 @@ const SignInPage = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Login data:", data);
-    // ✅ Example: login successful -> show toast
-    toast.success("Signed in successfully!");
-    // 👉 Replace with real API call
-    // If login fails: toast.error("Invalid email or password!");
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      console.log("Login data:", data);
+
+      // ✅ Fake API call (2s)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // ✅ Nếu login đúng
+      toast.success("Signed in successfully!");
+      navigate("/"); // 👉 chuyển trang sau login
+    } catch (error) {
+      toast.error("Invalid email or password!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // ✅ Show validation errors via toast
@@ -113,7 +127,9 @@ const SignInPage = () => {
           </ExtraText>
 
           <div className="button-wrapper">
-            <Button type="submit">Sign In</Button>
+            <Button type="submit" isLoading={isLoading}>
+              Sign In
+            </Button>
           </div>
         </form>
       </div>
