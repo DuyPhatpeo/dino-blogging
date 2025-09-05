@@ -12,6 +12,9 @@ import Label from "@components/label/Label";
 import Input from "@components/input/Input";
 import Button from "@components/button/Button";
 import ExtraText from "@components/extraText/ExtraText";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "@/firebase/firebase";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPageStyles = styled.div`
   min-height: 100vh;
@@ -59,20 +62,22 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password"), null], "Passwords do not match")
     .required("Confirm Password is required"),
 });
+const handleSignUp = async ({ fullname, email, password }) => {
+  // Tạo user với email/password
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
-// 👉 Hàm signup giả lập API
-const handleSignUp = (values) => {
-  const isValid = true;
-  if (!isValid) return;
+  // Cập nhật displayName cho user
+  await updateProfile(userCredential.user, { displayName: fullname });
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 5000);
-  });
+  return userCredential.user;
 };
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -83,23 +88,31 @@ const SignUpPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // 🔥 Hiện toast khi có lỗi
+  // 🔥 Hiển thị toast cho tất cả lỗi từ yup
   useEffect(() => {
-    if (errors.fullname) toast.error(errors.fullname.message);
-    if (errors.email) toast.error(errors.email.message);
-    if (errors.password) toast.error(errors.password.message);
-    if (errors.confirmPassword) toast.error(errors.confirmPassword.message);
+    Object.values(errors).forEach((err) => {
+      if (err?.message) toast.error(err.message);
+    });
   }, [errors]);
 
   // 👉 Xử lý submit
   const onSubmit = async (data) => {
-    console.log("Form data:", data);
     try {
       setLoading(true);
-      await handleSignUp(data); // giả lập call API
-      toast.success("Sign up successfully!");
+      const user = await handleSignUp(data);
+      toast.success(`Welcome ${user.displayName}! Sign up successful.`);
+
+      // 👉 Sau khi đăng ký thành công thì chuyển sang trang đăng nhập
+      navigate("/signin");
     } catch (error) {
-      toast.error("Sign up failed!");
+      console.error(error);
+
+      // 👉 Kiểm tra lỗi tài khoản đã tồn tại
+      if (error.code === "auth/email-already-in-use") {
+        toast.error("Email is already registered. Please use another email.");
+      } else {
+        toast.error(error.message || "Sign up failed!");
+      }
     } finally {
       setLoading(false);
     }
