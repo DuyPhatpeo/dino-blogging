@@ -1,17 +1,24 @@
+import React, { Suspense, lazy } from "react";
 import { AuthProvider } from "@contexts/authContext";
 import { Route, Routes } from "react-router-dom";
-import SignUpPage from "@pages/SignUpPage";
-import SignInPage from "@pages/SignInPage";
-import HomePage from "@pages/HomePage";
+
+// ✅ Lazy import pages
+const HomePage = lazy(() => import("@pages/HomePage"));
+const SignUpPage = lazy(() => import("@pages/SignUpPage"));
+const SignInPage = lazy(() => import("@pages/SignInPage"));
+const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
 function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/signin" element={<SignInPage />} />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
     </AuthProvider>
   );
 }
