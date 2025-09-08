@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Search } from "lucide-react";
+import { Search, User } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "../button/Button";
+import { useAuth } from "@contexts/authContext";
 
 const HeaderStyles = styled.header`
   width: 100%;
@@ -82,6 +83,28 @@ const HeaderStyles = styled.header`
       height: 18px;
     }
   }
+
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600; /* đậm hơn */
+    color: #23939f; /* màu chủ đạo */
+    padding: 6px 12px;
+    background: #e6f7f9; /* nền nhạt */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+
+    span {
+      font-size: 15px;
+    }
+
+    &:hover {
+      background: #d0eff3;
+      transform: translateY(-1px);
+    }
+  }
 `;
 
 const NAV_LINKS = [
@@ -90,35 +113,47 @@ const NAV_LINKS = [
   { path: "/contact", label: "Contact" },
 ];
 
-const Header = () => (
-  <HeaderStyles>
-    <div className="container">
-      {/* Logo + Navigation */}
-      <div className="left">
-        <a href="/" className="logo">
-          <img src={Logo} alt="Logo" />
-        </a>
-        <nav>
-          {NAV_LINKS.map(({ path, label }) => (
-            <a key={path} href={path}>
-              {label}
-            </a>
-          ))}
-        </nav>
-      </div>
+const Header = () => {
+  const { user } = useAuth();
 
-      {/* Search + Sign In */}
-      <div className="actions">
-        <div className="search">
-          <Search className="search-icon" />
-          <input type="text" placeholder="Search..." aria-label="Search" />
+  return (
+    <HeaderStyles>
+      <div className="container">
+        {/* Logo + Navigation */}
+        <div className="left">
+          <a href="/" className="logo">
+            <img src={Logo} alt="Logo" />
+          </a>
+          <nav>
+            {NAV_LINKS.map(({ path, label }) => (
+              <a key={path} href={path}>
+                {label}
+              </a>
+            ))}
+          </nav>
         </div>
-        <a href="/signin">
-          <Button>Sign In</Button>
-        </a>
+
+        {/* Search + User/Sign In */}
+        <div className="actions">
+          <div className="search">
+            <Search className="search-icon" />
+            <input type="text" placeholder="Search..." aria-label="Search" />
+          </div>
+
+          {user ? (
+            <div className="user">
+              <User size={20} />
+              <span>{user.displayName || "User"}</span>
+            </div>
+          ) : (
+            <a href="/signin">
+              <Button>Sign In</Button>
+            </a>
+          )}
+        </div>
       </div>
-    </div>
-  </HeaderStyles>
-);
+    </HeaderStyles>
+  );
+};
 
 export default Header;

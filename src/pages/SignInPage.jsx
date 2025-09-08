@@ -15,6 +15,7 @@ import ExtraText from "@components/extraText/ExtraText";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/firebase-config";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@contexts/authContext";
 
 const SignInPageStyles = styled.div`
   min-height: 100vh;
@@ -57,6 +58,7 @@ const schema = yup.object().shape({
 const SignInPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
 
   const { control, handleSubmit } = useForm({ resolver: yupResolver(schema) });
 
@@ -85,10 +87,22 @@ const SignInPage = () => {
         data.email,
         data.password
       );
+
+      // ✅ Lưu vào context để Header nhận được
+      signIn({
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName:
+          userCredential.user.displayName ||
+          userCredential.user.email.split("@")[0],
+      });
+
       toast.success(
-        `Welcome back, ${userCredential.user.displayName || "User"}!`
+        `Welcome back, ${
+          userCredential.user.displayName || userCredential.user.email
+        }!`
       );
-      // 👉 Redirect sau khi login thành công, ví dụ trang home
+
       navigate("/");
     } catch (error) {
       console.error(error);
