@@ -22,15 +22,21 @@ const LayoutWrapper = styled.div`
     flex: 1;
     padding: 24px;
   }
+
+  .content.no-padding {
+    padding: 0; /* 🚀 HomePage full-width */
+  }
 `;
 
-const Layout = ({ children }) => {
+const Layout = ({ children, noPadding = false }) => {
   return (
     <LayoutWrapper>
       <div className="header">
         <Header />
       </div>
-      <div className="content">{children}</div>
+      <div className={`content ${noPadding ? "no-padding" : ""}`}>
+        {children}
+      </div>
       <Footer />
     </LayoutWrapper>
   );

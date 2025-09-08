@@ -3,19 +3,13 @@ import styled from "styled-components";
 import HomeBanner from "@/module/home/HomeBanner";
 import Layout from "@components/layout/Layout"; // ✅ dùng Layout thay vì gọi Header trực tiếp
 
-const HomePageStyles = styled.div`
-  .banner {
-    padding: 40px 20px;
-  }
-`;
+const HomePageStyles = styled.div``;
 
 const HomePage = () => {
   return (
-    <Layout>
+    <Layout noPadding>
       <HomePageStyles>
-        <div className="banner">
-          <HomeBanner />
-        </div>
+        <HomeBanner />
       </HomePageStyles>
     </Layout>
   );
