@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { Search } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "../button/Button";
-import { Search } from "lucide-react";
 
 const HeaderStyles = styled.header`
   width: 100%;
@@ -14,7 +14,6 @@ const HeaderStyles = styled.header`
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -43,10 +42,10 @@ const HeaderStyles = styled.header`
     font-weight: 500;
     font-size: 16px;
     transition: color 0.2s;
-  }
 
-  nav a:hover {
-    color: #23939f;
+    &:hover {
+      color: #23939f;
+    }
   }
 
   .actions {
@@ -57,63 +56,69 @@ const HeaderStyles = styled.header`
 
   .search {
     position: relative;
-  }
 
-  .search input {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 8px 12px 8px 36px;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.2s;
-    min-width: 200px;
-  }
+    input {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 12px 8px 36px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+      min-width: 200px;
 
-  .search input:focus {
-    border-color: #23939f;
-    box-shadow: 0 0 0 2px rgba(35, 147, 159, 0.2);
-  }
+      &:focus {
+        border-color: #23939f;
+        box-shadow: 0 0 0 2px rgba(35, 147, 159, 0.2);
+      }
+    }
 
-  .search-icon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    color: #666;
-    width: 18px;
-    height: 18px;
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #666;
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
 
-const Header = () => {
-  return (
-    <HeaderStyles>
-      <div className="container">
-        {/* Logo + Navigation */}
-        <div className="left">
-          <a href="/" className="logo">
-            <img src={Logo} alt="logo" />
-          </a>
-          <nav>
-            <a href="/">Home</a>
-            <a href="/blog">Blog</a>
-            <a href="/contact">Contact</a>
-          </nav>
-        </div>
+const NAV_LINKS = [
+  { path: "/", label: "Home" },
+  { path: "/blog", label: "Blog" },
+  { path: "/contact", label: "Contact" },
+];
 
-        {/* Search + Sign In */}
-        <div className="actions">
-          <div className="search">
-            <Search className="search-icon" />
-            <input type="text" placeholder="Search..." />
-          </div>
-          <a href="/signin">
-            <Button>Sign In</Button>
-          </a>
-        </div>
+const Header = () => (
+  <HeaderStyles>
+    <div className="container">
+      {/* Logo + Navigation */}
+      <div className="left">
+        <a href="/" className="logo">
+          <img src={Logo} alt="Logo" />
+        </a>
+        <nav>
+          {NAV_LINKS.map(({ path, label }) => (
+            <a key={path} href={path}>
+              {label}
+            </a>
+          ))}
+        </nav>
       </div>
-    </HeaderStyles>
-  );
-};
+
+      {/* Search + Sign In */}
+      <div className="actions">
+        <div className="search">
+          <Search className="search-icon" />
+          <input type="text" placeholder="Search..." aria-label="Search" />
+        </div>
+        <a href="/signin">
+          <Button>Sign In</Button>
+        </a>
+      </div>
+    </div>
+  </HeaderStyles>
+);
 
 export default Header;
