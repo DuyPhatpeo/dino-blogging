@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const ButtonStyles = styled.button`
-  padding: 14px 32px;
+  padding: 10px 32px;
   border-radius: 14px;
   background: ${(props) => props.theme.primary};
   color: white;
