@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Search, User } from "lucide-react";
+import { Search, User, Menu, X } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "../button/Button";
 import { useAuth } from "@contexts/authContext";
@@ -10,6 +10,9 @@ const HeaderStyles = styled.header`
   background: ${(props) => props.theme.colors.background};
   box-shadow: ${(props) => props.theme.shadow.card};
   padding: 14px 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 
   .container {
     max-width: 1200px;
@@ -27,7 +30,7 @@ const HeaderStyles = styled.header`
   }
 
   .logo img {
-    height: 60px;
+    height: 50px;
     object-fit: contain;
   }
 
@@ -70,7 +73,7 @@ const HeaderStyles = styled.header`
 
       &:focus {
         border-color: ${(props) => props.theme.colors.primary};
-        box-shadow: 0 0 0 2px rgba(46, 178, 193, 0.2); /* dùng màu primary làm shadow */
+        box-shadow: 0 0 0 2px rgba(46, 178, 193, 0.2);
       }
     }
 
@@ -103,8 +106,62 @@ const HeaderStyles = styled.header`
     }
 
     &:hover {
-      background: ${(props) => props.theme.colors.primaryHover}22; /* nhạt */
+      background: ${(props) => props.theme.colors.primaryHover}22;
       transform: translateY(-1px);
+    }
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: ${(props) => props.theme.colors.text};
+  }
+
+  /* Tablet */
+  @media (max-width: 1024px) {
+    .left {
+      gap: 20px;
+    }
+
+    .search input {
+      min-width: 150px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    nav {
+      display: none;
+    }
+
+    .search {
+      display: none; /* ẩn search trên mobile để gọn, có thể cho vào menu */
+    }
+
+    .menu-toggle {
+      display: block;
+    }
+
+    .mobile-nav {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: ${(props) => props.theme.colors.background};
+      box-shadow: ${(props) => props.theme.shadow.card};
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px;
+      z-index: 40;
+
+      a {
+        font-size: ${(props) => props.theme.fontSize.lg};
+        font-weight: 600;
+      }
     }
   }
 `;
@@ -117,6 +174,7 @@ const NAV_LINKS = [
 
 const Header = () => {
   const { user } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <HeaderStyles>
@@ -135,7 +193,7 @@ const Header = () => {
           </nav>
         </div>
 
-        {/* Search + User/Sign In */}
+        {/* Actions */}
         <div className="actions">
           <div className="search">
             <Search className="search-icon" />
@@ -152,8 +210,27 @@ const Header = () => {
               <Button>Sign In</Button>
             </a>
           )}
+
+          {/* Menu toggle cho mobile */}
+          <button
+            className="menu-toggle"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile nav */}
+      {menuOpen && (
+        <div className="mobile-nav">
+          {NAV_LINKS.map(({ path, label }) => (
+            <a key={path} href={path} onClick={() => setMenuOpen(false)}>
+              {label}
+            </a>
+          ))}
+        </div>
+      )}
     </HeaderStyles>
   );
 };

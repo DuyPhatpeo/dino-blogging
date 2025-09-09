@@ -43,12 +43,24 @@ const PostFeatureItemStyles = styled.div`
       color: ${({ theme }) => theme.colors.text};
     }
 
-    &-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      font-size: ${({ theme }) => theme.fontSize.sm};
+    &-category {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 15;
+      max-width: 120px; /* giới hạn chiều rộng */
+      white-space: nowrap; /* luôn 1 dòng */
+      overflow: hidden; /* ẩn phần dư */
+      text-overflow: ellipsis; /* thêm ... nếu quá dài */
+    }
+
+    &-title {
+      font-weight: 700;
+      line-height: 1.4;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
     }
 
     &-info {
@@ -56,8 +68,9 @@ const PostFeatureItemStyles = styled.div`
       align-items: center;
       gap: 10px;
       font-weight: 500;
+      font-size: ${({ theme }) => theme.fontSize.sm};
+      color: #f1f1f1;
       opacity: 0.9;
-      color: ${({ theme }) => theme.colors.textLight};
     }
 
     &-dot {
@@ -66,14 +79,6 @@ const PostFeatureItemStyles = styled.div`
       height: 4px;
       background-color: currentColor;
       border-radius: 50%;
-    }
-
-    &-title {
-      font-weight: 700;
-      line-height: 1.4;
-      font-size: 20px;
-      color: #fff; /* Giữ trắng vì overlay tối */
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
     }
   }
 
@@ -99,18 +104,18 @@ const PostFeatureItem = () => {
         className="post-image"
       />
       <div className="post-overlay"></div>
+
+      <PostCategory type="secondary">Kiến thức</PostCategory>
+
       <div className="post-content">
-        <div className="post-top">
-          <PostCategory type="secondary">Kiến thức</PostCategory>
-          <div className="post-info">
-            <span className="post-time">Mar 23</span>
-            <span className="post-dot"></span>
-            <span className="post-author">Andiez Le</span>
-          </div>
-        </div>
         <h3 className="post-title">
           Hướng dẫn setup phòng cực chill dành cho người mới toàn tập
         </h3>
+        <div className="post-info">
+          <span className="post-time">Mar 23</span>
+          <span className="post-dot"></span>
+          <span className="post-author">Andiez Le</span>
+        </div>
       </div>
     </PostFeatureItemStyles>
   );
