@@ -7,11 +7,12 @@
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["src/styles/*"],
       "@images/*": ["src/assets/images/*"],
-      "@routers/*": ["src/routers/*"],
+      "@routers/*": ["src/routes/*"],
       "@hooks/*": ["src/hooks/*"],
       "@contexts/*": ["src/contexts/*"],
       "@apis/*": ["src/apis/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@routes/*": ["src/routes/*"]
     }
   },
   "include": ["src/**/*"]
