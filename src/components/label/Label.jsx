@@ -7,7 +7,7 @@ const LabelStyles = styled.label`
   font-weight: 600;
   color: ${(props) => props.theme.colors.text};
   display: inline-block;
-  margin-bottom: 6px;
+  margin-top: 6px;
 `;
 
 const Label = ({ htmlFor, children }) => {

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import logo from "@assets/logo.png";
 
@@ -20,30 +20,68 @@ import { useAuth } from "@contexts/authContext";
 const SignInPageStyles = styled.div`
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   background: linear-gradient(135deg, #f0f4ff, #e0f7fa);
-  padding: 40px;
+
+  .main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative; /* để back-home bám theo main */
+  }
+
   .wrapper {
     width: 100%;
     max-width: 520px;
     text-align: center;
   }
+
   .logo {
     display: block;
-    margin: 0 auto 30px;
+    margin: 0 auto 20px;
     width: 90px;
   }
+
+  .back-home {
+    position: absolute;
+    top: 20px;
+    right: 20px; /* góc phải trên */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: ${(props) => props.theme.colors.gray};
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: ${(props) => props.theme.colors.primary};
+    }
+  }
+
   .heading {
     font-size: 36px;
     font-weight: 800;
     margin-bottom: 40px;
-    color: ${(props) => props.theme.primary};
+    color: ${(props) => props.theme.colors.primary};
   }
+
   .button-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 13px;
+    color: ${(props) => props.theme.colors.gray};
+    background: rgba(255, 255, 255, 0.6);
   }
 `;
 
@@ -88,7 +126,6 @@ const SignInPage = () => {
         data.password
       );
 
-      // ✅ Lưu vào context để Header nhận được
       signIn({
         uid: userCredential.user.uid,
         email: userCredential.user.email,
@@ -120,35 +157,45 @@ const SignInPage = () => {
 
   return (
     <SignInPageStyles>
-      <div className="wrapper">
-        <img src={logo} alt="logo" className="logo" />
-        <h1 className="heading">Sign In</h1>
+      <div className="main">
+        <div className="back-home" onClick={() => navigate("/")}>
+          <ArrowLeft size={16} /> Back to Home
+        </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {fields.map(({ name, label, placeholder, icon, type }) => (
-            <Field key={name}>
-              <Label htmlFor={name}>{label}</Label>
-              <Input
-                name={name}
-                type={type}
-                control={control}
-                placeholder={placeholder}
-                icon={icon}
-              />
-            </Field>
-          ))}
+        <div className="wrapper">
+          <img src={logo} alt="logo" className="logo" />
+          <h1 className="heading">Sign In</h1>
 
-          <ExtraText>
-            Don't have an account? <a href="/signup">Sign up</a>
-          </ExtraText>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {fields.map(({ name, label, placeholder, icon, type }) => (
+              <Field key={name}>
+                <Label htmlFor={name}>{label}</Label>
+                <Input
+                  name={name}
+                  type={type}
+                  control={control}
+                  placeholder={placeholder}
+                  icon={icon}
+                />
+              </Field>
+            ))}
 
-          <div className="button-wrapper">
-            <Button type="submit" isLoading={loading}>
-              Sign In
-            </Button>
-          </div>
-        </form>
+            <ExtraText>
+              Don't have an account? <a href="/signup">Sign up</a>
+            </ExtraText>
+
+            <div className="button-wrapper">
+              <Button type="submit" isLoading={loading}>
+                Sign In
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
+
+      <footer className="footer">
+        © {new Date().getFullYear()} Dino Blog. All rights reserved.
+      </footer>
     </SignInPageStyles>
   );
 };
