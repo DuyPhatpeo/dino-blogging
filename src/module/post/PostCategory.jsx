@@ -3,23 +3,23 @@ import styled, { css } from "styled-components";
 
 const categoryVariants = {
   primary: css`
-    background-color: ${({ theme }) => theme.colors.grayLight};
-    color: ${({ theme }) => theme.colors.gray};
+    background-color: ${({ theme }) => theme.colors.primary}15; /* nhạt */
+    color: ${({ theme }) => theme.colors.primary};
     &:hover {
-      background-color: ${({ theme }) => theme.colors.gray};
+      background-color: ${({ theme }) => theme.colors.primary};
       color: #fff;
     }
   `,
   secondary: css`
-    background-color: #fff;
-    color: ${({ theme }) => theme.colors.gray};
-    border: 1px solid ${({ theme }) => theme.colors.border};
+    background-color: ${({ theme }) => theme.colors.secondary}15;
+    color: ${({ theme }) => theme.colors.secondary};
     &:hover {
-      background-color: ${({ theme }) => theme.colors.grayLight};
+      background-color: ${({ theme }) => theme.colors.secondary};
+      color: #fff;
     }
   `,
   success: css`
-    background-color: ${({ theme }) => theme.colors.success}15; /* nhạt */
+    background-color: ${({ theme }) => theme.colors.success}15;
     color: ${({ theme }) => theme.colors.success};
     &:hover {
       background-color: ${({ theme }) => theme.colors.success};
@@ -38,22 +38,26 @@ const categoryVariants = {
     background-color: ${({ theme }) => theme.colors.grayDark};
     color: #fff;
     &:hover {
-      opacity: 0.9;
+      background-color: ${({ theme }) => theme.colors.gray};
     }
   `,
 };
 
 const PostCategoryStyles = styled.span`
   display: inline-block;
-  width: fit-content;
-  padding: 2px 10px;
+  max-width: 160px; /* tránh quá dài */
+  padding: 4px 12px;
   border-radius: ${({ theme }) => theme.radius.full};
   font-size: 13px;
   font-weight: 600;
   line-height: 1.4;
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.25s ease-in-out;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   ${(props) => categoryVariants[props.$type] || categoryVariants.primary};
 `;
@@ -69,6 +73,7 @@ const PostCategory = ({
       $type={type}
       className={`post-category ${className}`}
       onClick={onClick}
+      title={children}
     >
       {children}
     </PostCategoryStyles>

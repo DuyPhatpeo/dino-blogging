@@ -8,6 +8,8 @@ const SignUpPage = lazy(() => import("@pages/SignUpPage"));
 const SignInPage = lazy(() => import("@pages/SignInPage"));
 const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
+const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
+
 function App() {
   return (
     <AuthProvider>
@@ -31,6 +33,7 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/:slug" element={<PostDetailsPage />} />
         </Routes>
       </Suspense>
     </AuthProvider>

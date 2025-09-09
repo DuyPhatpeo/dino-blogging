@@ -64,7 +64,7 @@ const PostItem = () => {
           alt="post thumbnail"
         />
       </div>
-      <PostCategory type="secondary">Kiến thức</PostCategory>
+      <PostCategory>Kiến thức</PostCategory>
       <h3 className="post-title">
         Hướng dẫn setup phòng cực chill dành cho người mới toàn tập
       </h3>
