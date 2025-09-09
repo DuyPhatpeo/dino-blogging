@@ -2,33 +2,33 @@ import React from "react";
 import styled from "styled-components";
 import { Home } from "lucide-react";
 import Button from "@components/button/Button";
+import Layout from "@components/layout/Layout";
 
 const NotFoundStyles = styled.div`
-  min-height: 100vh;
+  min-height: calc(100vh - 120px); /* trừ header + footer */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f9fafb;
   text-align: center;
   padding: 40px;
 
   .code {
     font-size: 140px;
     font-weight: 800;
-    color: #23939f;
+    color: ${(props) => props.theme.primary};
     line-height: 1;
     margin-bottom: 16px;
   }
 
   .message {
     font-size: 22px;
-    color: #444;
+    color: ${(props) => props.theme.grayDark};
     margin-bottom: 32px;
   }
 
-  button {
-    background: #23939f;
+  .btn-home {
+    background: ${(props) => props.theme.primary};
     color: #fff;
     border-radius: 8px;
     padding: 12px 24px;
@@ -39,24 +39,29 @@ const NotFoundStyles = styled.div`
     gap: 8px;
     cursor: pointer;
     transition: background 0.2s;
-  }
 
-  button:hover {
-    background: #1b6d75;
+    &:hover {
+      background: ${(props) => props.theme.secondary};
+    }
   }
 `;
 
 const NotFoundPage = () => {
   return (
-    <NotFoundStyles>
-      <h1 className="code">404</h1>
-      <p className="message">
-        Oops! The page you are looking for doesn’t exist.
-      </p>
-      <Button onClick={() => (window.location.href = "/")}>
-        <Home size={18} /> Back to Home
-      </Button>
-    </NotFoundStyles>
+    <Layout>
+      <NotFoundStyles>
+        <h1 className="code">404</h1>
+        <p className="message">
+          Oops! The page you are looking for doesn’t exist.
+        </p>
+        <Button
+          className="btn-home"
+          onClick={() => (window.location.href = "/")}
+        >
+          <Home size={18} /> Back to Home
+        </Button>
+      </NotFoundStyles>
+    </Layout>
   );
 };
 
