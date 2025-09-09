@@ -7,8 +7,8 @@ import { useAuth } from "@contexts/authContext";
 
 const HeaderStyles = styled.header`
   width: 100%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: ${(props) => props.theme.colors.background};
+  box-shadow: ${(props) => props.theme.shadow.card};
   padding: 14px 0;
 
   .container {
@@ -38,14 +38,14 @@ const HeaderStyles = styled.header`
   }
 
   nav a {
-    color: #333;
+    color: ${(props) => props.theme.colors.text};
     text-decoration: none;
     font-weight: 500;
-    font-size: 16px;
+    font-size: ${(props) => props.theme.fontSize.base};
     transition: color 0.2s;
 
     &:hover {
-      color: #23939f;
+      color: ${(props) => props.theme.colors.primary};
     }
   }
 
@@ -59,17 +59,18 @@ const HeaderStyles = styled.header`
     position: relative;
 
     input {
-      border: 1px solid #ddd;
-      border-radius: 8px;
+      border: 1px solid ${(props) => props.theme.colors.border};
+      border-radius: ${(props) => props.theme.radius.md};
       padding: 8px 12px 8px 36px;
-      font-size: 14px;
+      font-size: ${(props) => props.theme.fontSize.sm};
       outline: none;
       transition: all 0.2s;
       min-width: 200px;
+      background: #fff;
 
       &:focus {
-        border-color: #23939f;
-        box-shadow: 0 0 0 2px rgba(35, 147, 159, 0.2);
+        border-color: ${(props) => props.theme.colors.primary};
+        box-shadow: 0 0 0 2px rgba(46, 178, 193, 0.2); /* dùng màu primary làm shadow */
       }
     }
 
@@ -78,7 +79,7 @@ const HeaderStyles = styled.header`
       top: 50%;
       left: 10px;
       transform: translateY(-50%);
-      color: #666;
+      color: ${(props) => props.theme.colors.gray};
       width: 18px;
       height: 18px;
     }
@@ -88,20 +89,21 @@ const HeaderStyles = styled.header`
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600; /* đậm hơn */
-    color: #23939f; /* màu chủ đạo */
+    font-weight: 600;
+    color: ${(props) => props.theme.colors.primary};
     padding: 6px 12px;
-    background: #e6f7f9; /* nền nhạt */
-    border-radius: 8px;
+    background: ${(props) => props.theme.colors.background};
+    border-radius: ${(props) => props.theme.radius.md};
+    border: 1px solid ${(props) => props.theme.colors.primary};
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
 
     span {
-      font-size: 15px;
+      font-size: ${(props) => props.theme.fontSize.sm};
     }
 
     &:hover {
-      background: #d0eff3;
+      background: ${(props) => props.theme.colors.primaryHover}22; /* nhạt */
       transform: translateY(-1px);
     }
   }

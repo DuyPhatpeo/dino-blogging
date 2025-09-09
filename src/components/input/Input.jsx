@@ -24,30 +24,31 @@ const InputWrapper = styled.div`
     width: 100%;
     height: 54px;
     padding: 0 16px 0 48px; /* chừa chỗ icon */
-    border-radius: 14px;
-    border: 2px solid #e5e7eb;
-    background: #ffffffcc;
-    font-size: 16px;
+    border-radius: ${(props) => props.theme.radius.lg};
+    border: 2px solid ${(props) => props.theme.colors.border};
+    background: ${(props) => props.theme.colors.background};
+    font-size: ${(props) => props.theme.fontSize.base};
+    color: ${(props) => props.theme.colors.text};
     transition: all 0.25s ease;
 
     ${(props) =>
       props.$hasError &&
       css`
-        border-color: #ef4444;
+        border-color: ${props.theme.colors.error};
         animation: ${shake} 0.3s ease;
       `}
   }
 
   input:hover {
-    border-color: #d1d5db;
+    border-color: ${(props) => props.theme.colors.grayLight};
     background: #fff;
   }
 
   input:focus {
     outline: none;
-    border-color: ${(props) => props.theme.primary};
+    border-color: ${(props) => props.theme.colors.primary};
     background: #fff;
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+    box-shadow: 0 0 0 4px rgba(46, 178, 193, 0.2);
   }
 
   .icon {
@@ -57,27 +58,27 @@ const InputWrapper = styled.div`
     transform: translateY(-50%);
     width: 22px;
     height: 22px;
-    color: #9ca3af;
+    color: ${(props) => props.theme.colors.gray};
     pointer-events: none;
     transition: color 0.25s ease;
   }
 
   .input-container:focus-within .icon {
-    color: ${(props) => props.theme.primary};
+    color: ${(props) => props.theme.colors.primary};
   }
 
   ${(props) =>
     props.$hasError &&
     css`
       .icon {
-        color: #ef4444;
+        color: ${props.theme.colors.error};
       }
     `}
 
   .error {
     margin-top: 6px;
-    font-size: 14px;
-    color: #ef4444;
+    font-size: ${(props) => props.theme.fontSize.sm};
+    color: ${(props) => props.theme.colors.error};
     text-align: left;
   }
 `;
@@ -105,9 +106,7 @@ const Input = ({ name, control, type = "text", placeholder, icon: Icon }) => {
 
 Input.propTypes = {
   name: PropTypes.string.isRequired,
-
   control: PropTypes.object.isRequired,
-
   type: PropTypes.oneOf([
     "text",
     "email",
@@ -122,9 +121,7 @@ Input.propTypes = {
     "time",
     "week",
   ]),
-
   placeholder: PropTypes.string,
-
   icon: PropTypes.elementType,
 };
 

@@ -8,7 +8,7 @@ const PostNewestLargeStyles = styled.article`
       display: block;
       margin-bottom: 16px;
       height: 280px;
-      border-radius: 16px;
+      border-radius: ${({ theme }) => theme.radius.lg};
       overflow: hidden;
 
       img {
@@ -33,12 +33,13 @@ const PostNewestLargeStyles = styled.article`
       font-weight: 700;
       line-height: 1.4;
       display: block;
-      font-size: 20px;
+      font-size: ${({ theme }) => theme.fontSize.lg};
       margin-bottom: 12px;
       transition: color 0.2s ease;
+      color: ${({ theme }) => theme.colors.text};
 
       &:hover {
-        color: ${(props) => props.theme.accent};
+        color: ${({ theme }) => theme.colors.primary};
       }
     }
 
@@ -46,9 +47,9 @@ const PostNewestLargeStyles = styled.article`
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 14px;
+      font-size: ${({ theme }) => theme.fontSize.sm};
       font-weight: 500;
-      color: ${(props) => props.theme.gray6B};
+      color: ${({ theme }) => theme.colors.textLight};
     }
 
     &-dot {
@@ -65,7 +66,7 @@ const PostNewestLargeStyles = styled.article`
       height: 350px;
     }
     .post-title {
-      font-size: 22px;
+      font-size: ${({ theme }) => theme.fontSize.xl};
     }
   }
 
@@ -74,7 +75,7 @@ const PostNewestLargeStyles = styled.article`
       height: 433px;
     }
     .post-title {
-      font-size: 26px;
+      font-size: ${({ theme }) => theme.fontSize["2xl"]};
     }
   }
 `;

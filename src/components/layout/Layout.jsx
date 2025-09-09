@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import Header from "@components/layout/Header";
 import Footer from "@components/layout/Footer";
 
@@ -7,7 +8,7 @@ const LayoutWrapper = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f9fafb;
+  background: ${(props) => props.theme.colors.background};
   font-family: "Inter", sans-serif;
 
   .header {
@@ -40,6 +41,11 @@ const Layout = ({ children, noPadding = false }) => {
       <Footer />
     </LayoutWrapper>
   );
+};
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+  noPadding: PropTypes.bool,
 };
 
 export default Layout;

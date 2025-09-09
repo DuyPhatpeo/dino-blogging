@@ -3,11 +3,11 @@ import styled from "styled-components";
 
 const FooterStyles = styled.footer`
   padding: 20px 24px;
-  background: #f3f4f6;
+  background: ${(props) => props.theme.colors.background};
   text-align: center;
-  font-size: 14px;
-  color: #6b7280;
-  border-top: 1px solid #e5e7eb;
+  font-size: ${(props) => props.theme.fontSize.sm};
+  color: ${(props) => props.theme.colors.textLight};
+  border-top: 1px solid ${(props) => props.theme.colors.border};
 
   .links {
     margin-bottom: 8px;
@@ -17,12 +17,12 @@ const FooterStyles = styled.footer`
   }
 
   a {
-    color: #374151;
+    color: ${(props) => props.theme.colors.text};
     text-decoration: none;
     transition: color 0.2s;
 
     &:hover {
-      color: #111827;
+      color: ${(props) => props.theme.colors.grayDark};
     }
   }
 `;

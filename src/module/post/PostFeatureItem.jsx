@@ -4,7 +4,7 @@ import PostCategory from "./PostCategory";
 
 const PostFeatureItemStyles = styled.div`
   width: 100%;
-  border-radius: 16px;
+  border-radius: ${({ theme }) => theme.radius.lg};
   position: relative;
   height: 200px;
   overflow: hidden;
@@ -40,7 +40,7 @@ const PostFeatureItemStyles = styled.div`
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      color: #fff;
+      color: ${({ theme }) => theme.colors.text};
     }
 
     &-top {
@@ -48,7 +48,7 @@ const PostFeatureItemStyles = styled.div`
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
-      font-size: 14px;
+      font-size: ${({ theme }) => theme.fontSize.sm};
     }
 
     &-info {
@@ -57,6 +57,7 @@ const PostFeatureItemStyles = styled.div`
       gap: 10px;
       font-weight: 500;
       opacity: 0.9;
+      color: ${({ theme }) => theme.colors.textLight};
     }
 
     &-dot {
@@ -71,7 +72,7 @@ const PostFeatureItemStyles = styled.div`
       font-weight: 700;
       line-height: 1.4;
       font-size: 20px;
-      color: #fff;
+      color: #fff; /* Giữ trắng vì overlay tối */
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
     }
   }
@@ -84,7 +85,7 @@ const PostFeatureItemStyles = styled.div`
     height: 280px;
 
     .post-title {
-      font-size: 24px;
+      font-size: ${({ theme }) => theme.fontSize.xl};
     }
   }
 `;
@@ -100,7 +101,7 @@ const PostFeatureItem = () => {
       <div className="post-overlay"></div>
       <div className="post-content">
         <div className="post-top">
-          <PostCategory>Kiến thức</PostCategory>
+          <PostCategory type="secondary">Kiến thức</PostCategory>
           <div className="post-info">
             <span className="post-time">Mar 23</span>
             <span className="post-dot"></span>

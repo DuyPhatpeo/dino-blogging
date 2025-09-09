@@ -8,7 +8,7 @@ const PostNewestItemStyles = styled.article`
   gap: 20px;
   margin-bottom: 24px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
 
   &:last-child {
     padding-bottom: 0;
@@ -22,7 +22,7 @@ const PostNewestItemStyles = styled.article`
       flex-shrink: 0;
       width: 160px;
       height: 120px;
-      border-radius: 12px;
+      border-radius: ${({ theme }) => theme.radius.md};
       overflow: hidden;
 
       img {
@@ -51,13 +51,14 @@ const PostNewestItemStyles = styled.article`
     &-title {
       font-weight: 700;
       line-height: 1.4;
-      font-size: 16px;
+      font-size: ${({ theme }) => theme.fontSize.base};
       margin-bottom: 8px;
       transition: color 0.2s ease;
       cursor: pointer;
+      color: ${({ theme }) => theme.colors.text};
 
       &:hover {
-        color: ${(props) => props.theme?.accent || "#6b21a8"};
+        color: ${({ theme }) => theme.colors.primary};
       }
     }
 
@@ -65,9 +66,9 @@ const PostNewestItemStyles = styled.article`
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 13px;
+      font-size: ${({ theme }) => theme.fontSize.sm};
       font-weight: 500;
-      color: #6b6b6b;
+      color: ${({ theme }) => theme.colors.textLight};
     }
 
     &-dot {

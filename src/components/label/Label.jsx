@@ -3,9 +3,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 
 const LabelStyles = styled.label`
-  font-size: 15px;
+  font-size: ${(props) => props.theme.fontSize.base};
   font-weight: 600;
-  color: #374151;
+  color: ${(props) => props.theme.colors.text};
+  display: inline-block;
+  margin-bottom: 6px;
 `;
 
 const Label = ({ htmlFor, children }) => {

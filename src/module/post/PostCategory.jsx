@@ -3,39 +3,39 @@ import styled, { css } from "styled-components";
 
 const categoryVariants = {
   primary: css`
-    background-color: #f3f4f6;
-    color: #4b5563;
+    background-color: ${({ theme }) => theme.colors.grayLight};
+    color: ${({ theme }) => theme.colors.gray};
     &:hover {
-      background-color: #4b5563;
+      background-color: ${({ theme }) => theme.colors.gray};
       color: #fff;
     }
   `,
   secondary: css`
     background-color: #fff;
-    color: #4b5563;
-    border: 1px solid #e5e7eb;
+    color: ${({ theme }) => theme.colors.gray};
+    border: 1px solid ${({ theme }) => theme.colors.border};
     &:hover {
-      background-color: #f3f4f6;
+      background-color: ${({ theme }) => theme.colors.grayLight};
     }
   `,
   success: css`
-    background-color: #e6f9ed;
-    color: #22c55e;
+    background-color: ${({ theme }) => theme.colors.success}15; /* nhạt */
+    color: ${({ theme }) => theme.colors.success};
     &:hover {
-      background-color: #22c55e;
+      background-color: ${({ theme }) => theme.colors.success};
       color: #fff;
     }
   `,
   danger: css`
-    background-color: #fde8e8;
-    color: #ef4444;
+    background-color: ${({ theme }) => theme.colors.error}15;
+    color: ${({ theme }) => theme.colors.error};
     &:hover {
-      background-color: #ef4444;
+      background-color: ${({ theme }) => theme.colors.error};
       color: #fff;
     }
   `,
   dark: css`
-    background-color: #111827;
+    background-color: ${({ theme }) => theme.colors.grayDark};
     color: #fff;
     &:hover {
       opacity: 0.9;
@@ -47,7 +47,7 @@ const PostCategoryStyles = styled.span`
   display: inline-block;
   width: fit-content;
   padding: 2px 10px;
-  border-radius: 9999px;
+  border-radius: ${({ theme }) => theme.radius.full};
   font-size: 13px;
   font-weight: 600;
   line-height: 1.4;

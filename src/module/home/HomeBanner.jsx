@@ -7,10 +7,19 @@ const HomeBannerStyles = styled.section`
   min-height: 600px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 40px;
+  justify-content: center;
   padding: 0 80px;
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 40%, #43e97b 100%);
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
   .banner-content {
     flex: 1;
@@ -22,6 +31,9 @@ const HomeBannerStyles = styled.section`
       font-weight: 800;
       margin-bottom: 24px;
       line-height: 1.2;
+      background: linear-gradient(90deg, #fff, #e6f7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     p {
@@ -37,14 +49,13 @@ const HomeBannerStyles = styled.section`
       color: #23939f;
       font-weight: 600;
       padding: 16px 36px;
-      border-radius: 10px;
+      border-radius: 12px;
       transition: all 0.3s ease;
       font-size: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 
       &:hover {
         background: #e6f7ff;
-        transform: translateY(-3px);
+        transform: translateY(-3px) scale(1.03);
       }
     }
   }
@@ -55,24 +66,36 @@ const HomeBannerStyles = styled.section`
     justify-content: center;
 
     img {
-      max-width: 500px;
+      max-width: 480px;
       width: 100%;
       height: auto;
-      box-shadow: none;
+      border-radius: 20px;
+      transition: transform 0.4s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
   }
 
   @media (max-width: 992px) {
-    flex-direction: column;
     padding: 40px 20px;
-    text-align: center;
+
+    .inner {
+      flex-direction: column;
+      text-align: center;
+    }
 
     .banner-content {
       max-width: 100%;
+
+      h1 {
+        font-size: 40px;
+      }
     }
 
     .banner-image img {
-      max-width: 350px;
+      max-width: 320px;
       margin-top: 30px;
     }
   }
@@ -81,18 +104,20 @@ const HomeBannerStyles = styled.section`
 const HomeBanner = () => {
   return (
     <HomeBannerStyles>
-      <div className="banner-content">
-        <h1>Dino Blogging</h1>
-        <p>
-          Chia sẻ kiến thức, trải nghiệm và cảm hứng viết lách cùng Dino. Nơi
-          bạn có thể học hỏi, kết nối và phát triển bản thân mỗi ngày.
-        </p>
-        <a href="/signup" className="btn">
-          Get Started
-        </a>
-      </div>
-      <div className="banner-image">
-        <img src={banner} alt="Dino Blogging" />
+      <div className="inner">
+        <div className="banner-content">
+          <h1>Dino Blogging</h1>
+          <p>
+            Chia sẻ kiến thức, trải nghiệm và cảm hứng viết lách cùng Dino. Nơi
+            bạn có thể học hỏi, kết nối và phát triển bản thân mỗi ngày.
+          </p>
+          <a href="/signup" className="btn">
+            Get Started
+          </a>
+        </div>
+        <div className="banner-image">
+          <img src={banner} alt="Dino Blogging" />
+        </div>
       </div>
     </HomeBannerStyles>
   );

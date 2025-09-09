@@ -5,11 +5,11 @@ import styled from "styled-components";
 
 const ButtonStyles = styled.button`
   padding: 10px 32px;
-  border-radius: 14px;
+  border-radius: ${(props) => props.theme.radius.large || "14px"};
   background: ${(props) => props.theme.primary};
-  color: white;
+  color: #fff;
   font-weight: 700;
-  font-size: 18px;
+  font-size: ${(props) => props.theme.fontSize.base || "18px"};
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
@@ -25,7 +25,7 @@ const ButtonStyles = styled.button`
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none;
   }
