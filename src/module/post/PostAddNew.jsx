@@ -1,7 +1,7 @@
-import { Button } from "@components/button";
-import { Field } from "@components/field";
-import { Input } from "@components/input";
-import { Label } from "@components/label";
+import Button from "@components/button/Button";
+import Field from "@components/field/Field";
+import Input from "@components/input/Input";
+import Label from "@components/label/Label";
 import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";

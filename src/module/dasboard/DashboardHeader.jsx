@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "@components/button/Button";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHeaderStyles = styled.header`
   background-color: #fff;
@@ -46,9 +47,13 @@ const DashboardHeaderStyles = styled.header`
 `;
 
 const DashboardHeader = () => {
+  const navigate = useNavigate();
   return (
     <DashboardHeaderStyles>
-      <Button to="/dashboard/add-post" className="header-button">
+      <Button
+        className="header-button"
+        onClick={() => navigate("/manage/add-new")}
+      >
         Write New Post
       </Button>
       <div className="header-avatar">
