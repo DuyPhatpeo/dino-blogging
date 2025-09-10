@@ -1,48 +1,34 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import DashboardHeader from "./DashboardHeader";
 import Sidebar from "./Sidebar";
 
-const DashboardStyles = styled.div`
-  max-width: 1600px;
-  margin: 0 auto;
-  min-height: 100vh;
+const LayoutStyles = styled.div`
   display: flex;
-  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f1f5f9; /* slate-100 */
 
-  .dashboard-main {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 40px;
-    padding: 20px 24px;
+  .content {
     flex: 1;
-
-    @media (max-width: 1024px) {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+    display: flex;
+    flex-direction: column;
   }
 
-  .dashboard-children {
-    background-color: #f9f9f9;
-    border-radius: 16px;
+  .main {
+    flex: 1;
     padding: 24px;
-    min-height: 600px;
   }
 `;
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ children }) => {
   return (
-    <DashboardStyles>
-      <DashboardHeader />
-      <div className="dashboard-main">
-        <Sidebar />
-        <div className="dashboard-children">
-          <Outlet />
-        </div>
+    <LayoutStyles>
+      <Sidebar />
+      <div className="content">
+        <DashboardHeader />
+        <main className="main">{children}</main>
       </div>
-    </DashboardStyles>
+    </LayoutStyles>
   );
 };
 

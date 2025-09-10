@@ -1,59 +1,117 @@
 import React from "react";
 import styled from "styled-components";
 
-const TableStyles = styled.div`
+// ✅ Wrapper cho Table
+const TableWrapper = styled.div`
+  width: 100%;
   overflow-x: auto;
-  background-color: #fff;
-  border-radius: 12px;
-  border: 1px solid #eee;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border-radius: ${(props) => props.theme.radius.md};
+  border: 1px solid ${(props) => props.theme.colors.border};
+  background: #fff;
 
   table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 720px;
   }
 
   thead {
-    background-color: #f7f7f8;
+    background: ${(props) => props.theme.colors.grayLight};
+    position: sticky;
+    top: 0;
+    z-index: 5;
 
     th {
-      padding: 16px 24px;
+      padding: 12px 16px;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       text-align: left;
-      color: #333;
-      white-space: nowrap;
+      color: ${(props) => props.theme.colors.text};
+      border-bottom: 1px solid ${(props) => props.theme.colors.border};
     }
   }
 
   tbody {
     tr {
-      transition: background-color 0.2s ease;
-
-      &:hover {
-        background-color: #fafafa;
+      &:nth-child(odd) {
+        background: ${(props) => props.theme.colors.background};
       }
-
-      &:not(:last-child) {
-        border-bottom: 1px solid #f0f0f0;
+      &:hover {
+        background: ${(props) => props.theme.colors.grayLight};
       }
     }
 
     td {
-      padding: 14px 24px;
-      font-size: 0.9rem;
-      color: #555;
+      padding: 12px 16px;
+      font-size: ${(props) => props.theme.fontSize.sm};
+      color: ${(props) => props.theme.colors.grayDark};
       vertical-align: middle;
+
+      &.image-cell {
+        width: 200px;
+      }
+
+      &.image-cell img {
+        width: 150px;
+        height: auto;
+        object-fit: cover;
+        border-radius: ${(props) => props.theme.radius.sm};
+        border: 1px solid ${(props) => props.theme.colors.border};
+        display: block;
+        margin: 0 auto;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
     }
   }
 `;
 
-const Table = ({ children }) => {
-  return (
-    <TableStyles>
-      <table>{children}</table>
-    </TableStyles>
-  );
-};
+// ✅ Nút Action nhỏ gọn
+const ActionButton = styled.button`
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${(props) => props.theme.radius.sm};
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  transition: background 0.2s;
 
+  background: ${({ theme, variant }) => {
+    switch (variant) {
+      case "view":
+        return theme.colors.detail;
+      case "edit":
+        return theme.colors.edit;
+      case "delete":
+        return theme.colors.delete;
+      default:
+        return theme.colors.primary;
+    }
+  }};
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  svg {
+    stroke: #fff;
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+const Table = ({ children }) => (
+  <TableWrapper>
+    <table>{children}</table>
+  </TableWrapper>
+);
+
+export { ActionButton };
 export default Table;

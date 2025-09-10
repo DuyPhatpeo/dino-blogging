@@ -12,7 +12,7 @@
       "@contexts/*": ["src/contexts/*"],
       "@apis/*": ["src/apis/*"],
       "@pages/*": ["src/pages/*"],
-      "@routes/*": ["src/routes/*"]
+      "@module/*": ["src/module/*"]
     }
   },
   "include": ["src/**/*"]

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { Search, User, Menu, X } from "lucide-react";
+import { Search, User, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "../button/Button";
 import { useAuth } from "@contexts/authContext";
@@ -56,6 +56,7 @@ const HeaderStyles = styled.header`
     display: flex;
     align-items: center;
     gap: 20px;
+    position: relative;
   }
 
   .search {
@@ -88,26 +89,63 @@ const HeaderStyles = styled.header`
     }
   }
 
-  .user {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 600;
-    color: ${(props) => props.theme.colors.primary};
-    padding: 6px 12px;
-    background: ${(props) => props.theme.colors.background};
-    border-radius: ${(props) => props.theme.radius.md};
-    border: 1px solid ${(props) => props.theme.colors.primary};
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+  .user-menu {
+    position: relative;
 
-    span {
-      font-size: ${(props) => props.theme.fontSize.sm};
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: ${(props) => props.theme.colors.primary};
+      padding: 6px 12px;
+      background: ${(props) => props.theme.colors.background};
+      border-radius: ${(props) => props.theme.radius.md};
+      border: 1px solid ${(props) => props.theme.colors.primary};
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+
+      span {
+        font-size: ${(props) => props.theme.fontSize.sm};
+      }
+
+      &:hover {
+        background: ${(props) => props.theme.colors.primaryHover}22;
+        transform: translateY(-1px);
+      }
     }
 
-    &:hover {
-      background: ${(props) => props.theme.colors.primaryHover}22;
-      transform: translateY(-1px);
+    .dropdown {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      background: #fff;
+      border: 1px solid ${(props) => props.theme.colors.border};
+      border-radius: ${(props) => props.theme.radius.md};
+      box-shadow: ${(props) => props.theme.shadow.card};
+      display: flex;
+      flex-direction: column;
+      min-width: 160px;
+      z-index: 100;
+
+      a,
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        font-size: ${(props) => props.theme.fontSize.sm};
+        color: ${(props) => props.theme.colors.text};
+        background: transparent;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+          background: ${(props) => props.theme.colors.primary}11;
+          color: ${(props) => props.theme.colors.primary};
+        }
+      }
     }
   }
 
@@ -120,31 +158,16 @@ const HeaderStyles = styled.header`
     color: ${(props) => props.theme.colors.text};
   }
 
-  /* Tablet */
-  @media (max-width: 1024px) {
-    .left {
-      gap: 20px;
-    }
-
-    .search input {
-      min-width: 150px;
-    }
-  }
-
-  /* Mobile */
   @media (max-width: 768px) {
     nav {
       display: none;
     }
-
     .search {
-      display: none; /* ẩn search trên mobile để gọn, có thể cho vào menu */
+      display: none;
     }
-
     .menu-toggle {
       display: block;
     }
-
     .mobile-nav {
       position: absolute;
       top: 70px;
@@ -157,11 +180,6 @@ const HeaderStyles = styled.header`
       gap: 16px;
       padding: 20px;
       z-index: 40;
-
-      a {
-        font-size: ${(props) => props.theme.fontSize.lg};
-        font-weight: 600;
-      }
     }
   }
 `;
@@ -173,8 +191,21 @@ const NAV_LINKS = [
 ];
 
 const Header = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const timerRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timerRef.current = setTimeout(() => {
+      setDropdownOpen(false);
+    }, 250); // delay 250ms
+  };
 
   return (
     <HeaderStyles>
@@ -201,9 +232,27 @@ const Header = () => {
           </div>
 
           {user ? (
-            <div className="user">
-              <User size={20} />
-              <span>{user.displayName || "User"}</span>
+            <div
+              className="user-menu"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="user">
+                <User size={20} />
+                <span>{user.displayName || "User"}</span>
+              </div>
+              {dropdownOpen && (
+                <div className="dropdown">
+                  <a href="/dashboard">
+                    <LayoutDashboard size={18} />
+                    Dashboard
+                  </a>
+                  <button onClick={signOut}>
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <a href="/signin">
@@ -211,7 +260,6 @@ const Header = () => {
             </a>
           )}
 
-          {/* Menu toggle cho mobile */}
           <button
             className="menu-toggle"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -229,6 +277,14 @@ const Header = () => {
               {label}
             </a>
           ))}
+          {user && (
+            <>
+              <a href="/dashboard" onClick={() => setMenuOpen(false)}>
+                Dashboard
+              </a>
+              <button onClick={signOut}>Logout</button>
+            </>
+          )}
         </div>
       )}
     </HeaderStyles>

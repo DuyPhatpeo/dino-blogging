@@ -1,110 +1,96 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import logo from "@assets/logo.png";
 import {
   LayoutDashboard,
   FileText,
-  LayoutGrid,
-  User,
+  FolderKanban,
+  Users,
   LogOut,
 } from "lucide-react";
 
 const SidebarStyles = styled.div`
-  width: 280px;
-  background: #fff;
-  box-shadow: 0 10px 20px rgba(218, 213, 213, 0.15);
-  border-radius: 16px;
-  padding: 20px;
+  width: 300px;
+  background: #ffffff;
+  box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
 
   .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 40px;
-    font-weight: 700;
-    font-size: 1.2rem;
-
+    font-weight: 600;
+    gap: 0 12px;
     img {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
+      max-width: 36px;
     }
+    margin-bottom: 24px;
+    padding: 20px 20px 0;
+    font-size: 1.1rem;
+    color: ${(props) => props.theme.primary};
+  }
 
-    span {
-      color: ${(props) => props.theme.primary || "#00b894"};
-    }
+  .menu {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
   }
 
   .menu-item {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 12px 16px;
-    border-radius: 12px;
+    padding: 14px 16px;
     font-weight: 500;
-    color: ${(props) => props.theme.gray80 || "#555"};
-    transition: all 0.2s;
+    font-size: 0.95rem;
+    color: ${(props) => props.theme.gray80};
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
 
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &.active,
     &:hover {
-      background-color: #f1fbf7;
-      color: ${(props) => props.theme.primary || "#00b894"};
+      background: #f1fbf7;
+      color: ${(props) => props.theme.primary};
     }
-
-    &.active {
-      background-color: #e0f7ef;
-      color: ${(props) => props.theme.primary || "#00b894"};
-    }
-
-    .menu-icon {
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  .menu-text {
-    flex: 1;
   }
 `;
 
 const sidebarLinks = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: <LayoutDashboard size={20} />,
-  },
-  { title: "Post", url: "/manage/post", icon: <FileText size={20} /> },
-  {
-    title: "Category",
-    url: "/manage/category",
-    icon: <LayoutGrid size={20} />,
-  },
-  { title: "User", url: "/manage/user", icon: <User size={20} /> },
-  { title: "Logout", url: "/", icon: <LogOut size={20} /> },
+  { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
+  { title: "Post", url: "/manage/post", icon: <FileText /> },
+  { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
+  { title: "User", url: "/manage/user", icon: <Users /> },
+  { title: "Logout", url: "/", icon: <LogOut />, onClick: () => {} },
 ];
 
 const Sidebar = () => {
   return (
     <SidebarStyles>
       <div className="sidebar-logo">
-        <img src={logo} alt="Logo" />
-        <span>Dino Blogging</span>
+        <img srcSet="/logo.png 2x" alt="logo" />
+        <span>Monkey Blogging</span>
       </div>
-
-      {sidebarLinks.map((link) => (
-        <NavLink
-          to={link.url}
-          key={link.title}
-          className={({ isActive }) =>
-            isActive ? "menu-item active" : "menu-item"
-          }
-        >
-          <span className="menu-icon">{link.icon}</span>
-          <span className="menu-text">{link.title}</span>
-        </NavLink>
-      ))}
+      <div className="menu">
+        {sidebarLinks.map((link) => (
+          <NavLink
+            to={link.url}
+            className="menu-item"
+            key={link.title}
+            onClick={link.onClick}
+          >
+            <span className="menu-icon">{link.icon}</span>
+            <span className="menu-text">{link.title}</span>
+          </NavLink>
+        ))}
+      </div>
     </SidebarStyles>
   );
 };

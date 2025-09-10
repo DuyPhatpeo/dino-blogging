@@ -10,6 +10,7 @@ const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
 const DashboardPage = lazy(() => import("@pages/DashboardPage"));
+const PostManagePage = lazy(() => import("@pages/PostManagePage"));
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/:slug" element={<PostDetailsPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/manage/post" element={<PostManagePage />} />
         </Routes>
       </Suspense>
     </AuthProvider>

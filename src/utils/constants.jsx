@@ -20,6 +20,16 @@ export const theme = {
     success: "#10B981",
     error: "#EF4444",
     warning: "#F59E0B",
+
+    // 🎯 Màu riêng cho actions
+    detail: "#3B82F6", // xanh dương
+    detailHover: "#2563EB",
+
+    edit: "#22C55E", // xanh lá
+    editHover: "#16A34A",
+
+    delete: "#EF4444", // đỏ
+    deleteHover: "#DC2626",
   },
 
   // 🔠 Font size
