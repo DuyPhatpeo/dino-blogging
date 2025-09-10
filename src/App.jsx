@@ -9,6 +9,7 @@ const SignInPage = lazy(() => import("@pages/SignInPage"));
 const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
+const DashboardPage = lazy(() => import("@pages/DashboardPage"));
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/:slug" element={<PostDetailsPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </Suspense>
     </AuthProvider>
