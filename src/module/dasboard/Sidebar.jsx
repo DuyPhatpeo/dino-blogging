@@ -10,12 +10,17 @@ import {
 } from "lucide-react";
 
 const SidebarStyles = styled.div`
-  width: 300px;
+  width: 260px; /* gọn hơn một chút */
+  height: 100vh; /* chiếm toàn bộ chiều cao */
+  position: fixed; /* cố định */
+  top: 0;
+  left: 0;
   background: #ffffff;
   box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
-  border-radius: 12px;
+  border-radius: 0 12px 12px 0; /* bo góc bên phải */
   display: flex;
   flex-direction: column;
+  z-index: 100; /* đảm bảo nổi trên nội dung */
 
   .sidebar-logo {
     display: flex;
@@ -35,6 +40,7 @@ const SidebarStyles = styled.div`
     display: flex;
     flex-direction: column;
     padding: 0 12px;
+    flex: 1; /* chiếm phần còn lại */
   }
 
   .menu-item {

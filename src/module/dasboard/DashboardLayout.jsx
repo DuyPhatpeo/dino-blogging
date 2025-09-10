@@ -7,6 +7,7 @@ const LayoutStyles = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f1f5f9; /* slate-100 */
+  margin-left: 260px;
 
   .content {
     flex: 1;
