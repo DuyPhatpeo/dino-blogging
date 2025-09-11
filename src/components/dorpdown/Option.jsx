@@ -1,27 +1,29 @@
 import React from "react";
+import styled from "styled-components";
 import { useDropdown } from "./dropdown-context";
+
+const OptionItem = styled.div`
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
 
 const Option = ({ value, children }) => {
   const { setSelected, setShow, searchTerm } = useDropdown();
 
-  // Lọc theo searchTerm (nếu có)
   if (searchTerm && !value.toLowerCase().includes(searchTerm.toLowerCase())) {
     return null;
   }
 
   const handleClick = () => {
-    setSelected(value); // cập nhật option đã chọn
-    setShow(false); // đóng dropdown
+    setSelected(value);
+    setShow(false);
   };
 
-  return (
-    <div
-      className="px-5 py-4 cursor-pointer flex items-center justify-between hover:bg-gray-100 transition-colors"
-      onClick={handleClick}
-    >
-      {children || value}
-    </div>
-  );
+  return <OptionItem onClick={handleClick}>{children || value}</OptionItem>;
 };
 
 export default Option;

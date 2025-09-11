@@ -54,3 +54,8 @@ export const theme = {
     button: "0 4px 12px rgba(0,0,0,0.12)",
   },
 };
+export const postStatus = {
+  APPROVED: 1,
+  PENDING: 2,
+  REJECTED: 3,
+};

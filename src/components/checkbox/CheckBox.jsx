@@ -1,5 +1,36 @@
 import React from "react";
 import { useController } from "react-hook-form";
+import styled from "styled-components";
+
+const CheckboxWrapper = styled.label`
+  display: flex;
+  align-items: center; /* căn giữa icon + chữ */
+  gap: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const Box = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  background-color: ${(props) => (props.checked ? "#22c55e" : "#d1d5db")};
+  color: ${(props) => (props.checked ? "#fff" : "transparent")};
+`;
+
+const LabelText = styled.span`
+  line-height: 1;
+`;
 
 const Checkbox = ({ control, name, children, ...rest }) => {
   const {
@@ -7,27 +38,22 @@ const Checkbox = ({ control, name, children, ...rest }) => {
   } = useController({
     control,
     name,
-    defaultValue: false, // với checkbox nên để default là boolean
+    defaultValue: false,
   });
 
   return (
-    <label className="flex items-center gap-x-3 font-medium cursor-pointer select-none">
-      <input
+    <CheckboxWrapper>
+      <HiddenInput
         type="checkbox"
-        className="hidden-input"
         checked={!!value}
         onChange={(e) => onChange(e.target.checked)}
         {...field}
         {...rest}
       />
-      <div
-        className={`w-7 h-7 rounded flex items-center justify-center transition-colors ${
-          value ? "bg-green-400 text-white" : "bg-gray-200 text-transparent"
-        }`}
-      >
+      <Box checked={!!value}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
+          className="h-4 w-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -39,9 +65,9 @@ const Checkbox = ({ control, name, children, ...rest }) => {
             d="M5 13l4 4L19 7"
           />
         </svg>
-      </div>
-      <span>{children}</span>
-    </label>
+      </Box>
+      <LabelText>{children}</LabelText>
+    </CheckboxWrapper>
   );
 };
 

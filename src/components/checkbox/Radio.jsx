@@ -1,5 +1,42 @@
 import React from "react";
 import { useController } from "react-hook-form";
+import styled from "styled-components";
+
+const RadioWrapper = styled.label`
+  display: flex;
+  align-items: center; /* căn giữa theo trục dọc */
+  gap: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const Circle = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: ${(props) => (props.checked ? "#22c55e" : "#d1d5db")};
+  transition: background-color 0.2s ease-in-out;
+`;
+
+const Dot = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+`;
+
+const LabelText = styled.span`
+  line-height: 1; /* giúp chữ không bị tụt */
+`;
 
 const Radio = ({ children, control, name, value, ...rest }) => {
   const {
@@ -7,31 +44,24 @@ const Radio = ({ children, control, name, value, ...rest }) => {
   } = useController({
     control,
     name,
-    defaultValue: "", // radio nên để default rỗng
+    defaultValue: "",
   });
 
   return (
-    <label className="flex items-center gap-x-3 font-medium cursor-pointer select-none">
-      <input
+    <RadioWrapper>
+      <HiddenInput
         type="radio"
-        className="hidden-input"
         value={value}
         checked={selectedValue === value}
         onChange={() => onChange(value)}
         {...field}
         {...rest}
       />
-      <div
-        className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors ${
-          selectedValue === value ? "bg-green-400" : "bg-gray-200"
-        }`}
-      >
-        {selectedValue === value && (
-          <div className="w-3 h-3 bg-white rounded-full"></div>
-        )}
-      </div>
-      <span>{children}</span>
-    </label>
+      <Circle checked={selectedValue === value}>
+        {selectedValue === value && <Dot />}
+      </Circle>
+      <LabelText>{children}</LabelText>
+    </RadioWrapper>
   );
 };
 

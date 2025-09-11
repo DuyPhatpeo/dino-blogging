@@ -1,19 +1,33 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
 import { MOCK_POSTS } from "@/data/posts";
 import { Eye, Edit, Trash2 } from "lucide-react";
 
+const PostManageStyles = styled.div`
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+  h1.dashboard-heading {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: #0ea5e9;
+  }
+`;
 const POSTS_PER_PAGE = 10;
 
 // Hàm helper trả màu theo trạng thái
 const getStatusColor = (status) => {
   switch (status) {
-    case "published":
+    case "APPROVED":
       return "#22c55e"; // xanh
-    case "draft":
+    case "PENDING":
       return "#facc15"; // vàng
-    case "archived":
+    case "REJECTED":
       return "#ef4444"; // đỏ
     default:
       return "#6b7280"; // xám
@@ -86,8 +100,8 @@ export default function PostManage() {
   ];
 
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">Manage Posts</h1>
+    <PostManageStyles>
+      <h1 className="dashboard-heading">Manage post</h1>
 
       <Table>
         <thead>
@@ -120,6 +134,6 @@ export default function PostManage() {
         pageSize={POSTS_PER_PAGE}
         totalItems={MOCK_POSTS.length}
       />
-    </div>
+    </PostManageStyles>
   );
 }
