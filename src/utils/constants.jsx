@@ -17,9 +17,9 @@ export const theme = {
     text: "#111827",
     textLight: "#6B7280",
 
-    success: "#10B981",
-    error: "#EF4444",
-    warning: "#F59E0B",
+    success: "#22c55e",
+    danger: "#EF4444",
+    warning: "#facc15",
 
     // 🎯 Màu riêng cho actions
     detail: "#3B82F6", // xanh dương

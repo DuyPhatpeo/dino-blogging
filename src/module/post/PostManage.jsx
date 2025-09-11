@@ -6,10 +6,22 @@ import { Eye, Edit, Trash2 } from "lucide-react";
 
 const POSTS_PER_PAGE = 10;
 
+// Hàm helper trả màu theo trạng thái
+const getStatusColor = (status) => {
+  switch (status) {
+    case "published":
+      return "#22c55e"; // xanh
+    case "draft":
+      return "#facc15"; // vàng
+    case "archived":
+      return "#ef4444"; // đỏ
+    default:
+      return "#6b7280"; // xám
+  }
+};
+
 export default function PostManage() {
   const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(MOCK_POSTS.length / POSTS_PER_PAGE);
 
   const paginatedPosts = MOCK_POSTS.slice(
     (currentPage - 1) * POSTS_PER_PAGE,
@@ -33,6 +45,25 @@ export default function PostManage() {
     },
     { key: "id", render: (val) => <span className="id-badge">#{val}</span> },
     { key: "category", render: (val) => <span className="badge">{val}</span> },
+    {
+      key: "status",
+      render: (val) => (
+        <span
+          style={{
+            display: "inline-block",
+            padding: "4px 10px",
+            borderRadius: "4px",
+            color: "#fff",
+            backgroundColor: getStatusColor(val),
+            fontSize: "0.8rem",
+            fontWeight: 500,
+            textTransform: "capitalize",
+          }}
+        >
+          {val}
+        </span>
+      ),
+    },
     { key: "author" },
   ];
 
@@ -65,6 +96,7 @@ export default function PostManage() {
             <th>Post Info</th>
             <th>ID</th>
             <th>Category</th>
+            <th>Status</th>
             <th>Author</th>
             <th>Actions</th>
           </tr>
@@ -82,7 +114,7 @@ export default function PostManage() {
       </Table>
 
       <Pagination
-        total={totalPages}
+        total={Math.ceil(MOCK_POSTS.length / POSTS_PER_PAGE)}
         current={currentPage}
         onChange={setCurrentPage}
         pageSize={POSTS_PER_PAGE}
