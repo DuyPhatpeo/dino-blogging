@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { Eye, Edit, Trash2 } from "lucide-react";
 
-// ✅ Wrapper cho Table
+// Table Wrapper
 const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
@@ -69,7 +70,7 @@ const TableWrapper = styled.div`
   }
 `;
 
-// ✅ Nút Action nhỏ gọn
+// Action Button
 const ActionButton = styled.button`
   width: 50px;
   height: 50px;
@@ -107,10 +108,38 @@ const ActionButton = styled.button`
   }
 `;
 
+// Main Table component
 const Table = ({ children }) => (
   <TableWrapper>
     <table>{children}</table>
   </TableWrapper>
+);
+
+// Sub-component: DataRow / PostRow
+Table.Row = ({ item, columns, actions }) => (
+  <tr>
+    {columns.map((col) => (
+      <td key={col.key} className={col.className || ""}>
+        {col.render ? col.render(item[col.key], item) : item[col.key]}
+      </td>
+    ))}
+
+    {actions && actions.length > 0 && (
+      <td>
+        <div className="actions">
+          {actions.map((action) => (
+            <ActionButton
+              key={action.type}
+              variant={action.type}
+              onClick={() => action.onClick(item)}
+            >
+              {action.icon}
+            </ActionButton>
+          ))}
+        </div>
+      </td>
+    )}
+  </tr>
 );
 
 export { ActionButton };

@@ -9,9 +9,9 @@ const SignInPage = lazy(() => import("@pages/SignInPage"));
 const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
-const DashboardPage = lazy(() => import("@pages/DashboardPage"));
-const PostManagePage = lazy(() => import("@pages/PostManagePage"));
-const PostAddNewPage = lazy(() => import("@pages/PostAddNewPage"));
+const DashboardPage = lazy(() => import("@/pages/mangage/DashboardPage"));
+const PostManagePage = lazy(() => import("@/pages/mangage/PostManagePage"));
+const PostAddNewPage = lazy(() => import("@/pages/mangage/PostAddNewPage"));
 
 function App() {
   return (
@@ -37,6 +37,7 @@ function App() {
           <Route path="/signin" element={<SignInPage />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/:slug" element={<PostDetailsPage />} />
+
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/manage/post" element={<PostManagePage />} />
           <Route path="/manage/add-new" element={<PostAddNewPage />} />

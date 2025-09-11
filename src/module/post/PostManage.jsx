@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Table from "@components/table/Table";
-import PostRow from "@module/post/PostRow";
 import Pagination from "@components/pagination/Pagination";
 import { MOCK_POSTS } from "@/data/posts";
+import { Eye, Edit, Trash2 } from "lucide-react";
 
 const POSTS_PER_PAGE = 10;
 
@@ -16,9 +16,48 @@ export default function PostManage() {
     currentPage * POSTS_PER_PAGE
   );
 
+  const columns = [
+    {
+      key: "image",
+      render: (val) => <img src={val} alt="" className="table-image" />,
+      className: "image-cell",
+    },
+    {
+      key: "title",
+      render: (val, item) => (
+        <div className="post-info">
+          <h3>{val}</h3>
+          <time>{item.date}</time>
+        </div>
+      ),
+    },
+    { key: "id", render: (val) => <span className="id-badge">#{val}</span> },
+    { key: "category", render: (val) => <span className="badge">{val}</span> },
+    { key: "author" },
+  ];
+
+  const actions = [
+    {
+      type: "view",
+      icon: <Eye size={18} />,
+      onClick: (item) => console.log("View", item),
+    },
+    {
+      type: "edit",
+      icon: <Edit size={18} />,
+      onClick: (item) => console.log("Edit", item),
+    },
+    {
+      type: "delete",
+      icon: <Trash2 size={18} />,
+      onClick: (item) => console.log("Delete", item),
+    },
+  ];
+
   return (
     <div>
       <h1 className="text-xl font-bold mb-4">Manage Posts</h1>
+
       <Table>
         <thead>
           <tr>
@@ -32,7 +71,12 @@ export default function PostManage() {
         </thead>
         <tbody>
           {paginatedPosts.map((post) => (
-            <PostRow key={post.id} post={post} />
+            <Table.Row
+              key={post.id}
+              item={post}
+              columns={columns}
+              actions={actions}
+            />
           ))}
         </tbody>
       </Table>
