@@ -9,9 +9,13 @@ const SignInPage = lazy(() => import("@pages/SignInPage"));
 const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
-const DashboardPage = lazy(() => import("@/pages/mangage/DashboardPage"));
-const PostManagePage = lazy(() => import("@/pages/mangage/PostManagePage"));
-const PostAddNewPage = lazy(() => import("@/pages/mangage/PostAddNewPage"));
+const DashboardPage = lazy(() => import("@pages/mangage/DashboardPage"));
+const PostManagePage = lazy(() => import("@pages/mangage/post/PostManagePage"));
+const PostAddNewPage = lazy(() => import("@pages/mangage/post/PostAddNewPage"));
+
+const CategoryManagePage = lazy(() =>
+  import("@pages/mangage/category/CategoryManagePage")
+);
 
 function App() {
   return (
@@ -39,8 +43,11 @@ function App() {
           <Route path="/:slug" element={<PostDetailsPage />} />
 
           <Route path="/dashboard" element={<DashboardPage />} />
+
           <Route path="/manage/post" element={<PostManagePage />} />
           <Route path="/manage/add-new" element={<PostAddNewPage />} />
+
+          <Route path="/manage/category" element={<CategoryManagePage />} />
         </Routes>
       </Suspense>
     </AuthProvider>
