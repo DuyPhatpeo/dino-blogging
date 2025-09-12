@@ -1,24 +1,43 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import slugify from "slugify";
+import { toast } from "react-toastify";
 import { postStatus } from "@/utils/constants";
 import { useImageUpload } from "@hooks/useImageUpload";
 import { db } from "@/firebase/firebase-config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
+// ✅ Yup schema
+const schema = yup.object({
+  title: yup.string().required("Title is required"),
+  slug: yup.string(),
+  author: yup.string().required("Author is required"),
+  category: yup
+    .array()
+    .min(1, "Please select at least one category")
+    .required("Category is required"),
+  image: yup.mixed().required("Thumbnail is required"),
+});
 
 export function usePostAddNew() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { uploadProgress, uploadImage } = useImageUpload();
+  const navigate = useNavigate();
 
   const form = useForm({
     mode: "onChange",
+    resolver: yupResolver(schema),
     defaultValues: {
       title: "",
       slug: "",
       status: postStatus.PENDING,
       author: "",
-      categoryId: [], // mảng id cho multi-select
+      category: [],
       image: null,
       hot: false,
     },
@@ -26,38 +45,38 @@ export function usePostAddNew() {
 
   const addPostHandler = async (values) => {
     try {
-      // tạo slug nếu trống
-      if (!values.slug) {
-        values.slug = slugify(values.title, { lower: true, strict: true });
-      }
+      setLoading(true);
 
-      // upload ảnh nếu có
+      // tạo slug tự động nếu trống
+      const slug =
+        values.slug || slugify(values.title, { lower: true, strict: true });
+
+      // upload ảnh
       let imageUrl = "";
       if (values.image) {
         imageUrl = await uploadImage(values.image, "posts");
       }
 
-      // Lấy user hiện tại từ Firebase Auth
+      // lấy user từ Firebase Auth
       const auth = getAuth();
       const user = auth.currentUser;
-
       if (!user) {
         throw new Error("You must be logged in to create a post.");
       }
 
-      // newPost giữ nguyên category là mảng id
       const newPost = {
         ...values,
+        slug,
         image: imageUrl,
-        userId: user.uid, // tham chiếu user
-        createdBy: user.uid, // id người tạo (cho query/filter)
+        userId: user.uid,
+        createdBy: user.uid,
         createdAt: serverTimestamp(),
       };
 
-      // lưu lên Firestore
+      // lưu Firestore
       const docRef = await addDoc(collection(db, "posts"), newPost);
 
-      // lưu vào state local để hiển thị ngay
+      // cập nhật local state
       setPosts((prev) => [...prev, { ...newPost, id: docRef.id }]);
 
       // reset form
@@ -66,14 +85,19 @@ export function usePostAddNew() {
         slug: "",
         status: postStatus.PENDING,
         author: "",
-        categoryId: [],
+        category: [],
         image: null,
         hot: false,
       });
 
-      console.log("✅ Post added with ID:", docRef.id);
+      toast.success("✅ Post added successfully!");
+
+      navigate("/manage/post");
     } catch (error) {
       console.error("❌ Error adding post:", error);
+      toast.error(error.message || "Error adding post");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,5 +106,6 @@ export function usePostAddNew() {
     uploadProgress,
     form,
     addPostHandler,
+    loading,
   };
 }

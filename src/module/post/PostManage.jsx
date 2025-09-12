@@ -4,8 +4,16 @@ import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { postStatusLabel, postStatusColor } from "@/utils/constants";
+import LoadingSpinner from "@components/loading/LoadingSpinner";
 
 const PostManageStyles = styled.div`
   background: #fff;
@@ -18,6 +26,31 @@ const PostManageStyles = styled.div`
     font-weight: 700;
     margin-bottom: 32px;
     color: #0ea5e9;
+  }
+
+  .table-image {
+    width: 300px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .id-badge {
+    display: inline-block;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .clickable-status {
+    cursor: pointer;
   }
 `;
 
@@ -36,14 +69,14 @@ export default function PostManage() {
       const snapshot = await getDocs(colRef);
       const map = {};
       snapshot.docs.forEach((doc) => {
-        map[doc.id] = doc.data().name; // map id → name
+        map[doc.id] = doc.data().name;
       });
       setCategories(map);
     }
     fetchCategories();
   }, []);
 
-  // Fetch posts từ Firestore
+  // Fetch posts
   useEffect(() => {
     async function fetchPosts() {
       try {
@@ -58,7 +91,7 @@ export default function PostManage() {
             title: data.title,
             image: data.image,
             category: Array.isArray(data.category) ? data.category : [],
-            status: data.status, // number (1,2,3)
+            status: data.status,
             author: data.author || "Anonymous",
             createdAt: data.createdAt?.toDate
               ? data.createdAt.toDate().toLocaleDateString("vi-VN")
@@ -74,15 +107,38 @@ export default function PostManage() {
         setLoading(false);
       }
     }
-
     fetchPosts();
   }, []);
 
-  // Pagination slice
   const paginatedPosts = posts.slice(
     (currentPage - 1) * POSTS_PER_PAGE,
     currentPage * POSTS_PER_PAGE
   );
+
+  const toggleHot = async (postId, currentHot) => {
+    try {
+      const docRef = doc(db, "posts", postId);
+      await updateDoc(docRef, { hot: !currentHot });
+      setPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, hot: !currentHot } : p))
+      );
+    } catch (error) {
+      console.error("Error updating hot status:", error);
+    }
+  };
+
+  const toggleStatus = async (postId, currentStatus) => {
+    const nextStatus = currentStatus === 1 ? 2 : currentStatus === 2 ? 3 : 1; // ví dụ tuần tự 1→2→3→1
+    try {
+      const docRef = doc(db, "posts", postId);
+      await updateDoc(docRef, { status: nextStatus });
+      setPosts((prev) =>
+        prev.map((p) => (p.id === postId ? { ...p, status: nextStatus } : p))
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   const columns = [
     {
@@ -90,7 +146,6 @@ export default function PostManage() {
       render: (val) => (
         <img src={val || "/fallback.jpg"} alt="" className="table-image" />
       ),
-      className: "image-cell",
     },
     {
       key: "title",
@@ -103,19 +158,17 @@ export default function PostManage() {
         </div>
       ),
     },
-    { key: "id", render: (val) => <span className="id-badge">#{val}</span> },
+    {
+      key: "id",
+      render: (val) => (
+        <span className="id-badge">#{val.slice(0, 10)}</span> // giới hạn 10 ký tự
+      ),
+    },
     {
       key: "category",
       render: (val) =>
         val.length > 0 ? (
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "4px",
-              maxWidth: "200px", // optional, để tránh quá dài
-            }}
-          >
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
             {val.map((id, index) => (
               <span
                 key={id + index}
@@ -135,11 +188,11 @@ export default function PostManage() {
           <span>—</span>
         ),
     },
-
     {
       key: "status",
-      render: (val) => (
+      render: (val, item) => (
         <span
+          className="clickable-status"
           style={{
             display: "inline-block",
             padding: "4px 10px",
@@ -150,9 +203,21 @@ export default function PostManage() {
             fontWeight: 500,
             textTransform: "capitalize",
           }}
+          onClick={() => toggleStatus(item.id, val)}
+          title="Click to change status"
         >
           {postStatusLabel[val] || "UNKNOWN"}
         </span>
+      ),
+    },
+    {
+      key: "hot",
+      render: (val, item) => (
+        <input
+          type="checkbox"
+          checked={val}
+          onChange={() => toggleHot(item.id, val)}
+        />
       ),
     },
     { key: "author" },
@@ -181,7 +246,9 @@ export default function PostManage() {
       <h1 className="dashboard-heading">Manage post</h1>
 
       {loading ? (
-        <p>Loading posts...</p>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <LoadingSpinner />
+        </div>
       ) : (
         <>
           <Table>
@@ -192,6 +259,7 @@ export default function PostManage() {
                 <th>ID</th>
                 <th>Category</th>
                 <th>Status</th>
+                <th>Hot Post</th>
                 <th>Author</th>
                 <th>Actions</th>
               </tr>

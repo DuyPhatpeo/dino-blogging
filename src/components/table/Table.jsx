@@ -53,7 +53,7 @@ const TableWrapper = styled.div`
       }
 
       &.image-cell img {
-        width: 150px;
+        width: 100%;
         height: auto;
         object-fit: cover;
         border-radius: ${(props) => props.theme.radius.sm};

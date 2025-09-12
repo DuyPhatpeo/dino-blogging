@@ -19,6 +19,7 @@ const PostAddNewStyles = styled.div`
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
@@ -55,13 +56,19 @@ const PostAddNewStyles = styled.div`
     border-radius: 4px;
     margin-top: 8px;
   }
+  .error {
+    color: #ef4444; /* đỏ */
+    font-size: 14px;
+    margin-top: 6px;
+  }
 `;
 
 const PostAddNew = () => {
-  const { uploadProgress, form, addPostHandler } = usePostAddNew();
-  const { control, watch, handleSubmit } = form;
+  const { uploadProgress, form, addPostHandler, loading } = usePostAddNew();
+  const { control, watch, handleSubmit, formState } = form;
+  const { errors } = formState;
   const watchStatus = watch("status");
-  const { categories, loading, error } = useCategories();
+  const { categories, error, loading: catLoading } = useCategories();
 
   return (
     <PostAddNewStyles>
@@ -153,10 +160,9 @@ const PostAddNew = () => {
               control={control}
               name="category"
               render={({ field: { value, onChange } }) => {
-                if (loading) return <p>Loading categories...</p>;
+                if (catLoading) return <p>Loading categories...</p>;
                 if (error) return <p>Error loading categories</p>;
 
-                // value là mảng id
                 const selected =
                   categories.filter((c) => value?.includes(c.id)) || [];
 
@@ -179,6 +185,9 @@ const PostAddNew = () => {
                 );
               }}
             />
+            {errors.category && (
+              <p className="error">{errors.category.message}</p>
+            )}
           </Field>
         </div>
 
@@ -191,6 +200,7 @@ const PostAddNew = () => {
               name="image"
               label="Upload post thumbnail"
             />
+            {errors.image && <p className="error">{errors.image.message}</p>}
             {uploadProgress > 0 && (
               <div
                 className="progress-bar"
@@ -203,7 +213,12 @@ const PostAddNew = () => {
 
         {/* Submit */}
         <div className="form-actions">
-          <Button type="submit" height="52px" className="px-10">
+          <Button
+            type="submit"
+            height="52px"
+            className="px-10"
+            isLoading={loading}
+          >
             Add new post
           </Button>
         </div>
