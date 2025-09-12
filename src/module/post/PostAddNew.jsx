@@ -163,8 +163,13 @@ const PostAddNew = () => {
                 if (catLoading) return <p>Loading categories...</p>;
                 if (error) return <p>Error loading categories</p>;
 
+                // chỉ lấy categories có status = 1
+                const activeCategories = categories.filter(
+                  (c) => c.status === 1
+                );
+
                 const selected =
-                  categories.filter((c) => value?.includes(c.id)) || [];
+                  activeCategories.filter((c) => value?.includes(c.id)) || [];
 
                 const handleChange = (selectedItems) => {
                   const ids = selectedItems.map((item) => item.id);
@@ -178,7 +183,7 @@ const PostAddNew = () => {
                     onChange={handleChange}
                     multiple
                   >
-                    {categories.map((cat) => (
+                    {activeCategories.map((cat) => (
                       <Option key={cat.id} value={cat} />
                     ))}
                   </Dropdown>
