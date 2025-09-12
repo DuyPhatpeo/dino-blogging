@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
 import Radio from "@components/checkbox/Radio";
+import { Dropdown } from "@components/dorpdown/Dropdown";
+import Option from "@components/dorpdown/Option";
 import Button from "@components/button/Button";
 import Field from "@components/field/Field";
 import Input from "@components/input/Input";
@@ -11,8 +13,6 @@ import ImageUpload from "@components/imageUpload/ImageUpload";
 import Toggle from "@components/toggle/Toggle";
 import { usePostAddNew } from "@hooks/usePostAddNew";
 import useCategories from "@hooks/useCategories";
-import { Dropdown } from "@components/dorpdown/Dropdown";
-import Option from "@/components/dorpdown/Option";
 
 const PostAddNewStyles = styled.div`
   background: #fff;
@@ -49,13 +49,19 @@ const PostAddNewStyles = styled.div`
     gap: 20px;
     margin-top: 8px;
   }
+  .progress-bar {
+    height: 6px;
+    background: #0ea5e9;
+    border-radius: 4px;
+    margin-top: 8px;
+  }
 `;
 
 const PostAddNew = () => {
   const { uploadProgress, form, addPostHandler } = usePostAddNew();
   const { control, watch, handleSubmit } = form;
   const watchStatus = watch("status");
-  const categories = useCategories();
+  const { categories, loading, error } = useCategories();
 
   return (
     <PostAddNewStyles>
@@ -147,12 +153,24 @@ const PostAddNew = () => {
               control={control}
               name="category"
               render={({ field: { value, onChange } }) => {
-                const selected = categories.find((c) => c.id === value) || null;
+                if (loading) return <p>Loading categories...</p>;
+                if (error) return <p>Error loading categories</p>;
+
+                // value là mảng id
+                const selected =
+                  categories.filter((c) => value?.includes(c.id)) || [];
+
+                const handleChange = (selectedItems) => {
+                  const ids = selectedItems.map((item) => item.id);
+                  onChange(ids);
+                };
+
                 return (
                   <Dropdown
-                    placeholder="Please select a category"
+                    placeholder="Select categories"
                     selected={selected}
-                    onChange={(val) => onChange(val.id)} // chỉ lưu id
+                    onChange={handleChange}
+                    multiple
                   >
                     {categories.map((cat) => (
                       <Option key={cat.id} value={cat} />
@@ -176,13 +194,7 @@ const PostAddNew = () => {
             {uploadProgress > 0 && (
               <div
                 className="progress-bar"
-                style={{
-                  width: `${uploadProgress}%`,
-                  height: "6px",
-                  background: "#0ea5e9",
-                  borderRadius: "4px",
-                  marginTop: "8px",
-                }}
+                style={{ width: `${uploadProgress}%` }}
               />
             )}
           </Field>

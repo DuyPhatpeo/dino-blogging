@@ -15,24 +15,37 @@ export function usePostAddNew() {
       slug: "",
       status: postStatus.PENDING,
       author: "",
-      category: null,
+      category: [], // mảng id cho multi-select
       image: null,
       hot: false,
     },
   });
 
   const addPostHandler = async (values) => {
+    // tạo slug nếu trống
     if (!values.slug)
       values.slug = slugify(values.title, { lower: true, strict: true });
 
+    // upload ảnh nếu có
     let imageUrl = "";
     if (values.image) {
       imageUrl = await uploadImage(values.image, "posts");
     }
 
+    // newPost giữ nguyên category là mảng id
     const newPost = { ...values, image: imageUrl };
     setPosts((prev) => [...prev, newPost]);
-    form.reset();
+
+    // reset form về defaultValues
+    form.reset({
+      title: "",
+      slug: "",
+      status: postStatus.PENDING,
+      author: "",
+      category: [],
+      image: null,
+      hot: false,
+    });
   };
 
   return {

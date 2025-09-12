@@ -2,6 +2,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { DropdownContext } from "./Dropdown";
+import { CheckSquare, Square } from "lucide-react";
 
 const OptionItem = styled.div`
   padding: 12px 16px;
@@ -10,6 +11,9 @@ const OptionItem = styled.div`
   color: ${(props) => props.theme.colors.text};
   transition: all 0.2s linear;
   border-radius: ${(props) => props.theme.radius.sm};
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover {
     background: ${(props) => props.theme.colors.grayLight};
@@ -18,15 +22,30 @@ const OptionItem = styled.div`
 `;
 
 export default function Option({ value }) {
-  const { onChange, setIsOpen } = useContext(DropdownContext);
+  const { onChange, selected, multiple, setIsOpen } =
+    useContext(DropdownContext);
+
+  const isSelected = multiple
+    ? selected.some((item) => item.id === value.id)
+    : selected?.id === value.id;
+
+  const handleClick = () => {
+    if (multiple) {
+      if (isSelected) {
+        onChange(selected.filter((item) => item.id !== value.id));
+      } else {
+        onChange([...selected, value]);
+      }
+    } else {
+      onChange(value);
+      setIsOpen(false);
+    }
+  };
 
   return (
-    <OptionItem
-      onClick={() => {
-        onChange(value);
-        setIsOpen(false);
-      }}
-    >
+    <OptionItem onClick={handleClick}>
+      {multiple &&
+        (isSelected ? <CheckSquare size={18} /> : <Square size={18} />)}
       {value.name}
     </OptionItem>
   );
