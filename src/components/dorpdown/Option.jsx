@@ -1,29 +1,33 @@
-import React from "react";
+// Option.js
+import React, { useContext } from "react";
 import styled from "styled-components";
-import { useDropdown } from "./dropdown-context";
+import { DropdownContext } from "./Dropdown";
 
 const OptionItem = styled.div`
   padding: 12px 16px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  font-size: ${(props) => props.theme.fontSize.sm};
+  color: ${(props) => props.theme.colors.text};
+  transition: all 0.2s linear;
+  border-radius: ${(props) => props.theme.radius.sm};
+
   &:hover {
-    background: #f5f5f5;
+    background: ${(props) => props.theme.colors.grayLight};
+    color: ${(props) => props.theme.colors.primary};
   }
 `;
 
-const Option = ({ value, children }) => {
-  const { setSelected, setShow, searchTerm } = useDropdown();
+export default function Option({ value }) {
+  const { onChange, setIsOpen } = useContext(DropdownContext);
 
-  if (searchTerm && !value.toLowerCase().includes(searchTerm.toLowerCase())) {
-    return null;
-  }
-
-  const handleClick = () => {
-    setSelected(value);
-    setShow(false);
-  };
-
-  return <OptionItem onClick={handleClick}>{children || value}</OptionItem>;
-};
-
-export default Option;
+  return (
+    <OptionItem
+      onClick={() => {
+        onChange(value);
+        setIsOpen(false);
+      }}
+    >
+      {value.name}
+    </OptionItem>
+  );
+}

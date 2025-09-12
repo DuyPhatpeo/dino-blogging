@@ -15,7 +15,7 @@ export function usePostAddNew() {
       slug: "",
       status: postStatus.PENDING,
       author: "",
-      category: "",
+      category: null,
       image: null,
       hot: false,
     },

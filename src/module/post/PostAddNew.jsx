@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
 import Radio from "@components/checkbox/Radio";
-import Dropdown from "@components/dorpdown/DropDown";
-import Option from "@components/dorpdown/Option";
 import Button from "@components/button/Button";
 import Field from "@components/field/Field";
 import Input from "@components/input/Input";
@@ -12,6 +10,9 @@ import { postStatus } from "@/utils/constants";
 import ImageUpload from "@components/imageUpload/ImageUpload";
 import Toggle from "@components/toggle/Toggle";
 import { usePostAddNew } from "@hooks/usePostAddNew";
+import useCategories from "@hooks/useCategories";
+import { Dropdown } from "@components/dorpdown/Dropdown";
+import Option from "@/components/dorpdown/Option";
 
 const PostAddNewStyles = styled.div`
   background: #fff;
@@ -54,6 +55,7 @@ const PostAddNew = () => {
   const { uploadProgress, form, addPostHandler } = usePostAddNew();
   const { control, watch, handleSubmit } = form;
   const watchStatus = watch("status");
+  const categories = useCategories();
 
   return (
     <PostAddNewStyles>
@@ -138,24 +140,26 @@ const PostAddNew = () => {
               placeholder="Find the author"
             />
           </Field>
+
           <Field>
             <Label>Category</Label>
             <Controller
               control={control}
               name="category"
-              render={({ field: { value, onChange } }) => (
-                <Dropdown
-                  placeholder="Please select an option"
-                  selected={value}
-                  onChange={onChange}
-                >
-                  <Option value="knowledge">Knowledge</Option>
-                  <Option value="blockchain">Blockchain</Option>
-                  <Option value="setup">Setup</Option>
-                  <Option value="nature">Nature</Option>
-                  <Option value="developer">Developer</Option>
-                </Dropdown>
-              )}
+              render={({ field: { value, onChange } }) => {
+                const selected = categories.find((c) => c.id === value) || null;
+                return (
+                  <Dropdown
+                    placeholder="Please select a category"
+                    selected={selected}
+                    onChange={(val) => onChange(val.id)} // chỉ lưu id
+                  >
+                    {categories.map((cat) => (
+                      <Option key={cat.id} value={cat} />
+                    ))}
+                  </Dropdown>
+                );
+              }}
             />
           </Field>
         </div>
@@ -172,7 +176,13 @@ const PostAddNew = () => {
             {uploadProgress > 0 && (
               <div
                 className="progress-bar"
-                style={{ width: `${uploadProgress}%` }}
+                style={{
+                  width: `${uploadProgress}%`,
+                  height: "6px",
+                  background: "#0ea5e9",
+                  borderRadius: "4px",
+                  marginTop: "8px",
+                }}
               />
             )}
           </Field>
