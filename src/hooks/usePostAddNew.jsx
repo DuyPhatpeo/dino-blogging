@@ -27,8 +27,9 @@ export function usePostAddNew() {
   const addPostHandler = async (values) => {
     try {
       // tạo slug nếu trống
-      if (!values.slug)
+      if (!values.slug) {
         values.slug = slugify(values.title, { lower: true, strict: true });
+      }
 
       // upload ảnh nếu có
       let imageUrl = "";
@@ -39,13 +40,17 @@ export function usePostAddNew() {
       // Lấy user hiện tại từ Firebase Auth
       const auth = getAuth();
       const user = auth.currentUser;
-      const userId = user ? user.uid : null;
+
+      if (!user) {
+        throw new Error("You must be logged in to create a post.");
+      }
 
       // newPost giữ nguyên category là mảng id
       const newPost = {
         ...values,
         image: imageUrl,
-        userId: userId,
+        userId: user.uid, // tham chiếu user
+        createdBy: user.uid, // id người tạo (cho query/filter)
         createdAt: serverTimestamp(),
       };
 
@@ -66,9 +71,9 @@ export function usePostAddNew() {
         hot: false,
       });
 
-      console.log("Post added with ID: ", docRef.id);
+      console.log("✅ Post added with ID:", docRef.id);
     } catch (error) {
-      console.error("Error adding post: ", error);
+      console.error("❌ Error adding post:", error);
     }
   };
 
