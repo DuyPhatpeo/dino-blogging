@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
 
 const CategoryManageStyles = styled.div`
@@ -22,16 +22,10 @@ const CategoryManageStyles = styled.div`
 
   .id-badge {
     display: inline-block;
-    max-width: 100px;
+    max-width: 120px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
   }
 
   .clickable-status {
@@ -51,17 +45,11 @@ export default function CategoryManage() {
     async function fetchCategories() {
       try {
         const colRef = collection(db, "categories");
-        const q = query(colRef, orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
+        const snapshot = await getDocs(colRef);
 
         const result = snapshot.docs.map((doc) => ({
           id: doc.id,
-          name: doc.data().name,
-          slug: doc.data().slug,
-          description: doc.data().description || "",
-          createdAt: doc.data().createdAt?.toDate
-            ? doc.data().createdAt.toDate().toLocaleDateString("vi-VN")
-            : "",
+          ...doc.data(),
         }));
 
         setCategories(result);
@@ -79,33 +67,53 @@ export default function CategoryManage() {
     currentPage * CATEGORIES_PER_PAGE
   );
 
+  // Toggle status
+  const toggleStatus = async (categoryId, currentStatus) => {
+    const nextStatus = currentStatus === 1 ? 2 : 1;
+    try {
+      const docRef = doc(db, "categories", categoryId);
+      await updateDoc(docRef, { status: nextStatus });
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === categoryId ? { ...c, status: nextStatus } : c
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   const columns = [
+    { key: "name" },
+    { key: "slug" },
     {
       key: "id",
-      render: (val) => <span className="id-badge">#{val.slice(0, 10)}</span>,
+      render: (val) => <span className="id-badge">#{val.slice(0, 12)}</span>,
     },
     {
-      key: "name",
-      render: (val) => <strong>{val}</strong>,
-    },
-    {
-      key: "slug",
-    },
-    {
-      key: "description",
-      render: (val) => val || "—",
-    },
-    {
-      key: "createdAt",
+      key: "status",
+      render: (val, item) => (
+        <span
+          className="clickable-status"
+          style={{
+            display: "inline-block",
+            padding: "4px 10px",
+            borderRadius: "4px",
+            color: "#fff",
+            backgroundColor: val === 1 ? "#22c55e" : "#6b7280",
+            fontSize: "0.8rem",
+            fontWeight: 500,
+          }}
+          onClick={() => toggleStatus(item.id, val)}
+          title="Click to change status"
+        >
+          {val === 1 ? "Active" : "Inactive"}
+        </span>
+      ),
     },
   ];
 
   const actions = [
-    {
-      type: "view",
-      icon: <Eye size={18} />,
-      onClick: (item) => console.log("View", item),
-    },
     {
       type: "edit",
       icon: <Edit size={18} />,
@@ -131,11 +139,10 @@ export default function CategoryManage() {
           <Table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Slug</th>
-                <th>Description</th>
-                <th>Created At</th>
+                <th>ID</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
