@@ -15,7 +15,7 @@ import ExtraText from "@components/extraText/ExtraText";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "@/firebase/firebase-config";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 const SignUpPageStyles = styled.div`
   min-height: 100vh;
@@ -107,10 +107,13 @@ const handleSignUp = async ({ fullname, email, password }) => {
     email,
     password
   );
+
+  // Cập nhật profile hiển thị
   await updateProfile(userCredential.user, { displayName: fullname });
 
-  const colRef = collection(db, "users");
-  await addDoc(colRef, {
+  // Lưu user vào Firestore với id = uid
+  const userRef = doc(db, "users", userCredential.user.uid);
+  await setDoc(userRef, {
     uid: userCredential.user.uid,
     fullname,
     email,
