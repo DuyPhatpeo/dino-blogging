@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useForm, Controller } from "react-hook-form";
-import slugify from "slugify";
+import { Controller } from "react-hook-form";
 import Radio from "@components/checkbox/Radio";
 import Dropdown from "@components/dorpdown/DropDown";
 import Option from "@components/dorpdown/Option";
@@ -11,8 +10,8 @@ import Input from "@components/input/Input";
 import Label from "@components/label/Label";
 import { postStatus } from "@/utils/constants";
 import ImageUpload from "@components/imageUpload/ImageUpload";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "@/firebase/firebase-config";
+import Toggle from "@components/toggle/Toggle";
+import { usePostAddNew } from "@hooks/usePostAddNew";
 
 const PostAddNewStyles = styled.div`
   background: #fff;
@@ -49,80 +48,18 @@ const PostAddNewStyles = styled.div`
     gap: 20px;
     margin-top: 8px;
   }
-  .post-list {
-    margin-top: 32px;
-  }
-  .post-item {
-    padding: 12px;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    margin-bottom: 12px;
-  }
-  .progress-bar {
-    height: 6px;
-    background: #0ea5e9;
-    margin-top: 8px;
-    border-radius: 3px;
-    transition: width 0.3s;
-  }
 `;
 
 const PostAddNew = () => {
-  const [posts, setPosts] = useState([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
-
-  const { control, watch, handleSubmit, reset } = useForm({
-    mode: "onChange",
-    defaultValues: {
-      title: "",
-      slug: "",
-      status: postStatus.PENDING,
-      author: "",
-      category: "",
-      image: null,
-    },
-  });
-
+  const { uploadProgress, form, addPostHandler } = usePostAddNew();
+  const { control, watch, handleSubmit } = form;
   const watchStatus = watch("status");
-
-  const addPostHandler = async (values) => {
-    if (!values.slug)
-      values.slug = slugify(values.title, { lower: true, strict: true });
-
-    let imageUrl = "";
-    if (values.image) {
-      const file = values.image;
-      const storageRef = ref(storage, `posts/${Date.now()}-${file.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      await new Promise((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          (snapshot) =>
-            setUploadProgress(
-              Math.round(
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-              )
-            ),
-          (error) => reject(error),
-          async () => {
-            imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve();
-          }
-        );
-      });
-    }
-
-    const newPost = { ...values, image: imageUrl };
-    setPosts((prev) => [...prev, newPost]);
-    setUploadProgress(0);
-    reset();
-  };
 
   return (
     <PostAddNewStyles>
       <h1 className="dashboard-heading">Add new post</h1>
       <form onSubmit={handleSubmit(addPostHandler)}>
+        {/* Title + Slug */}
         <div className="form-row">
           <Field>
             <Label>Title</Label>
@@ -142,6 +79,8 @@ const PostAddNew = () => {
             />
           </Field>
         </div>
+
+        {/* Status + Hot */}
         <div className="form-row">
           <Field>
             <Label>Status</Label>
@@ -172,6 +111,25 @@ const PostAddNew = () => {
               </Radio>
             </div>
           </Field>
+
+          <Field>
+            <Label>Hot Post</Label>
+            <Controller
+              control={control}
+              name="hot"
+              render={({ field: { value, onChange } }) => (
+                <Toggle
+                  checked={value}
+                  onChange={(e) => onChange(e.target.checked)}
+                  label="Mark as hot"
+                />
+              )}
+            />
+          </Field>
+        </div>
+
+        {/* Author + Category */}
+        <div className="form-row">
           <Field>
             <Label>Author</Label>
             <Input
@@ -180,8 +138,6 @@ const PostAddNew = () => {
               placeholder="Find the author"
             />
           </Field>
-        </div>
-        <div className="form-row">
           <Field>
             <Label>Category</Label>
             <Controller
@@ -202,8 +158,9 @@ const PostAddNew = () => {
               )}
             />
           </Field>
-          <Field />
         </div>
+
+        {/* Thumbnail */}
         <div className="form-row">
           <Field>
             <Label>Thumbnail</Label>
@@ -221,31 +178,14 @@ const PostAddNew = () => {
           </Field>
           <Field />
         </div>
+
+        {/* Submit */}
         <div className="form-actions">
           <Button type="submit" height="52px" className="px-10">
             Add new post
           </Button>
         </div>
       </form>
-
-      <div className="post-list">
-        {posts.map((post, index) => (
-          <div className="post-item" key={index}>
-            <h3>{post.title}</h3>
-            <p>Slug: {post.slug}</p>
-            <p>Status: {post.status}</p>
-            <p>Author: {post.author}</p>
-            <p>Category: {post.category}</p>
-            {post.image && (
-              <img
-                src={post.image}
-                alt="thumbnail"
-                style={{ maxWidth: "200px", borderRadius: "12px" }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
     </PostAddNewStyles>
   );
 };

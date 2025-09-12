@@ -4,7 +4,7 @@ import App from "./App";
 import reportWebVitals from "@/reportWebVitals";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "@styles/GlobalStyles";
-import { theme } from "@utils/constants";
+import { theme } from "@utils/theme";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 

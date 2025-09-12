@@ -12,7 +12,8 @@
       "@contexts/*": ["src/contexts/*"],
       "@apis/*": ["src/apis/*"],
       "@pages/*": ["src/pages/*"],
-      "@module/*": ["src/module/*"]
+      "@module/*": ["src/module/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "include": ["src/**/*"]
