@@ -2,20 +2,12 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { postStatusLabel, postStatusColor } from "@/utils/constants";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
 
-const PostManageStyles = styled.div`
+const CategoryManageStyles = styled.div`
   background: #fff;
   padding: 32px;
   border-radius: 16px;
@@ -28,25 +20,12 @@ const PostManageStyles = styled.div`
     color: #0ea5e9;
   }
 
-  .table-image {
-    width: 300px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
   .id-badge {
     display: inline-block;
-    max-width: 100px;
+    max-width: 120px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
   }
 
   .clickable-status {
@@ -54,86 +33,50 @@ const PostManageStyles = styled.div`
   }
 `;
 
-const POSTS_PER_PAGE = 10;
+const CATEGORIES_PER_PAGE = 10;
 
-export default function PostManage() {
+export default function CategoryManage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [posts, setPosts] = useState([]);
-  const [categories, setCategories] = useState({});
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch categories
   useEffect(() => {
     async function fetchCategories() {
-      const colRef = collection(db, "categories");
-      const snapshot = await getDocs(colRef);
-      const map = {};
-      snapshot.docs.forEach((doc) => {
-        map[doc.id] = doc.data().name;
-      });
-      setCategories(map);
-    }
-    fetchCategories();
-  }, []);
-
-  // Fetch posts
-  useEffect(() => {
-    async function fetchPosts() {
       try {
-        const colRef = collection(db, "posts");
-        const q = query(colRef, orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
+        const colRef = collection(db, "categories");
+        const snapshot = await getDocs(colRef);
 
-        const result = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title,
-            image: data.image,
-            category: Array.isArray(data.category) ? data.category : [],
-            status: data.status,
-            author: data.author || "Anonymous",
-            createdAt: data.createdAt?.toDate
-              ? data.createdAt.toDate().toLocaleDateString("vi-VN")
-              : "",
-            hot: data.hot || false,
-          };
-        });
+        const result = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-        setPosts(result);
+        setCategories(result);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching categories:", error);
       } finally {
         setLoading(false);
       }
     }
-    fetchPosts();
+    fetchCategories();
   }, []);
 
-  const paginatedPosts = posts.slice(
-    (currentPage - 1) * POSTS_PER_PAGE,
-    currentPage * POSTS_PER_PAGE
+  const paginatedCategories = categories.slice(
+    (currentPage - 1) * CATEGORIES_PER_PAGE,
+    currentPage * CATEGORIES_PER_PAGE
   );
 
-  const toggleHot = async (postId, currentHot) => {
+  // Toggle status
+  const toggleStatus = async (categoryId, currentStatus) => {
+    const nextStatus = currentStatus === 1 ? 2 : 1;
     try {
-      const docRef = doc(db, "posts", postId);
-      await updateDoc(docRef, { hot: !currentHot });
-      setPosts((prev) =>
-        prev.map((p) => (p.id === postId ? { ...p, hot: !currentHot } : p))
-      );
-    } catch (error) {
-      console.error("Error updating hot status:", error);
-    }
-  };
-
-  const toggleStatus = async (postId, currentStatus) => {
-    const nextStatus = currentStatus === 1 ? 2 : currentStatus === 2 ? 3 : 1; // ví dụ tuần tự 1→2→3→1
-    try {
-      const docRef = doc(db, "posts", postId);
+      const docRef = doc(db, "categories", categoryId);
       await updateDoc(docRef, { status: nextStatus });
-      setPosts((prev) =>
-        prev.map((p) => (p.id === postId ? { ...p, status: nextStatus } : p))
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === categoryId ? { ...c, status: nextStatus } : c
+        )
       );
     } catch (error) {
       console.error("Error updating status:", error);
@@ -141,52 +84,11 @@ export default function PostManage() {
   };
 
   const columns = [
-    {
-      key: "image",
-      render: (val) => (
-        <img src={val || "/fallback.jpg"} alt="" className="table-image" />
-      ),
-    },
-    {
-      key: "title",
-      render: (val, item) => (
-        <div className="post-info">
-          <h3 style={{ fontWeight: 600 }}>{val}</h3>
-          <time style={{ fontSize: "0.85rem", color: "#6b7280" }}>
-            {item.createdAt}
-          </time>
-        </div>
-      ),
-    },
+    { key: "name" },
+    { key: "slug" },
     {
       key: "id",
-      render: (val) => (
-        <span className="id-badge">#{val.slice(0, 10)}</span> // giới hạn 10 ký tự
-      ),
-    },
-    {
-      key: "category",
-      render: (val) =>
-        val.length > 0 ? (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-            {val.map((id, index) => (
-              <span
-                key={id + index}
-                className="badge"
-                style={{
-                  background: "#f3f4f6",
-                  padding: "2px 8px",
-                  borderRadius: "6px",
-                  fontSize: "0.75rem",
-                }}
-              >
-                {categories[id] || id}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <span>—</span>
-        ),
+      render: (val) => <span className="id-badge">#{val.slice(0, 12)}</span>,
     },
     {
       key: "status",
@@ -198,37 +100,20 @@ export default function PostManage() {
             padding: "4px 10px",
             borderRadius: "4px",
             color: "#fff",
-            backgroundColor: postStatusColor[val] || "#6b7280",
+            backgroundColor: val === 1 ? "#22c55e" : "#6b7280",
             fontSize: "0.8rem",
             fontWeight: 500,
-            textTransform: "capitalize",
           }}
           onClick={() => toggleStatus(item.id, val)}
           title="Click to change status"
         >
-          {postStatusLabel[val] || "UNKNOWN"}
+          {val === 1 ? "Active" : "Inactive"}
         </span>
       ),
     },
-    {
-      key: "hot",
-      render: (val, item) => (
-        <input
-          type="checkbox"
-          checked={val}
-          onChange={() => toggleHot(item.id, val)}
-        />
-      ),
-    },
-    { key: "author" },
   ];
 
   const actions = [
-    {
-      type: "view",
-      icon: <Eye size={18} />,
-      onClick: (item) => console.log("View", item),
-    },
     {
       type: "edit",
       icon: <Edit size={18} />,
@@ -242,8 +127,8 @@ export default function PostManage() {
   ];
 
   return (
-    <PostManageStyles>
-      <h1 className="dashboard-heading">Manage post</h1>
+    <CategoryManageStyles>
+      <h1 className="dashboard-heading">Manage categories</h1>
 
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -254,21 +139,18 @@ export default function PostManage() {
           <Table>
             <thead>
               <tr>
-                <th>Image</th>
-                <th>Post Info</th>
+                <th>Name</th>
+                <th>Slug</th>
                 <th>ID</th>
-                <th>Category</th>
                 <th>Status</th>
-                <th>Hot Post</th>
-                <th>Author</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedPosts.map((post) => (
+              {paginatedCategories.map((category) => (
                 <Table.Row
-                  key={post.id}
-                  item={post}
+                  key={category.id}
+                  item={category}
                   columns={columns}
                   actions={actions}
                 />
@@ -277,14 +159,14 @@ export default function PostManage() {
           </Table>
 
           <Pagination
-            total={Math.ceil(posts.length / POSTS_PER_PAGE)}
+            total={Math.ceil(categories.length / CATEGORIES_PER_PAGE)}
             current={currentPage}
             onChange={setCurrentPage}
-            pageSize={POSTS_PER_PAGE}
-            totalItems={posts.length}
+            pageSize={CATEGORIES_PER_PAGE}
+            totalItems={categories.length}
           />
         </>
       )}
-    </PostManageStyles>
+    </CategoryManageStyles>
   );
 }
