@@ -43,15 +43,15 @@ const PostFeatureItemStyles = styled.div`
       color: ${({ theme }) => theme.colors.text};
     }
 
-    &-category {
+    &-categories {
       position: absolute;
       top: 16px;
       left: 16px;
       z-index: 15;
-      max-width: 120px; /* giới hạn chiều rộng */
-      white-space: nowrap; /* luôn 1 dòng */
-      overflow: hidden; /* ẩn phần dư */
-      text-overflow: ellipsis; /* thêm ... nếu quá dài */
+      display: flex;
+      gap: 8px; /* khoảng cách giữa các category */
+      flex-wrap: wrap; /* tự xuống dòng nếu nhiều */
+      max-width: calc(100% - 32px);
     }
 
     &-title {
@@ -96,6 +96,8 @@ const PostFeatureItemStyles = styled.div`
 `;
 
 const PostFeatureItem = () => {
+  const categories = ["Kiến thức", "Học tập", "Công nghệ"]; // mảng category
+
   return (
     <PostFeatureItemStyles>
       <img
@@ -105,7 +107,13 @@ const PostFeatureItem = () => {
       />
       <div className="post-overlay"></div>
 
-      <PostCategory type="secondary">Kiến thức</PostCategory>
+      <div className="post-categories">
+        {categories.map((cat, index) => (
+          <PostCategory key={index} type="secondary">
+            {cat}
+          </PostCategory>
+        ))}
+      </div>
 
       <div className="post-content">
         <h3 className="post-title">
