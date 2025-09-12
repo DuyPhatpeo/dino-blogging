@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Heading from "@/components/layout/Heading";
 import PostFeatureItem from "@/module/post/PostFeatureItem";
+import { db } from "@/firebase/firebase-config";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 
 const HomeFeatureStyles = styled.section`
   padding: 40px 0;
@@ -29,14 +39,51 @@ const HomeFeatureStyles = styled.section`
 `;
 
 const HomeFeature = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const colRef = collection(db, "posts");
+      const q = query(colRef, orderBy("createdAt", "desc"), limit(6));
+      const snapshot = await getDocs(q);
+
+      const result = await Promise.all(
+        snapshot.docs.map(async (docSnap) => {
+          const postData = docSnap.data();
+
+          // lấy tên category từ id
+          let categoryNames = [];
+          if (Array.isArray(postData.category)) {
+            categoryNames = await Promise.all(
+              postData.category.map(async (catId) => {
+                const catRef = doc(db, "categories", catId);
+                const catSnap = await getDoc(catRef);
+                return catSnap.exists() ? catSnap.data().name : "Unknown";
+              })
+            );
+          }
+
+          return {
+            id: docSnap.id,
+            ...postData,
+            categories: categoryNames,
+          };
+        })
+      );
+
+      setPosts(result);
+    }
+    fetchPosts();
+  }, []);
+
   return (
     <HomeFeatureStyles className="home-block">
       <div className="container">
         <Heading className="home-heading">Bài viết nổi bật</Heading>
         <div className="grid-layout">
-          <PostFeatureItem />
-          <PostFeatureItem />
-          <PostFeatureItem />
+          {posts.map((post) => (
+            <PostFeatureItem key={post.id} post={post} />
+          ))}
         </div>
       </div>
     </HomeFeatureStyles>

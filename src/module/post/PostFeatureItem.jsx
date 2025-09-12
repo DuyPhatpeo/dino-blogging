@@ -49,8 +49,8 @@ const PostFeatureItemStyles = styled.div`
       left: 16px;
       z-index: 15;
       display: flex;
-      gap: 8px; /* khoảng cách giữa các category */
-      flex-wrap: wrap; /* tự xuống dòng nếu nhiều */
+      gap: 8px;
+      flex-wrap: wrap;
       max-width: calc(100% - 32px);
     }
 
@@ -95,20 +95,16 @@ const PostFeatureItemStyles = styled.div`
   }
 `;
 
-const PostFeatureItem = () => {
-  const categories = ["Kiến thức", "Học tập", "Công nghệ"]; // mảng category
+const PostFeatureItem = ({ post }) => {
+  if (!post) return null;
 
   return (
     <PostFeatureItemStyles>
-      <img
-        src="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?ixlib=rb-1.2.1&auto=format&fit=crop&w=2662&q=80"
-        alt="unsplash"
-        className="post-image"
-      />
+      <img src={post.image} alt={post.title} className="post-image" />
       <div className="post-overlay"></div>
 
       <div className="post-categories">
-        {categories.map((cat, index) => (
+        {post.categories?.map((cat, index) => (
           <PostCategory key={index} type="secondary">
             {cat}
           </PostCategory>
@@ -116,13 +112,18 @@ const PostFeatureItem = () => {
       </div>
 
       <div className="post-content">
-        <h3 className="post-title">
-          Hướng dẫn setup phòng cực chill dành cho người mới toàn tập
-        </h3>
+        <h3 className="post-title">{post.title}</h3>
         <div className="post-info">
-          <span className="post-time">Mar 23</span>
+          <span className="post-time">
+            {post.createdAt?.toDate
+              ? post.createdAt.toDate().toLocaleDateString("vi-VN", {
+                  day: "2-digit",
+                  month: "short",
+                })
+              : ""}
+          </span>
           <span className="post-dot"></span>
-          <span className="post-author">Andiez Le</span>
+          <span className="post-author">{post.author}</span>
         </div>
       </div>
     </PostFeatureItemStyles>
