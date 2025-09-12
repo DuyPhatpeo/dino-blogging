@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useController } from "react-hook-form";
 import styled from "styled-components";
 import { RefreshCw, Trash2 } from "lucide-react";
+import imagechoose from "@assets/image.png";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -71,11 +72,18 @@ const Placeholder = styled.label`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
+  font-size: ${(props) => props.theme.fontSize.sm};
+`;
+const PlaceholderImage = styled.img`
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  opacity: 0.6;
 `;
 
-const ImageUpload = ({ control, name, label }) => {
+const ImageUpload = ({ control, name }) => {
   const { field } = useController({ name, control });
   const [preview, setPreview] = useState(null);
 
@@ -113,7 +121,10 @@ const ImageUpload = ({ control, name, label }) => {
             </Overlay>
           </>
         ) : (
-          <Placeholder htmlFor={`upload-${name}`}>{label}</Placeholder>
+          <Placeholder htmlFor={`upload-${name}`}>
+            <PlaceholderImage src={imagechoose} alt="choose" />
+            <span>Choose Image</span>
+          </Placeholder>
         )}
       </UploadBox>
     </Wrapper>
