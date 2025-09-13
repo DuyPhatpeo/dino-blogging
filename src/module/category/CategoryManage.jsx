@@ -21,7 +21,7 @@ const CategoryManageStyles = styled.div`
     justify-content: space-between;
     margin-bottom: 32px;
     gap: 16px;
-    flex-wrap: wrap; /* cho mobile, button sẽ xuống dòng */
+    flex-wrap: wrap;
   }
 
   h1.dashboard-heading {

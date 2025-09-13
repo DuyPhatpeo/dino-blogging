@@ -19,6 +19,9 @@ const CategoryManagePage = lazy(() =>
 const CategoryAddPage = lazy(() =>
   import("@pages/mangage/category/CategoryAddPage")
 );
+const CategoryEditPage = lazy(() =>
+  import("@pages/mangage/category/CategoryEditPage")
+);
 
 function App() {
   return (
@@ -52,6 +55,10 @@ function App() {
 
           <Route path="/manage/category" element={<CategoryManagePage />} />
           <Route path="/manage/add-category" element={<CategoryAddPage />} />
+          <Route
+            path="/manage/update-category/:id"
+            element={<CategoryEditPage />}
+          />
         </Routes>
       </Suspense>
     </AuthProvider>

@@ -7,12 +7,23 @@ import Input from "@components/input/Input";
 import Label from "@components/label/Label";
 import Radio from "@components/checkbox/Radio";
 import { useCategoryAdd } from "@hooks/useCategoryAdd";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const CategoryAddNewStyles = styled.div`
   background: #fff;
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
 
   h1.dashboard-heading {
     font-size: 1.8rem;
@@ -52,13 +63,20 @@ const CategoryAddNewStyles = styled.div`
 `;
 
 const CategoryAdd = () => {
+  const navigate = useNavigate();
   const { form, addCategoryHandler, loading } = useCategoryAdd();
   const { control, handleSubmit, watch } = form;
   const watchStatus = watch("status", 1);
 
   return (
     <CategoryAddNewStyles>
-      <h1 className="dashboard-heading">Add new category</h1>
+      <div className="header">
+        <h1 className="dashboard-heading">Add new category</h1>
+        <Button className="header-button" onClick={() => navigate(-1)}>
+          <ArrowLeft size={18} style={{ marginRight: "8px" }} />
+          Back
+        </Button>
+      </div>
       <form onSubmit={handleSubmit(addCategoryHandler)}>
         {/* Name + Slug */}
         <div className="form-row">
