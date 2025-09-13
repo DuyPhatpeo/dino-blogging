@@ -63,7 +63,7 @@ const PostAddNewStyles = styled.div`
   }
 `;
 
-const PostAddNew = () => {
+const PostAdd = () => {
   const { uploadProgress, form, addPostHandler, loading } = usePostAddNew();
   const { control, watch, handleSubmit, formState } = form;
   const { errors } = formState;
@@ -232,4 +232,4 @@ const PostAddNew = () => {
   );
 };
 
-export default PostAddNew;
+export default PostAdd;

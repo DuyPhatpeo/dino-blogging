@@ -1,12 +1,12 @@
 import React from "react";
 import DashboardLayout from "@module/dasboard/DashboardLayout";
-import PostAddNew from "@module/post/PostAddNew";
+import PostAdd from "@/module/post/PostAdd";
 
 const PostAddNewPage = () => {
   return (
     <DashboardLayout>
       <div className="mt-8">
-        <PostAddNew />
+        <PostAdd />
       </div>
     </DashboardLayout>
   );

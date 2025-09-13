@@ -1,15 +1,15 @@
 import React from "react";
 import DashboardLayout from "@module/dasboard/DashboardLayout";
-import CategoryManage from "@module/category/CategoryManage";
+import CategoryAdd from "@/module/category/CategoryAdd";
 
-const CategoryManagePage = () => {
+const CategoryAddPage = () => {
   return (
     <DashboardLayout>
       <div className="mt-8">
-        <CategoryManage />
+        <CategoryAdd />
       </div>
     </DashboardLayout>
   );
 };
 
-export default CategoryManagePage;
+export default CategoryAddPage;

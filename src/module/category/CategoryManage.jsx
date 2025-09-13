@@ -6,6 +6,8 @@ import { Edit, Trash2 } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
+import Button from "@components/button/Button";
 
 const CategoryManageStyles = styled.div`
   background: #fff;
@@ -13,11 +15,20 @@ const CategoryManageStyles = styled.div`
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 16px;
+    flex-wrap: wrap; /* cho mobile, button sẽ xuống dòng */
+  }
+
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 32px;
     color: #0ea5e9;
+    margin: 0;
   }
 
   .id-badge {
@@ -43,6 +54,7 @@ const CategoryManageStyles = styled.div`
 const CATEGORIES_PER_PAGE = 10;
 
 export default function CategoryManage() {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -91,12 +103,12 @@ export default function CategoryManage() {
   };
 
   const columns = [
-    { key: "name" },
-    { key: "slug" },
     {
       key: "id",
       render: (val) => <span className="id-badge">#{val.slice(0, 12)}</span>,
     },
+    { key: "name" },
+    { key: "slug" },
     {
       key: "status",
       render: (val, item) => (
@@ -135,7 +147,15 @@ export default function CategoryManage() {
 
   return (
     <CategoryManageStyles>
-      <h1 className="dashboard-heading">Manage categories</h1>
+      <div className="header">
+        <h1 className="dashboard-heading">Manage categories</h1>
+        <Button
+          className="header-button"
+          onClick={() => navigate("/manage/add-category")}
+        >
+          Write New Post
+        </Button>
+      </div>
 
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -146,9 +166,9 @@ export default function CategoryManage() {
           <Table>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Name</th>
                 <th>Slug</th>
-                <th>ID</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
