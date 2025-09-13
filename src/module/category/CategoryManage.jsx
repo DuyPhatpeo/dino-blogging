@@ -31,6 +31,13 @@ const CategoryManageStyles = styled.div`
   .clickable-status {
     cursor: pointer;
   }
+
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+    font-style: italic;
+  }
 `;
 
 const CATEGORIES_PER_PAGE = 10;
@@ -147,24 +154,34 @@ export default function CategoryManage() {
               </tr>
             </thead>
             <tbody>
-              {paginatedCategories.map((category) => (
-                <Table.Row
-                  key={category.id}
-                  item={category}
-                  columns={columns}
-                  actions={actions}
-                />
-              ))}
+              {paginatedCategories.length > 0 ? (
+                paginatedCategories.map((category) => (
+                  <Table.Row
+                    key={category.id}
+                    item={category}
+                    columns={columns}
+                    actions={actions}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={columns.length + 1} className="no-data">
+                    No categories yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
 
-          <Pagination
-            total={Math.ceil(categories.length / CATEGORIES_PER_PAGE)}
-            current={currentPage}
-            onChange={setCurrentPage}
-            pageSize={CATEGORIES_PER_PAGE}
-            totalItems={categories.length}
-          />
+          {categories.length > 0 && (
+            <Pagination
+              total={Math.ceil(categories.length / CATEGORIES_PER_PAGE)}
+              current={currentPage}
+              onChange={setCurrentPage}
+              pageSize={CATEGORIES_PER_PAGE}
+              totalItems={categories.length}
+            />
+          )}
         </>
       )}
     </CategoryManageStyles>

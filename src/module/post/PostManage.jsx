@@ -52,6 +52,13 @@ const PostManageStyles = styled.div`
   .clickable-status {
     cursor: pointer;
   }
+
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+    font-style: italic;
+  }
 `;
 
 const POSTS_PER_PAGE = 10;
@@ -164,9 +171,7 @@ export default function PostManage() {
     },
     {
       key: "id",
-      render: (val) => (
-        <span className="id-badge">#{val.slice(0, 10)}</span> // giới hạn 10 ký tự
-      ),
+      render: (val) => <span className="id-badge">#{val.slice(0, 10)}</span>,
     },
     {
       key: "category",
@@ -269,24 +274,34 @@ export default function PostManage() {
               </tr>
             </thead>
             <tbody>
-              {paginatedPosts.map((post) => (
-                <Table.Row
-                  key={post.id}
-                  item={post}
-                  columns={columns}
-                  actions={actions}
-                />
-              ))}
+              {paginatedPosts.length > 0 ? (
+                paginatedPosts.map((post) => (
+                  <Table.Row
+                    key={post.id}
+                    item={post}
+                    columns={columns}
+                    actions={actions}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={columns.length + 1} className="no-data">
+                    No posts yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
 
-          <Pagination
-            total={Math.ceil(posts.length / POSTS_PER_PAGE)}
-            current={currentPage}
-            onChange={setCurrentPage}
-            pageSize={POSTS_PER_PAGE}
-            totalItems={posts.length}
-          />
+          {posts.length > 0 && (
+            <Pagination
+              total={Math.ceil(posts.length / POSTS_PER_PAGE)}
+              current={currentPage}
+              onChange={setCurrentPage}
+              pageSize={POSTS_PER_PAGE}
+              totalItems={posts.length}
+            />
+          )}
         </>
       )}
     </PostManageStyles>
