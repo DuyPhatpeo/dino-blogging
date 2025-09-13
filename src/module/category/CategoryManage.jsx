@@ -136,12 +136,16 @@ export default function CategoryManage() {
     {
       type: "edit",
       icon: <Edit size={18} />,
-      onClick: (item) => console.log("Edit", item),
+      onClick: (item) => {
+        navigate(`/manage/update-category/${item.id}`);
+      },
     },
     {
       type: "delete",
       icon: <Trash2 size={18} />,
-      onClick: (item) => console.log("Delete", item),
+      onClick: (item) => {
+        navigate(`/manage/delete-category/${item.id}`);
+      },
     },
   ];
 
@@ -153,7 +157,7 @@ export default function CategoryManage() {
           className="header-button"
           onClick={() => navigate("/manage/add-category")}
         >
-          Write New Post
+          New Category
         </Button>
       </div>
 

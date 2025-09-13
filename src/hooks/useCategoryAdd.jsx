@@ -9,14 +9,14 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-// ✅ Yup schema cho category
+// ✅ Yup schema cho Category
 const schema = yup.object({
   name: yup.string().required("Category name is required"),
   slug: yup.string(),
   description: yup.string(),
 });
 
-export function useAddCategory() {
+export function useCategoryAdd() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ export function useAddCategory() {
     defaultValues: {
       name: "",
       slug: "",
-      description: "",
+      status: 1, // 1 = active, 2 = inactive
     },
   });
 
@@ -35,35 +35,36 @@ export function useAddCategory() {
     try {
       setLoading(true);
 
-      // tạo slug tự động nếu trống
+      // 👉 Tạo slug tự động nếu trống
       const slug =
         values.slug || slugify(values.name, { lower: true, strict: true });
 
-      // lấy user từ Firebase Auth
+      // 👉 Lấy user hiện tại từ Firebase Auth
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) {
         throw new Error("You must be logged in to create a category.");
       }
 
+      // 👉 Dữ liệu Category mới
       const newCategory = {
-        ...values,
+        name: values.name,
         slug,
+        status: 1, // 1 = active, 2 = inactive
         createdBy: user.uid,
         createdAt: serverTimestamp(),
       };
 
-      // lưu Firestore
+      // 👉 Lưu vào Firestore
       const docRef = await addDoc(collection(db, "categories"), newCategory);
 
-      // cập nhật local state
+      // 👉 Cập nhật local state
       setCategories((prev) => [...prev, { ...newCategory, id: docRef.id }]);
 
-      // reset form
+      // 👉 Reset form
       form.reset({
         name: "",
         slug: "",
-        description: "",
       });
 
       toast.success("✅ Category added successfully!");
