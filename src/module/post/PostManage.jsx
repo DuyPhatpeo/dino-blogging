@@ -128,7 +128,11 @@ export default function PostManage() {
   };
 
   const toggleStatus = async (postId, currentStatus) => {
-    const nextStatus = currentStatus === 1 ? 2 : currentStatus === 2 ? 3 : 1; // ví dụ tuần tự 1→2→3→1
+    // Flow: PENDING (2) → APPROVED (1) → HIDDEN (4) → REJECTED (3) → PENDING (2)
+    const flow = [2, 1, 4, 3];
+    const currentIndex = flow.indexOf(currentStatus);
+    const nextStatus = flow[(currentIndex + 1) % flow.length];
+
     try {
       const docRef = doc(db, "posts", postId);
       await updateDoc(docRef, { status: nextStatus });
