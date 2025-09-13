@@ -45,7 +45,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
 
           <Route path="/manage/post" element={<PostManagePage />} />
-          <Route path="/manage/add-new" element={<PostAddNewPage />} />
+          <Route path="/manage/add-post" element={<PostAddNewPage />} />
 
           <Route path="/manage/category" element={<CategoryManagePage />} />
         </Routes>

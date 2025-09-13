@@ -52,7 +52,7 @@ const DashboardHeader = () => {
     <DashboardHeaderStyles>
       <Button
         className="header-button"
-        onClick={() => navigate("/manage/add-new")}
+        onClick={() => navigate("/manage/add-post")}
       >
         Write New Post
       </Button>
