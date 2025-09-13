@@ -22,6 +22,9 @@ const CategoryAddPage = lazy(() =>
 const CategoryEditPage = lazy(() =>
   import("@pages/mangage/category/CategoryEditPage")
 );
+const CategoryDeletePage = lazy(() =>
+  import("@pages/mangage/category/CategoryDeletePage")
+);
 
 function App() {
   return (
@@ -58,6 +61,10 @@ function App() {
           <Route
             path="/manage/update-category/:id"
             element={<CategoryEditPage />}
+          />
+          <Route
+            path="/manage/delete-category/:id"
+            element={<CategoryDeletePage />}
           />
         </Routes>
       </Suspense>
