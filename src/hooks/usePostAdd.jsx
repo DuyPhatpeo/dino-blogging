@@ -23,7 +23,7 @@ const schema = yup.object({
   image: yup.mixed().required("Thumbnail is required"),
 });
 
-export function usePostAddNew() {
+export function usePostAdd() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const { uploadProgress, uploadImage } = useImageUpload();

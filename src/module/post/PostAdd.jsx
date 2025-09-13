@@ -11,7 +11,7 @@ import Label from "@components/label/Label";
 import { postStatus } from "@/utils/constants";
 import ImageUpload from "@components/imageUpload/ImageUpload";
 import Toggle from "@components/toggle/Toggle";
-import { usePostAddNew } from "@hooks/usePostAddNew";
+import { usePostAdd } from "@/hooks/usePostAdd";
 import useCategories from "@hooks/useCategories";
 
 const PostAddNewStyles = styled.div`
@@ -64,7 +64,7 @@ const PostAddNewStyles = styled.div`
 `;
 
 const PostAdd = () => {
-  const { uploadProgress, form, addPostHandler, loading } = usePostAddNew();
+  const { uploadProgress, form, addPostHandler, loading } = usePostAdd();
   const { control, watch, handleSubmit, formState } = form;
   const { errors } = formState;
   const watchStatus = watch("status");

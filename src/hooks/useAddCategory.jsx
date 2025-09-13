@@ -16,7 +16,7 @@ const schema = yup.object({
   description: yup.string(),
 });
 
-export function useAddCategoryNew() {
+export function useAddCategory() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();

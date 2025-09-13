@@ -6,7 +6,7 @@ import Field from "@components/field/Field";
 import Input from "@components/input/Input";
 import Label from "@components/label/Label";
 import Radio from "@components/checkbox/Radio";
-import { useCategoryAddNew } from "@hooks/useCategoryAddNew";
+import { useCategoryAdd } from "@hooks/useCategoryAdd";
 
 const CategoryAddNewStyles = styled.div`
   background: #fff;
@@ -52,7 +52,7 @@ const CategoryAddNewStyles = styled.div`
 `;
 
 const CategoryAdd = () => {
-  const { form, addCategoryHandler, loading } = useCategoryAddNew();
+  const { form, addCategoryHandler, loading } = useCategoryAdd();
   const { control, handleSubmit, watch } = form;
   const watchStatus = watch("status", 1);
 
