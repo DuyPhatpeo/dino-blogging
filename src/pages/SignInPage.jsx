@@ -12,10 +12,13 @@ import Label from "@components/label/Label";
 import Input from "@components/input/Input";
 import Button from "@components/button/Button";
 import ExtraText from "@components/extraText/ExtraText";
+
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase/firebase-config";
+import { auth, db } from "@/firebase/firebase-config";
+import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@contexts/authContext";
+import { userStatus } from "@/utils/constants";
 
 const SignInPageStyles = styled.div`
   min-height: 100vh;
@@ -30,7 +33,7 @@ const SignInPageStyles = styled.div`
     align-items: center;
     justify-content: center;
     padding: 40px;
-    position: relative; /* để back-home bám theo main */
+    position: relative;
   }
 
   .wrapper {
@@ -48,7 +51,7 @@ const SignInPageStyles = styled.div`
   .back-home {
     position: absolute;
     top: 20px;
-    right: 20px; /* góc phải trên */
+    right: 20px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -120,27 +123,46 @@ const SignInPage = () => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+
+      // 1. Đăng nhập Firebase Auth
       const userCredential = await signInWithEmailAndPassword(
         auth,
         data.email,
         data.password
       );
+      const uid = userCredential.user.uid;
 
+      // 2. Lấy thông tin user từ Firestore
+      const userRef = doc(db, "users", uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        toast.error("User record not found in database.");
+        return;
+      }
+
+      const userData = userSnap.data();
+
+      // 3. Kiểm tra trạng thái
+      if (userData.status === userStatus.INACTIVE) {
+        toast.error("Your account is inactive. Please contact support.");
+        return;
+      } else if (userData.status === userStatus.BANNED) {
+        toast.error("Your account is banned. Access denied.");
+        return;
+      }
+
+      // 4. Nếu ACTIVE, cập nhật context
       signIn({
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        displayName:
-          userCredential.user.displayName ||
-          userCredential.user.email.split("@")[0],
+        uid,
+        email: userData.email,
+        displayName: userData.fullname || userData.email.split("@")[0],
+        role: userData.role,
+        status: userData.status,
       });
 
-      toast.success(
-        `Welcome back, ${
-          userCredential.user.displayName || userCredential.user.email
-        }!`
-      );
-
-      navigate("/");
+      toast.success(`Welcome back, ${userData.fullname || userData.email}!`);
+      navigate("/"); // điều hướng
     } catch (error) {
       console.error(error);
       if (error.code === "auth/user-not-found") {
