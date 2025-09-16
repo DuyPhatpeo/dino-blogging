@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@components/button/Button";
 import InputSearch from "@components/input/InputSearch";
 
-const UserManageStyles = styled.div`
+const CategoryManageStyles = styled.div`
   background: #fff;
   padding: 32px;
   border-radius: 16px;
@@ -67,21 +67,21 @@ const UserManageStyles = styled.div`
   }
 `;
 
-const USERS_PER_PAGE = 10;
+const CATEGORIES_PER_PAGE = 10;
 
-export default function UserManage() {
+export default function CategoryManage() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // Fetch users
+  // Fetch categories
   useEffect(() => {
-    async function fetchUsers() {
+    async function fetchCategories() {
       try {
-        const colRef = collection(db, "users");
+        const colRef = collection(db, "categories");
         const snapshot = await getDocs(colRef);
 
         const result = snapshot.docs.map((doc) => ({
@@ -89,45 +89,47 @@ export default function UserManage() {
           ...doc.data(),
         }));
 
-        setUsers(result);
+        setCategories(result);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching categories:", error);
       } finally {
         setLoading(false);
       }
     }
-    fetchUsers();
+    fetchCategories();
   }, []);
 
   // Filter theo search
-  const filteredUsers = users.filter(
-    (u) =>
-      u.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCategories = categories.filter(
+    (c) =>
+      c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.slug?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort theo fullname
-  const sortedUsers = [...filteredUsers].sort((a, b) => {
-    const aVal = a.fullname ?? "";
-    const bVal = b.fullname ?? "";
+  // Sort theo name
+  const sortedCategories = [...filteredCategories].sort((a, b) => {
+    const aVal = a.name ?? "";
+    const bVal = b.name ?? "";
     if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
     if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
     return 0;
   });
 
-  const paginatedUsers = sortedUsers.slice(
-    (currentPage - 1) * USERS_PER_PAGE,
-    currentPage * USERS_PER_PAGE
+  const paginatedCategories = sortedCategories.slice(
+    (currentPage - 1) * CATEGORIES_PER_PAGE,
+    currentPage * CATEGORIES_PER_PAGE
   );
 
   // Toggle status
-  const toggleStatus = async (userId, currentStatus) => {
+  const toggleStatus = async (categoryId, currentStatus) => {
     const nextStatus = currentStatus === 1 ? 2 : 1;
     try {
-      const docRef = doc(db, "users", userId);
+      const docRef = doc(db, "categories", categoryId);
       await updateDoc(docRef, { status: nextStatus });
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, status: nextStatus } : u))
+      setCategories((prev) =>
+        prev.map((c) =>
+          c.id === categoryId ? { ...c, status: nextStatus } : c
+        )
       );
     } catch (error) {
       console.error("Error updating status:", error);
@@ -151,8 +153,8 @@ export default function UserManage() {
       key: "id",
       render: (val) => <span className="id-badge">#{val}</span>,
     },
-    { key: "fullname", label: "Full Name" },
-    { key: "email", label: "Email" },
+    { key: "name" },
+    { key: "slug" },
     {
       key: "status",
       render: (val, item) => (
@@ -181,29 +183,29 @@ export default function UserManage() {
       type: "edit",
       icon: <Edit size={18} />,
       onClick: (item) => {
-        navigate(`/manage/update-user/${item.id}`);
+        navigate(`/manage/update-category/${item.id}`);
       },
     },
     {
       type: "delete",
       icon: <Trash2 size={18} />,
       onClick: (item) => {
-        navigate(`/manage/delete-user/${item.id}`);
+        navigate(`/manage/delete-category/${item.id}`);
       },
     },
   ];
 
   return (
-    <UserManageStyles>
+    <CategoryManageStyles>
       <div className="header">
         <div className="header-top">
-          <h1 className="dashboard-heading">Manage users</h1>
+          <h1 className="dashboard-heading">Manage categories</h1>
           <Button
             className="header-button"
-            onClick={() => navigate("/manage/add-user")}
+            onClick={() => navigate("/manage/add-category")}
           >
             <Plus size={18} style={{ marginRight: 6 }} />
-            New User
+            New Category
           </Button>
         </div>
 
@@ -214,7 +216,7 @@ export default function UserManage() {
             setSearchTerm(e.target.value);
             setCurrentPage(1); // reset về trang 1 khi search
           }}
-          placeholder="Search by fullname or email..."
+          placeholder="Search by name or slug..."
         />
       </div>
 
@@ -229,19 +231,19 @@ export default function UserManage() {
               <tr>
                 <th>ID</th>
                 <th className="sortable" onClick={toggleSort}>
-                  Full Name {renderSortIcon()}
+                  Name {renderSortIcon()}
                 </th>
-                <th>Email</th>
+                <th>Slug</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedUsers.length > 0 ? (
-                paginatedUsers.map((user) => (
+              {paginatedCategories.length > 0 ? (
+                paginatedCategories.map((category) => (
                   <Table.Row
-                    key={user.id}
-                    item={user}
+                    key={category.id}
+                    item={category}
                     columns={columns}
                     actions={actions}
                   />
@@ -249,24 +251,24 @@ export default function UserManage() {
               ) : (
                 <tr>
                   <td colSpan={columns.length + 1} className="no-data">
-                    No users found
+                    No categories found
                   </td>
                 </tr>
               )}
             </tbody>
           </Table>
 
-          {sortedUsers.length > 0 && (
+          {sortedCategories.length > 0 && (
             <Pagination
-              total={Math.ceil(sortedUsers.length / USERS_PER_PAGE)}
+              total={Math.ceil(sortedCategories.length / CATEGORIES_PER_PAGE)}
               current={currentPage}
               onChange={setCurrentPage}
-              pageSize={USERS_PER_PAGE}
-              totalItems={sortedUsers.length}
+              pageSize={CATEGORIES_PER_PAGE}
+              totalItems={sortedCategories.length}
             />
           )}
         </>
       )}
-    </UserManageStyles>
+    </CategoryManageStyles>
   );
 }
