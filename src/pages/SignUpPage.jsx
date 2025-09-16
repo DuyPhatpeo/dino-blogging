@@ -1,3 +1,4 @@
+// pages/SignUpPage.jsx
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
@@ -12,10 +13,14 @@ import Label from "@components/label/Label";
 import Input from "@components/input/Input";
 import Button from "@components/button/Button";
 import ExtraText from "@components/extraText/ExtraText";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+
 import { auth, db } from "@/firebase/firebase-config";
-import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+
+// Import constants
+import { userRole, userStatus } from "@utils/userConstants";
 
 const SignUpPageStyles = styled.div`
   min-height: 100vh;
@@ -101,33 +106,13 @@ const schema = yup.object().shape({
     .required("Confirm Password is required"),
 });
 
-const handleSignUp = async ({ fullname, email, password }) => {
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
-
-  // Cập nhật profile hiển thị
-  await updateProfile(userCredential.user, { displayName: fullname });
-
-  // Lưu user vào Firestore với id = uid
-  const userRef = doc(db, "users", userCredential.user.uid);
-  await setDoc(userRef, {
-    uid: userCredential.user.uid,
-    fullname,
-    email,
-    createdAt: new Date(),
-  });
-
-  return userCredential.user;
-};
-
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const { control, handleSubmit } = useForm({ resolver: yupResolver(schema) });
+  const { control, handleSubmit } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const fields = [
     {
@@ -159,6 +144,31 @@ const SignUpPage = () => {
       type: "password",
     },
   ];
+
+  const handleSignUp = async ({ fullname, email, password }) => {
+    // Tạo user
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    // Update profile hiển thị
+    await updateProfile(userCredential.user, { displayName: fullname });
+
+    // Lưu user vào Firestore
+    const userRef = doc(db, "users", userCredential.user.uid);
+    await setDoc(userRef, {
+      uid: userCredential.user.uid,
+      fullname,
+      email,
+      role: userRole.USER, // 0 - user
+      status: userStatus.ACTIVE, // 1 - active
+      createdAt: new Date(),
+    });
+
+    return userCredential.user;
+  };
 
   const onSubmit = async (data) => {
     try {

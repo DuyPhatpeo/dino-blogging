@@ -1,9 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Search, User, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "../button/Button";
 import { useAuth } from "@contexts/authContext";
+import { db } from "@/firebase/firebase-config";
+import { doc, getDoc } from "firebase/firestore";
 
 const HeaderStyles = styled.header`
   width: 100%;
@@ -194,7 +196,36 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loadingRole, setLoadingRole] = useState(true);
   const timerRef = useRef(null);
+
+  // 🔥 check role trong Firestore
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (!user?.uid) {
+        setIsAdmin(false);
+        setLoadingRole(false);
+        return;
+      }
+      try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setIsAdmin(data.role === 1 || data.role === 2);
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error("Error fetching user role:", error);
+        setIsAdmin(false);
+      } finally {
+        setLoadingRole(false);
+      }
+    };
+    fetchRole();
+  }, [user]);
 
   const handleMouseEnter = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -204,7 +235,7 @@ const Header = () => {
   const handleMouseLeave = () => {
     timerRef.current = setTimeout(() => {
       setDropdownOpen(false);
-    }, 250); // delay 250ms
+    }, 250);
   };
 
   return (
@@ -243,10 +274,12 @@ const Header = () => {
               </div>
               {dropdownOpen && (
                 <div className="dropdown">
-                  <a href="/dashboard">
-                    <LayoutDashboard size={18} />
-                    Dashboard
-                  </a>
+                  {!loadingRole && isAdmin && (
+                    <a href="/dashboard">
+                      <LayoutDashboard size={18} />
+                      Dashboard
+                    </a>
+                  )}
                   <button onClick={signOut}>
                     <LogOut size={18} />
                     Logout
@@ -279,9 +312,11 @@ const Header = () => {
           ))}
           {user && (
             <>
-              <a href="/dashboard" onClick={() => setMenuOpen(false)}>
-                Dashboard
-              </a>
+              {!loadingRole && isAdmin && (
+                <a href="/dashboard" onClick={() => setMenuOpen(false)}>
+                  Dashboard
+                </a>
+              )}
               <button onClick={signOut}>Logout</button>
             </>
           )}

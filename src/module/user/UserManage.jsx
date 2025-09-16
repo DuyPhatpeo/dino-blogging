@@ -10,6 +10,14 @@ import { useNavigate } from "react-router-dom";
 import Button from "@components/button/Button";
 import InputSearch from "@components/input/InputSearch";
 
+import {
+  userRole,
+  userRoleLabel,
+  userStatus,
+  userStatusLabel,
+  userStatusColor,
+} from "@/utils/constants";
+
 const UserManageStyles = styled.div`
   background: #fff;
   padding: 32px;
@@ -55,8 +63,16 @@ const UserManageStyles = styled.div`
     word-break: break-all;
   }
 
-  .clickable-status {
+  .status-badge,
+  .role-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
+    text-transform: uppercase;
   }
 
   .no-data {
@@ -77,18 +93,14 @@ export default function UserManage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // Fetch users
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const colRef = collection(db, "users");
-        const snapshot = await getDocs(colRef);
-
+        const snapshot = await getDocs(collection(db, "users"));
         const result = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setUsers(result);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -99,14 +111,14 @@ export default function UserManage() {
     fetchUsers();
   }, []);
 
-  // Filter theo search
+  // Filter
   const filteredUsers = users.filter(
     (u) =>
       u.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort theo fullname
+  // Sort
   const sortedUsers = [...filteredUsers].sort((a, b) => {
     const aVal = a.fullname ?? "";
     const bVal = b.fullname ?? "";
@@ -120,9 +132,12 @@ export default function UserManage() {
     currentPage * USERS_PER_PAGE
   );
 
-  // Toggle status
   const toggleStatus = async (userId, currentStatus) => {
-    const nextStatus = currentStatus === 1 ? 2 : 1;
+    // Nếu đang BANNED hoặc INACTIVE thì toggle chỉ ACTIVE <-> INACTIVE
+    const nextStatus =
+      currentStatus === userStatus.ACTIVE
+        ? userStatus.INACTIVE
+        : userStatus.ACTIVE;
     try {
       const docRef = doc(db, "users", userId);
       await updateDoc(docRef, { status: nextStatus });
@@ -134,43 +149,47 @@ export default function UserManage() {
     }
   };
 
-  const toggleSort = () => {
+  const toggleSort = () =>
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
-
-  const renderSortIcon = () => {
-    return sortDirection === "asc" ? (
+  const renderSortIcon = () =>
+    sortDirection === "asc" ? (
       <ArrowUp size={16} color="#0ea5e9" />
     ) : (
       <ArrowDown size={16} color="#0ea5e9" />
     );
-  };
 
   const columns = [
-    {
-      key: "id",
-      render: (val) => <span className="id-badge">#{val}</span>,
-    },
+    { key: "id", render: (val) => <span className="id-badge">#{val}</span> },
     { key: "fullname", label: "Full Name" },
     { key: "email", label: "Email" },
+    {
+      key: "role",
+      render: (val) => (
+        <span
+          className="role-badge"
+          style={{
+            backgroundColor:
+              val === userRole.ADMIN
+                ? "#f97316"
+                : val === userRole.MODERATOR
+                ? "#3b82f6"
+                : "#6b7280",
+          }}
+        >
+          {userRoleLabel[val]}
+        </span>
+      ),
+    },
     {
       key: "status",
       render: (val, item) => (
         <span
-          className="clickable-status"
-          style={{
-            display: "inline-block",
-            padding: "4px 10px",
-            borderRadius: "4px",
-            color: "#fff",
-            backgroundColor: val === 1 ? "#22c55e" : "#6b7280",
-            fontSize: "0.8rem",
-            fontWeight: 500,
-          }}
+          className="status-badge"
+          style={{ backgroundColor: userStatusColor[val] }}
           onClick={() => toggleStatus(item.id, val)}
-          title="Click to change status"
+          title="Click to toggle status"
         >
-          {val === 1 ? "Active" : "Inactive"}
+          {userStatusLabel[val]}
         </span>
       ),
     },
@@ -180,16 +199,12 @@ export default function UserManage() {
     {
       type: "edit",
       icon: <Edit size={18} />,
-      onClick: (item) => {
-        navigate(`/manage/update-user/${item.id}`);
-      },
+      onClick: (item) => navigate(`/manage/update-user/${item.id}`),
     },
     {
       type: "delete",
       icon: <Trash2 size={18} />,
-      onClick: (item) => {
-        navigate(`/manage/delete-user/${item.id}`);
-      },
+      onClick: (item) => navigate(`/manage/delete-user/${item.id}`),
     },
   ];
 
@@ -198,21 +213,16 @@ export default function UserManage() {
       <div className="header">
         <div className="header-top">
           <h1 className="dashboard-heading">Manage users</h1>
-          <Button
-            className="header-button"
-            onClick={() => navigate("/manage/add-user")}
-          >
+          <Button onClick={() => navigate("/manage/add-user")}>
             <Plus size={18} style={{ marginRight: 6 }} />
             New User
           </Button>
         </div>
-
-        {/* Search sử dụng InputSearch */}
         <InputSearch
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            setCurrentPage(1); // reset về trang 1 khi search
+            setCurrentPage(1);
           }}
           placeholder="Search by fullname or email..."
         />
@@ -232,6 +242,7 @@ export default function UserManage() {
                   Full Name {renderSortIcon()}
                 </th>
                 <th>Email</th>
+                <th>Role</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
