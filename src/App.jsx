@@ -26,6 +26,7 @@ const CategoryDeletePage = lazy(() =>
   import("@pages/mangage/category/CategoryDeletePage")
 );
 
+const UserManagePage = lazy(() => import("@pages/mangage/user/UserManagePage"));
 function App() {
   return (
     <AuthProvider>
@@ -66,6 +67,8 @@ function App() {
             path="/manage/delete-category/:id"
             element={<CategoryDeletePage />}
           />
+
+          <Route path="/manage/user" element={<UserManagePage />} />
         </Routes>
       </Suspense>
     </AuthProvider>

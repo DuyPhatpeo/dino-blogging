@@ -37,7 +37,7 @@ export function usePostAdd() {
       slug: "",
       status: postStatus.PENDING,
       author: "",
-      categoryId: [],
+      category: [],
       image: null,
       hot: false,
     },
@@ -85,7 +85,7 @@ export function usePostAdd() {
         slug: "",
         status: postStatus.PENDING,
         author: "",
-        categoryId: [],
+        category: [],
         image: null,
         hot: false,
       });

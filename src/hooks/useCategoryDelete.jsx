@@ -11,13 +11,12 @@ export function useCategoryDelete() {
   const deleteCategoryHandler = async (id) => {
     try {
       setLoading(true);
-
       if (!id) throw new Error("Category ID is required");
 
+      // ✅ Xoá luôn, không cần check
       await deleteDoc(doc(db, "categories", id));
-
       toast.success("🗑️ Category deleted successfully!");
-      navigate("/manage/categories"); // quay lại list
+      navigate("/manage/categories");
     } catch (error) {
       console.error("❌ Error deleting category:", error);
       toast.error(error.message || "Error deleting category");
