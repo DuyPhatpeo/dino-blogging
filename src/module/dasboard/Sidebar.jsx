@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import {
@@ -8,19 +8,22 @@ import {
   Users,
   LogOut,
 } from "lucide-react";
+import { auth, db } from "@/firebase/firebase-config";
+import { doc, getDoc } from "firebase/firestore";
+import { userRole } from "@/utils/constants";
 
 const SidebarStyles = styled.div`
-  width: 260px; /* gọn hơn một chút */
-  height: 100vh; /* chiếm toàn bộ chiều cao */
-  position: fixed; /* cố định */
+  width: 260px;
+  height: 100vh;
+  position: fixed;
   top: 0;
   left: 0;
   background: #ffffff;
   box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
-  border-radius: 0 12px 12px 0; /* bo góc bên phải */
+  border-radius: 0 12px 12px 0;
   display: flex;
   flex-direction: column;
-  z-index: 100; /* đảm bảo nổi trên nội dung */
+  z-index: 100;
 
   .sidebar-logo {
     display: flex;
@@ -40,7 +43,7 @@ const SidebarStyles = styled.div`
     display: flex;
     flex-direction: column;
     padding: 0 12px;
-    flex: 1; /* chiếm phần còn lại */
+    flex: 1;
   }
 
   .menu-item {
@@ -69,15 +72,37 @@ const SidebarStyles = styled.div`
   }
 `;
 
-const sidebarLinks = [
-  { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
-  { title: "Post", url: "/manage/post", icon: <FileText /> },
-  { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
-  { title: "User", url: "/manage/user", icon: <Users /> },
-  { title: "Logout", url: "/", icon: <LogOut />, onClick: () => {} },
-];
-
 const Sidebar = () => {
+  const [currentUserRole, setCurrentUserRole] = useState(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setCurrentUserRole(docSnap.data().role);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user role:", error);
+      }
+    };
+    fetchUserRole();
+  }, []);
+
+  const sidebarLinks = [
+    { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
+    { title: "Post", url: "/manage/post", icon: <FileText /> },
+    { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
+    // Chỉ show User nếu role = ADMIN
+    ...(currentUserRole === userRole.ADMIN
+      ? [{ title: "User", url: "/manage/user", icon: <Users /> }]
+      : []),
+    { title: "Logout", url: "/", icon: <LogOut />, onClick: () => {} },
+  ];
+
   return (
     <SidebarStyles>
       <div className="sidebar-logo">
