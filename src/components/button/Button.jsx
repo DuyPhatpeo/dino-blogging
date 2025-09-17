@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
+// Các style theo variant
 const variantStyles = {
   primary: css`
     background: ${(props) => props.theme.colors.primary};
@@ -54,6 +55,7 @@ const variantStyles = {
   `,
 };
 
+// Styled component với transient prop
 const ButtonStyles = styled.button`
   padding: 10px 32px;
   border-radius: ${(props) => props.theme.radius.md || "10px"};
@@ -69,7 +71,7 @@ const ButtonStyles = styled.button`
   justify-content: center;
   gap: 8px;
 
-  ${(props) => variantStyles[props.variant] || variantStyles.primary};
+  ${(props) => variantStyles[props.$variant] || variantStyles.primary};
 
   &:hover {
     transform: translateY(-3px);
@@ -90,7 +92,7 @@ const Button = ({
 }) => {
   return (
     <ButtonStyles
-      variant={variant}
+      $variant={variant} // dùng transient prop
       {...props}
       disabled={isLoading || props.disabled}
     >

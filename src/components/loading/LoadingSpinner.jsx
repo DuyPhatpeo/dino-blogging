@@ -8,13 +8,13 @@ const spin = keyframes`
 `;
 
 const SpinnerStyles = styled.div`
-  width: ${(props) => props.size};
-  height: ${(props) => props.size};
+  width: ${(props) => props.$size};
+  height: ${(props) => props.$size};
   border-radius: 50%;
   display: inline-block;
   animation: ${spin} 1s linear infinite;
   background: ${(props) =>
-    props.colorScheme === "primary"
+    props.$colorScheme === "primary"
       ? `conic-gradient(
           from 0deg,
           ${props.theme.colors.primary},
@@ -36,7 +36,7 @@ const SpinnerStyles = styled.div`
 `;
 
 const LoadingSpinner = ({ size = "40px", colorScheme = "default" }) => {
-  return <SpinnerStyles size={size} colorScheme={colorScheme} />;
+  return <SpinnerStyles $size={size} $colorScheme={colorScheme} />;
 };
 
 LoadingSpinner.propTypes = {
