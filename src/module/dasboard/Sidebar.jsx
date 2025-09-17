@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   LayoutDashboard,
@@ -11,6 +11,7 @@ import {
 import { auth, db } from "@/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import { userRole } from "@/utils/constants";
+import { useAuth } from "@/contexts/authContext";
 
 const SidebarStyles = styled.div`
   width: 260px;
@@ -73,34 +74,46 @@ const SidebarStyles = styled.div`
 `;
 
 const Sidebar = () => {
-  const [currentUserRole, setCurrentUserRole] = useState(null);
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const [currentUserRole, setCurrentUserRole] = useState(user?.role || null);
 
+  // fallback: nếu context chưa có role thì lấy từ Firestore
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const uid = auth.currentUser?.uid;
-        if (!uid) return;
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setCurrentUserRole(docSnap.data().role);
+        if (user?.uid && !user?.role) {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setCurrentUserRole(docSnap.data().role);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch user role:", error);
       }
     };
     fetchUserRole();
-  }, []);
+  }, [user]);
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      signOut(); // clear context + localStorage
+      navigate("/sign-in");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const sidebarLinks = [
     { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
     { title: "Post", url: "/manage/post", icon: <FileText /> },
     { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
-    // Chỉ show User nếu role = ADMIN
     ...(currentUserRole === userRole.ADMIN
       ? [{ title: "User", url: "/manage/user", icon: <Users /> }]
       : []),
-    { title: "Logout", url: "/", icon: <LogOut />, onClick: () => {} },
+    { title: "Logout", url: "/", icon: <LogOut />, onClick: handleLogout },
   ];
 
   return (
