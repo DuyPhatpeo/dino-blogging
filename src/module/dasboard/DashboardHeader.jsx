@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Button from "@components/button/Button";
 import { useNavigate } from "react-router-dom";
-import { Home, FilePlus, Menu } from "lucide-react";
+import { Home, Menu } from "lucide-react";
 
 const DashboardHeaderStyles = styled.header`
   background-color: #fff;
@@ -16,7 +16,12 @@ const DashboardHeaderStyles = styled.header`
   top: 0;
   z-index: 50;
 
-  .header-left,
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
   .header-right {
     display: flex;
     align-items: center;
@@ -45,7 +50,6 @@ const DashboardHeaderStyles = styled.header`
     }
   }
 
-  /* Button chung */
   .header-button {
     font-weight: 500;
     font-size: 0.95rem;
@@ -79,7 +83,6 @@ const DashboardHeaderStyles = styled.header`
     }
   }
 
-  /* Avatar user */
   .header-avatar {
     width: 42px;
     height: 42px;
@@ -107,21 +110,15 @@ const DashboardHeader = ({ onToggleMenu }) => {
   return (
     <DashboardHeaderStyles>
       <div className="header-left">
-        {/* Nút menu (chỉ hiện trên mobile) */}
+        {/* Nút menu (mobile) */}
         <div className="menu-toggle" onClick={onToggleMenu}>
           <Menu />
         </div>
-        <Button className="header-button" onClick={() => navigate("/")}>
-          <Home /> <span>Home</span>
-        </Button>
       </div>
 
       <div className="header-right">
-        <Button
-          className="header-button"
-          onClick={() => navigate("/manage/add-post")}
-        >
-          <FilePlus /> <span>Write Post</span>
+        <Button className="header-button" onClick={() => navigate("/")}>
+          <Home /> <span>Home</span>
         </Button>
         <div className="header-avatar">
           <img src="https://i.pravatar.cc/300" alt="User Avatar" />

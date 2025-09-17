@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import DashboardHeader from "./DashboardHeader";
 import Sidebar from "./Sidebar";
+import FloatingWriteButton from "./FloatingWriteButton";
 
 const LayoutStyles = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f1f5f9; /* slate-100 */
-  margin-left: 260px;
   transition: margin-left 0.3s ease;
 
   .content {
@@ -24,18 +24,25 @@ const LayoutStyles = styled.div`
 
   /* Responsive */
   @media (max-width: 767px) {
-    margin-left: 0; /* sidebar ẩn thì bỏ chừa chỗ */
+    margin-left: 0 !important; /* Trên mobile bỏ margin */
   }
 `;
 
 const DashboardLayout = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const handleToggleMenu = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+
   return (
-    <LayoutStyles>
-      <Sidebar />
+    <LayoutStyles style={{ marginLeft: isSidebarOpen ? 260 : 0 }}>
+      <Sidebar isOpen={isSidebarOpen} />
       <div className="content">
-        <DashboardHeader />
+        <DashboardHeader onToggleMenu={handleToggleMenu} />
         <main className="main">{children}</main>
       </div>
+      <FloatingWriteButton />
     </LayoutStyles>
   );
 };
