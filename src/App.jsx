@@ -27,6 +27,7 @@ const CategoryDeletePage = lazy(() =>
 );
 
 const UserManagePage = lazy(() => import("@pages/mangage/user/UserManagePage"));
+const UserEditPage = lazy(() => import("@pages/mangage/user/UserEditPage"));
 function App() {
   return (
     <AuthProvider>
@@ -69,6 +70,7 @@ function App() {
           />
 
           <Route path="/manage/user" element={<UserManagePage />} />
+          <Route path="/manage/update-user/:id" element={<UserEditPage />} />
         </Routes>
       </Suspense>
     </AuthProvider>
