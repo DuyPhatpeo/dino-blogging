@@ -68,7 +68,7 @@ const SignUpPage = () => {
           ))}
 
           <ExtraText>
-            Already have an account? <a href="/signin">Sign in</a>
+            Already have an account? <a href="/sign-in">Sign in</a>
           </ExtraText>
 
           <div className="button-wrapper">

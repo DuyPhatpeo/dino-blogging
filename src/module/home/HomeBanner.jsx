@@ -42,22 +42,6 @@ const HomeBannerStyles = styled.section`
       margin-bottom: 40px;
       opacity: 0.95;
     }
-
-    .btn {
-      display: inline-block;
-      background: #fff;
-      color: #23939f;
-      font-weight: 600;
-      padding: 16px 36px;
-      border-radius: 12px;
-      transition: all 0.3s ease;
-      font-size: 16px;
-
-      &:hover {
-        background: #e6f7ff;
-        transform: translateY(-3px) scale(1.03);
-      }
-    }
   }
 
   .banner-image {
@@ -111,9 +95,6 @@ const HomeBanner = () => {
             Chia sẻ kiến thức, trải nghiệm và cảm hứng viết lách cùng Dino. Nơi
             bạn có thể học hỏi, kết nối và phát triển bản thân mỗi ngày.
           </p>
-          <a href="/signup" className="btn">
-            Get Started
-          </a>
         </div>
         <div className="banner-image">
           <img src={banner} alt="Dino Blogging" />

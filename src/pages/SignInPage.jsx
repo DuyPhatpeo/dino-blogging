@@ -56,7 +56,7 @@ const SignInPage = () => {
           ))}
 
           <ExtraText>
-            Don't have an account? <a href="/signup">Sign up</a>
+            Don't have an account? <a href="/sign-up">Sign up</a>
           </ExtraText>
 
           <div className="button-wrapper">

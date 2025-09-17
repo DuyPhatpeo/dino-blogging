@@ -48,8 +48,8 @@ export default function AppRoutes() {
     >
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/sign-in" element={<SignInPage />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/:slug" element={<PostDetailsPage />} />
 

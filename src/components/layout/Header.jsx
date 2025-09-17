@@ -288,7 +288,7 @@ const Header = () => {
               )}
             </div>
           ) : (
-            <a href="/signin">
+            <a href="/sign-in">
               <Button>Sign In</Button>
             </a>
           )}
