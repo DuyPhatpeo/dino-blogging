@@ -1,16 +1,7 @@
 import React from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { useController } from "react-hook-form";
-
-const shake = keyframes`
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
-  100% { transform: translateX(0); }
-`;
 
 const InputWrapper = styled.div`
   width: 100%;
@@ -30,13 +21,6 @@ const InputWrapper = styled.div`
     font-size: ${(props) => props.theme.fontSize.base};
     color: ${(props) => props.theme.colors.text};
     transition: all 0.25s ease;
-
-    ${(props) =>
-      props.$hasError &&
-      css`
-        border-color: ${props.theme.colors.error};
-        animation: ${shake} 0.3s ease;
-      `}
   }
 
   input:hover {
@@ -66,40 +50,21 @@ const InputWrapper = styled.div`
   .input-container:focus-within .icon {
     color: ${(props) => props.theme.colors.primary};
   }
-
-  ${(props) =>
-    props.$hasError &&
-    css`
-      .icon {
-        color: ${props.theme.colors.error};
-      }
-    `}
-
-  .error {
-    margin-top: 6px;
-    font-size: ${(props) => props.theme.fontSize.sm};
-    color: ${(props) => props.theme.colors.error};
-    text-align: left;
-  }
 `;
 
 const Input = ({ name, control, type = "text", placeholder, icon: Icon }) => {
-  const {
-    field,
-    fieldState: { error },
-  } = useController({
+  const { field } = useController({
     name,
     control,
     defaultValue: "",
   });
 
   return (
-    <InputWrapper $hasError={!!error}>
+    <InputWrapper>
       <div className="input-container">
         {Icon && <Icon className="icon" />}
         <input id={name} {...field} type={type} placeholder={placeholder} />
       </div>
-      {error && <span className="error">{error.message}</span>}
     </InputWrapper>
   );
 };

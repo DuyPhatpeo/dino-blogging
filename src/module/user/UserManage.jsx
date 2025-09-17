@@ -213,10 +213,10 @@ export default function UserManage() {
       <div className="header">
         <div className="header-top">
           <h1 className="dashboard-heading">Manage users</h1>
-          <Button onClick={() => navigate("/manage/add-user")}>
+          {/* <Button onClick={() => navigate("/manage/add-user")}>
             <Plus size={18} style={{ marginRight: 6 }} />
             New User
-          </Button>
+          </Button> */}
         </div>
         <InputSearch
           value={searchTerm}

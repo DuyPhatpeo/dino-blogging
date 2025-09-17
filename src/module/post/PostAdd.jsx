@@ -13,6 +13,7 @@ import ImageUpload from "@components/imageUpload/ImageUpload";
 import Toggle from "@components/toggle/Toggle";
 import { usePostAdd } from "@/hooks/usePostAdd";
 import useCategories from "@hooks/useCategories";
+import FormError from "@components/error/FormError"; // ✅ import
 
 const PostAddNewStyles = styled.div`
   background: #fff;
@@ -56,11 +57,6 @@ const PostAddNewStyles = styled.div`
     border-radius: 4px;
     margin-top: 8px;
   }
-  .error {
-    color: #ef4444; /* đỏ */
-    font-size: 14px;
-    margin-top: 6px;
-  }
 `;
 
 const PostAdd = () => {
@@ -82,8 +78,8 @@ const PostAdd = () => {
               control={control}
               name="title"
               placeholder="Enter your title"
-              required
             />
+            <FormError message={errors.title?.message} />
           </Field>
           <Field>
             <Label>Slug</Label>
@@ -92,6 +88,7 @@ const PostAdd = () => {
               name="slug"
               placeholder="Enter your slug (auto if empty)"
             />
+            <FormError message={errors.slug?.message} />
           </Field>
         </div>
 
@@ -150,8 +147,9 @@ const PostAdd = () => {
             <Input
               control={control}
               name="author"
-              placeholder="Find the author"
+              placeholder="Enter author name"
             />
+            <FormError message={errors.author?.message} />
           </Field>
 
           <Field>
@@ -163,7 +161,6 @@ const PostAdd = () => {
                 if (catLoading) return <p>Loading categories...</p>;
                 if (error) return <p>Error loading categories</p>;
 
-                // chỉ lấy categories có status = 1
                 const activeCategories = categories.filter(
                   (c) => c.status === 1
                 );
@@ -190,9 +187,7 @@ const PostAdd = () => {
                 );
               }}
             />
-            {errors.category && (
-              <p className="error">{errors.category.message}</p>
-            )}
+            <FormError message={errors.category?.message} />
           </Field>
         </div>
 
@@ -205,7 +200,7 @@ const PostAdd = () => {
               name="image"
               label="Upload post thumbnail"
             />
-            {errors.image && <p className="error">{errors.image.message}</p>}
+            <FormError message={errors.image?.message} />
             {uploadProgress > 0 && (
               <div
                 className="progress-bar"

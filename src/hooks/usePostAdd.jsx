@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 const schema = yup.object({
   title: yup.string().required("Title is required"),
   slug: yup.string(),
-  author: yup.string().required("Author is required"),
+  author: yup.string().required("Author is required"), // nhập text
   category: yup
     .array()
     .min(1, "Please select at least one category")
@@ -36,7 +36,7 @@ export function usePostAdd() {
       title: "",
       slug: "",
       status: postStatus.PENDING,
-      author: "",
+      author: "", // nhập trực tiếp
       category: [],
       image: null,
       hot: false,
@@ -64,12 +64,13 @@ export function usePostAdd() {
         throw new Error("You must be logged in to create a post.");
       }
 
+      // ✅ newPost có cả "author" (người nhập) và "createdBy" (người đăng nhập)
       const newPost = {
         ...values,
         slug,
         image: imageUrl,
-        userId: user.uid,
-        createdBy: user.uid,
+        author: values.author, // nhập tay
+        createdBy: user.uid, // người tạo
         createdAt: serverTimestamp(),
       };
 
@@ -91,7 +92,6 @@ export function usePostAdd() {
       });
 
       toast.success("✅ Post added successfully!");
-
       navigate("/manage/post");
     } catch (error) {
       console.error("❌ Error adding post:", error);

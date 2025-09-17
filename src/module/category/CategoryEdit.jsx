@@ -14,12 +14,13 @@ import Field from "@components/field/Field";
 import Input from "@components/input/Input";
 import Label from "@components/label/Label";
 import Radio from "@components/checkbox/Radio";
+import FormError from "@components/error/FormError";
 import { ArrowLeft } from "lucide-react";
 
 const schema = yup.object({
   name: yup.string().required("Category name is required"),
   slug: yup.string(),
-  status: yup.number().required(),
+  status: yup.number().required("Status is required"),
 });
 
 const CategoryEditStyles = styled.div`
@@ -70,7 +71,7 @@ const CategoryEditStyles = styled.div`
 `;
 
 const CategoryEdit = () => {
-  const { id } = useParams(); // lấy id từ URL (/manage/update-category/:id)
+  const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -84,10 +85,11 @@ const CategoryEdit = () => {
     },
   });
 
-  const { control, handleSubmit, reset, watch } = form;
+  const { control, handleSubmit, reset, watch, formState } = form;
+  const { errors } = formState;
   const watchStatus = watch("status", 1);
 
-  // Fetch dữ liệu category cần edit
+  // Fetch dữ liệu category
   useEffect(() => {
     async function fetchData() {
       try {
@@ -95,7 +97,12 @@ const CategoryEdit = () => {
         const docRef = doc(db, "categories", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          reset(docSnap.data()); // đổ dữ liệu vào form
+          const data = docSnap.data();
+          reset({
+            name: data.name || "",
+            slug: data.slug || "",
+            status: data.status || 1,
+          });
         } else {
           toast.error("Category not found!");
           navigate("/manage/category");
@@ -137,10 +144,7 @@ const CategoryEdit = () => {
     <CategoryEditStyles>
       <div className="header">
         <h1 className="dashboard-heading">Edit category</h1>
-        <Button
-          className="header-button"
-          onClick={() => navigate(-1)} // hoặc navigate("/manage/categories")
-        >
+        <Button className="header-button" onClick={() => navigate(-1)}>
           <ArrowLeft size={18} style={{ marginRight: "8px" }} />
           Back
         </Button>
@@ -154,8 +158,8 @@ const CategoryEdit = () => {
               control={control}
               name="name"
               placeholder="Enter category name"
-              required
             />
+            <FormError message={errors.name?.message} />
           </Field>
           <Field>
             <Label>Slug</Label>
@@ -164,6 +168,7 @@ const CategoryEdit = () => {
               name="slug"
               placeholder="Enter slug (auto if empty)"
             />
+            <FormError message={errors.slug?.message} />
           </Field>
         </div>
 
@@ -188,6 +193,7 @@ const CategoryEdit = () => {
               Inactive
             </Radio>
           </div>
+          <FormError message={errors.status?.message} />
         </Field>
 
         {/* Submit */}

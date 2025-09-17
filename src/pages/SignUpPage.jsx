@@ -20,7 +20,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 // Import constants
-import { userRole, userStatus } from "@utils/userConstants";
+import { userRole, userStatus } from "@utils/Constants";
 
 const SignUpPageStyles = styled.div`
   min-height: 100vh;

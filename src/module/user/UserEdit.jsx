@@ -8,8 +8,9 @@ import Field from "@components/field/Field";
 import Input from "@components/input/Input";
 import Label from "@components/label/Label";
 import Radio from "@components/checkbox/Radio";
+import FormError from "@components/error/FormError"; // 👈 dùng error chung
 
-import { useUserEdit } from "@/hooks/useUserEdit"; // 👈 hook bạn tách riêng
+import { useUserEdit } from "@/hooks/useUserEdit";
 import {
   userRole,
   userRoleLabel,
@@ -68,7 +69,12 @@ const UserEditStyles = styled.div`
 const UserEdit = () => {
   const navigate = useNavigate();
   const { form, updateUserHandler, loading } = useUserEdit();
-  const { control, handleSubmit, watch } = form;
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = form;
 
   const watchStatus = watch("status", userStatus.ACTIVE);
   const watchRole = watch("role", userRole.USER);
@@ -87,20 +93,36 @@ const UserEdit = () => {
         {/* Fullname + Email */}
         <div className="form-row">
           <Field>
-            <Label>Full Name</Label>
+            <Label>
+              Full Name
+              {errors.fullname && (
+                <FormError>{errors.fullname.message}</FormError>
+              )}
+            </Label>
             <Input
               control={control}
               name="fullname"
               placeholder="Enter full name"
+              rules={{ required: "Full name is required" }}
             />
           </Field>
           <Field>
-            <Label>Email</Label>
+            <Label>
+              Email
+              {errors.email && <FormError>{errors.email.message}</FormError>}
+            </Label>
             <Input
               control={control}
               name="email"
               placeholder="Enter email"
               type="email"
+              rules={{
+                required: "Email is required",
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Invalid email format",
+                },
+              }}
             />
           </Field>
         </div>

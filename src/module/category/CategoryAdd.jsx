@@ -1,3 +1,4 @@
+// CategoryAdd.jsx
 import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
@@ -6,6 +7,7 @@ import Field from "@components/field/Field";
 import Input from "@components/input/Input";
 import Label from "@components/label/Label";
 import Radio from "@components/checkbox/Radio";
+import FormError from "@components/error/FormError";
 import { useCategoryAdd } from "@hooks/useCategoryAdd";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -55,17 +57,13 @@ const CategoryAddNewStyles = styled.div`
     gap: 20px;
     margin-top: 8px;
   }
-  .error {
-    color: #ef4444;
-    font-size: 14px;
-    margin-top: 6px;
-  }
 `;
 
 const CategoryAdd = () => {
   const navigate = useNavigate();
   const { form, addCategoryHandler, loading } = useCategoryAdd();
-  const { control, handleSubmit, watch } = form;
+  const { control, handleSubmit, watch, formState } = form;
+  const { errors } = formState;
   const watchStatus = watch("status", 1);
 
   return (
@@ -86,8 +84,8 @@ const CategoryAdd = () => {
               control={control}
               name="name"
               placeholder="Enter category name"
-              required
             />
+            <FormError message={errors.name?.message} />
           </Field>
           <Field>
             <Label>Slug</Label>
@@ -96,6 +94,7 @@ const CategoryAdd = () => {
               name="slug"
               placeholder="Enter slug (auto if empty)"
             />
+            <FormError message={errors.slug?.message} />
           </Field>
         </div>
 
