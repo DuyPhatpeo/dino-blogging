@@ -7,6 +7,8 @@ import {
   FolderKanban,
   Users,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { auth, db } from "@/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
@@ -18,13 +20,14 @@ const SidebarStyles = styled.div`
   height: 100vh;
   position: fixed;
   top: 0;
-  left: 0;
+  left: ${(props) => (props.$isOpen ? "0" : "-260px")};
   background: #ffffff;
   box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
   border-radius: 0 12px 12px 0;
   display: flex;
   flex-direction: column;
-  z-index: 100;
+  z-index: 200;
+  transition: left 0.3s ease;
 
   .sidebar-logo {
     display: flex;
@@ -71,14 +74,47 @@ const SidebarStyles = styled.div`
       color: ${(props) => props.theme.primary};
     }
   }
+
+  @media (min-width: 768px) {
+    left: 0; /* luôn hiện trên desktop */
+  }
+`;
+
+const ToggleButton = styled.button`
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 300;
+  background: ${(props) => props.theme.primary};
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+`;
+
+const Overlay = styled.div`
+  display: ${(props) => (props.$isOpen ? "block" : "none")};
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 150;
+
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [currentUserRole, setCurrentUserRole] = useState(user?.role || null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // fallback: nếu context chưa có role thì lấy từ Firestore
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
@@ -99,7 +135,7 @@ const Sidebar = () => {
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      signOut(); // clear context + localStorage
+      signOut();
       navigate("/sign-in");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -117,25 +153,36 @@ const Sidebar = () => {
   ];
 
   return (
-    <SidebarStyles>
-      <div className="sidebar-logo">
-        <img srcSet="/logo.png 2x" alt="logo" />
-        <span>Monkey Blogging</span>
-      </div>
-      <div className="menu">
-        {sidebarLinks.map((link) => (
-          <NavLink
-            to={link.url}
-            className="menu-item"
-            key={link.title}
-            onClick={link.onClick}
-          >
-            <span className="menu-icon">{link.icon}</span>
-            <span className="menu-text">{link.title}</span>
-          </NavLink>
-        ))}
-      </div>
-    </SidebarStyles>
+    <>
+      <ToggleButton onClick={() => setIsOpen(!isOpen)}>
+        {isOpen ? <X /> : <Menu />}
+      </ToggleButton>
+
+      <Overlay $isOpen={isOpen} onClick={() => setIsOpen(false)} />
+
+      <SidebarStyles $isOpen={isOpen}>
+        <div className="sidebar-logo">
+          <img srcSet="/logo.png 2x" alt="logo" />
+          <span>Monkey Blogging</span>
+        </div>
+        <div className="menu">
+          {sidebarLinks.map((link) => (
+            <NavLink
+              to={link.url}
+              className="menu-item"
+              key={link.title}
+              onClick={() => {
+                if (link.onClick) link.onClick();
+                setIsOpen(false); // tự đóng sidebar khi click link
+              }}
+            >
+              <span className="menu-icon">{link.icon}</span>
+              <span className="menu-text">{link.title}</span>
+            </NavLink>
+          ))}
+        </div>
+      </SidebarStyles>
+    </>
   );
 };
 
