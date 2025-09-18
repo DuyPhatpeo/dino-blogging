@@ -27,7 +27,10 @@ const PostItemStyles = styled.div`
       }
     }
 
-    &-category {
+    &-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-bottom: 16px;
     }
 
@@ -71,13 +74,24 @@ const PostItem = ({ post }) => {
 
   return (
     <PostItemStyles>
+      {/* ✅ Link ảnh bài viết */}
       <a href={`/post/${post.slug || post.id}`} className="post-image">
         <img src={post.image} alt={post.title} />
       </a>
+
+      {/* ✅ Nhiều category */}
       {post.categories && post.categories.length > 0 && (
-        <PostCategory>{post.categories[0]}</PostCategory>
+        <div className="post-categories">
+          {post.categories.map((cat, index) => (
+            <PostCategory key={index}>{cat}</PostCategory>
+          ))}
+        </div>
       )}
+
+      {/* ✅ Tiêu đề */}
       <h3 className="post-title">{post.title}</h3>
+
+      {/* ✅ Thông tin phụ */}
       <div className="post-info">
         <span className="post-time">
           {post.createdAt
