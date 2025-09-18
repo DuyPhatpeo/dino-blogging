@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 import { Search, User, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "../button/Button";
@@ -14,7 +15,7 @@ const HeaderStyles = styled.header`
   padding: 14px 0;
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
 
   .container {
     max-width: 1200px;
@@ -32,7 +33,7 @@ const HeaderStyles = styled.header`
   }
 
   .logo img {
-    height: 50px;
+    height: 46px;
     object-fit: contain;
   }
 
@@ -49,6 +50,7 @@ const HeaderStyles = styled.header`
     font-size: ${(props) => props.theme.fontSize.base};
     transition: color 0.2s;
 
+    &.active,
     &:hover {
       color: ${(props) => props.theme.colors.primary};
     }
@@ -58,28 +60,23 @@ const HeaderStyles = styled.header`
     display: flex;
     align-items: center;
     gap: 20px;
-    position: relative;
   }
 
   .search {
     position: relative;
-
     input {
       border: 1px solid ${(props) => props.theme.colors.border};
       border-radius: ${(props) => props.theme.radius.md};
       padding: 8px 12px 8px 36px;
       font-size: ${(props) => props.theme.fontSize.sm};
-      outline: none;
-      transition: all 0.2s;
       min-width: 200px;
       background: #fff;
-
+      transition: all 0.2s;
       &:focus {
         border-color: ${(props) => props.theme.colors.primary};
         box-shadow: 0 0 0 2px rgba(46, 178, 193, 0.2);
       }
     }
-
     .search-icon {
       position: absolute;
       top: 50%;
@@ -91,9 +88,9 @@ const HeaderStyles = styled.header`
     }
   }
 
+  /* User dropdown */
   .user-menu {
     position: relative;
-
     .user {
       display: flex;
       align-items: center;
@@ -101,22 +98,19 @@ const HeaderStyles = styled.header`
       font-weight: 600;
       color: ${(props) => props.theme.colors.primary};
       padding: 6px 12px;
-      background: ${(props) => props.theme.colors.background};
       border-radius: ${(props) => props.theme.radius.md};
       border: 1px solid ${(props) => props.theme.colors.primary};
       cursor: pointer;
+      background: #fff;
       transition: background 0.2s, transform 0.2s;
-
+      &:hover {
+        background: ${(props) => props.theme.colors.primary}11;
+        transform: translateY(-1px);
+      }
       span {
         font-size: ${(props) => props.theme.fontSize.sm};
       }
-
-      &:hover {
-        background: ${(props) => props.theme.colors.primaryHover}22;
-        transform: translateY(-1px);
-      }
     }
-
     .dropdown {
       position: absolute;
       right: 0;
@@ -128,8 +122,7 @@ const HeaderStyles = styled.header`
       display: flex;
       flex-direction: column;
       min-width: 160px;
-      z-index: 100;
-
+      animation: fadeIn 0.2s ease;
       a,
       button {
         display: flex;
@@ -138,11 +131,10 @@ const HeaderStyles = styled.header`
         padding: 10px 14px;
         font-size: ${(props) => props.theme.fontSize.sm};
         color: ${(props) => props.theme.colors.text};
-        background: transparent;
         border: none;
-        text-align: left;
+        background: transparent;
         cursor: pointer;
-
+        text-align: left;
         &:hover {
           background: ${(props) => props.theme.colors.primary}11;
           color: ${(props) => props.theme.colors.primary};
@@ -151,6 +143,7 @@ const HeaderStyles = styled.header`
     }
   }
 
+  /* Mobile */
   .menu-toggle {
     display: none;
     background: none;
@@ -161,27 +154,89 @@ const HeaderStyles = styled.header`
   }
 
   @media (max-width: 768px) {
-    nav {
-      display: none;
-    }
+    nav,
     .search {
       display: none;
     }
     .menu-toggle {
       display: block;
     }
-    .mobile-nav {
-      position: absolute;
-      top: 70px;
+
+    /* 🔥 Ẩn tên user khi mobile */
+    .user-menu .user span {
+      display: none;
+    }
+
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
       left: 0;
       right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 998;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: 260px;
       background: ${(props) => props.theme.colors.background};
-      box-shadow: ${(props) => props.theme.shadow.card};
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
       gap: 16px;
       padding: 20px;
-      z-index: 40;
+      z-index: 999;
+      animation: slideInRight 0.3s ease forwards;
+
+      a,
+      button {
+        text-align: left;
+        font-size: ${(props) => props.theme.fontSize.base};
+        font-weight: 500;
+        color: ${(props) => props.theme.colors.text};
+        text-decoration: none;
+        border: none;
+        background: none;
+        padding: 10px 0;
+        &:hover {
+          color: ${(props) => props.theme.colors.primary};
+        }
+      }
+
+      .close-btn {
+        align-self: flex-end;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        color: ${(props) => props.theme.colors.text};
+      }
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
     }
   }
 `;
@@ -214,8 +269,6 @@ const Header = () => {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setIsAdmin(data.role === 1 || data.role === 2);
-        } else {
-          setIsAdmin(false);
         }
       } catch (error) {
         console.error("Error fetching user role:", error);
@@ -231,26 +284,23 @@ const Header = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     setDropdownOpen(true);
   };
-
   const handleMouseLeave = () => {
-    timerRef.current = setTimeout(() => {
-      setDropdownOpen(false);
-    }, 250);
+    timerRef.current = setTimeout(() => setDropdownOpen(false), 250);
   };
 
   return (
     <HeaderStyles>
       <div className="container">
-        {/* Logo + Navigation */}
+        {/* Logo + Nav */}
         <div className="left">
-          <a href="/" className="logo">
+          <NavLink to="/" className="logo">
             <img src={Logo} alt="Logo" />
-          </a>
+          </NavLink>
           <nav>
             {NAV_LINKS.map(({ path, label }) => (
-              <a key={path} href={path}>
+              <NavLink key={path} to={path}>
                 {label}
-              </a>
+              </NavLink>
             ))}
           </nav>
         </div>
@@ -275,10 +325,10 @@ const Header = () => {
               {dropdownOpen && (
                 <div className="dropdown">
                   {!loadingRole && isAdmin && (
-                    <a href="/dashboard">
+                    <NavLink to="/dashboard">
                       <LayoutDashboard size={18} />
                       Dashboard
-                    </a>
+                    </NavLink>
                   )}
                   <button onClick={signOut}>
                     <LogOut size={18} />
@@ -288,9 +338,9 @@ const Header = () => {
               )}
             </div>
           ) : (
-            <a href="/sign-in">
+            <NavLink to="/sign-in">
               <Button>Sign In</Button>
-            </a>
+            </NavLink>
           )}
 
           <button
@@ -302,25 +352,33 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile nav */}
+      {/* Mobile nav + overlay */}
       {menuOpen && (
-        <div className="mobile-nav">
-          {NAV_LINKS.map(({ path, label }) => (
-            <a key={path} href={path} onClick={() => setMenuOpen(false)}>
-              {label}
-            </a>
-          ))}
-          {user && (
-            <>
-              {!loadingRole && isAdmin && (
-                <a href="/dashboard" onClick={() => setMenuOpen(false)}>
-                  Dashboard
-                </a>
-              )}
-              <button onClick={signOut}>Logout</button>
-            </>
-          )}
-        </div>
+        <>
+          <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />
+          <div className="mobile-nav">
+            {/* Close button */}
+            <button className="close-btn" onClick={() => setMenuOpen(false)}>
+              <X size={24} />
+            </button>
+
+            {NAV_LINKS.map(({ path, label }) => (
+              <NavLink key={path} to={path} onClick={() => setMenuOpen(false)}>
+                {label}
+              </NavLink>
+            ))}
+            {user && (
+              <>
+                {!loadingRole && isAdmin && (
+                  <NavLink to="/dashboard" onClick={() => setMenuOpen(false)}>
+                    Dashboard
+                  </NavLink>
+                )}
+                <button onClick={signOut}>Logout</button>
+              </>
+            )}
+          </div>
+        </>
       )}
     </HeaderStyles>
   );
