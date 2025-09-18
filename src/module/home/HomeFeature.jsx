@@ -5,12 +5,12 @@ import PostFeatureItem from "@/module/post/PostFeatureItem";
 import { db } from "@/firebase/firebase-config";
 import {
   collection,
-  getDocs,
   query,
   orderBy,
   limit,
   doc,
   getDoc,
+  getDocs,
 } from "firebase/firestore";
 
 const HomeFeatureStyles = styled.section`
@@ -44,14 +44,13 @@ const HomeFeature = () => {
   useEffect(() => {
     async function fetchPosts() {
       const colRef = collection(db, "posts");
-      const q = query(colRef, orderBy("createdAt", "desc"), limit(6));
+      const q = query(colRef, orderBy("createdAt", "desc"), limit(20)); // lấy 20 bài mới nhất
       const snapshot = await getDocs(q);
 
-      const result = await Promise.all(
+      let result = await Promise.all(
         snapshot.docs.map(async (docSnap) => {
           const postData = docSnap.data();
 
-          // lấy tên category từ id
           let categoryNames = [];
           if (Array.isArray(postData.category)) {
             categoryNames = await Promise.all(
@@ -71,6 +70,9 @@ const HomeFeature = () => {
         })
       );
 
+      // 🔥 lọc post.hot === true
+      result = result.filter((post) => post.hot === true).slice(0, 6);
+
       setPosts(result);
     }
     fetchPosts();
@@ -81,9 +83,11 @@ const HomeFeature = () => {
       <div className="container">
         <Heading className="home-heading">Bài viết nổi bật</Heading>
         <div className="grid-layout">
-          {posts.map((post) => (
-            <PostFeatureItem key={post.id} post={post} />
-          ))}
+          {posts.length > 0 ? (
+            posts.map((post) => <PostFeatureItem key={post.id} post={post} />)
+          ) : (
+            <p>Không có bài viết nổi bật</p>
+          )}
         </div>
       </div>
     </HomeFeatureStyles>
