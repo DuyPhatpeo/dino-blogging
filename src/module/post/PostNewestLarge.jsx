@@ -24,9 +24,11 @@ const PostNewestLargeStyles = styled.article`
       }
     }
 
-    &-category {
+    &-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-bottom: 10px;
-      display: inline-block;
     }
 
     &-title {
@@ -80,23 +82,32 @@ const PostNewestLargeStyles = styled.article`
   }
 `;
 
-const PostNewestLarge = () => {
+const PostNewestLarge = ({ post }) => {
+  if (!post) return null;
+
   return (
     <PostNewestLargeStyles>
-      <a href="/" className="post-image">
-        <img
-          src="https://images.unsplash.com/photo-1510519138101-570d1dca3d66?ixlib=rb-1.2.1&auto=format&fit=crop&w=2294&q=80"
-          alt="setup chill"
-        />
+      <a href={`/post/${post.slug || post.id}`} className="post-image">
+        <img src={post.image} alt={post.title} />
       </a>
-      <PostCategory>Kiến thức</PostCategory>
-      <h3 className="post-title">
-        Hướng dẫn setup phòng cực chill dành cho người mới toàn tập
-      </h3>
+      {post.categories && post.categories.length > 0 && (
+        <div className="post-categories">
+          {post.categories.map((cat, index) => (
+            <PostCategory key={index}>{cat}</PostCategory>
+          ))}
+        </div>
+      )}
+      <h3 className="post-title">{post.title}</h3>
       <div className="post-info">
-        <span className="post-time">Mar 23</span>
+        <span className="post-time">
+          {post.createdAt
+            ? new Date(post.createdAt.seconds * 1000).toLocaleDateString(
+                "vi-VN"
+              )
+            : "N/A"}
+        </span>
         <span className="post-dot"></span>
-        <span className="post-author">Andiez Le</span>
+        <span className="post-author">{post.author || "Unknown"}</span>
       </div>
     </PostNewestLargeStyles>
   );

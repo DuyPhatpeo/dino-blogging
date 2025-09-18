@@ -12,6 +12,7 @@ import {
   getDoc,
   getDocs,
 } from "firebase/firestore";
+import { postStatus } from "@/utils/constants"; // 👈 import constants
 
 const HomeFeatureStyles = styled.section`
   padding: 40px 0;
@@ -70,8 +71,12 @@ const HomeFeature = () => {
         })
       );
 
-      // 🔥 lọc post.hot === true
-      result = result.filter((post) => post.hot === true).slice(0, 6);
+      // 🔥 lọc post.hot === true và status = APPROVED
+      result = result
+        .filter(
+          (post) => post.hot === true && post.status === postStatus.APPROVED
+        )
+        .slice(0, 6);
 
       setPosts(result);
     }

@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Heading from "@/components/layout/Heading";
 import PostItem from "@/module/post/PostItem";
 import PostNewestItem from "@/module/post/PostNewestItem";
 import PostNewestLarge from "@/module/post/PostNewestLarge";
+import { db } from "@/firebase/firebase-config";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { postStatus } from "@/utils/constants"; // ✅ import status
 
 const HomeNewestStyles = styled.section`
   padding: 40px 0;
@@ -47,23 +58,68 @@ const HomeNewestStyles = styled.section`
 `;
 
 const HomeNewest = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const colRef = collection(db, "posts");
+      const q = query(colRef, orderBy("createdAt", "desc"), limit(10));
+      const snapshot = await getDocs(q);
+
+      let result = await Promise.all(
+        snapshot.docs.map(async (docSnap) => {
+          const postData = docSnap.data();
+
+          // lấy tên category từ id
+          let categoryNames = [];
+          if (Array.isArray(postData.category)) {
+            categoryNames = await Promise.all(
+              postData.category.map(async (catId) => {
+                const catRef = doc(db, "categories", catId);
+                const catSnap = await getDoc(catRef);
+                return catSnap.exists() ? catSnap.data().name : "Unknown";
+              })
+            );
+          }
+
+          return {
+            id: docSnap.id,
+            ...postData,
+            categories: categoryNames,
+          };
+        })
+      );
+
+      // 🔥 lọc status = APPROVED
+      result = result.filter((post) => post.status === postStatus.APPROVED);
+
+      setPosts(result);
+    }
+    fetchPosts();
+  }, []);
+
+  if (posts.length === 0) return null;
+
+  const [firstPost, ...restPosts] = posts;
+  const sidebarPosts = restPosts.slice(0, 3);
+  const gridPosts = restPosts.slice(3);
+
   return (
     <HomeNewestStyles className="home-block">
       <div className="container">
         <Heading>Mới nhất</Heading>
         <div className="layout">
-          <PostNewestLarge />
+          {firstPost && <PostNewestLarge post={firstPost} />}
           <div className="sidebar">
-            <PostNewestItem />
-            <PostNewestItem />
-            <PostNewestItem />
+            {sidebarPosts.map((post) => (
+              <PostNewestItem key={post.id} post={post} />
+            ))}
           </div>
         </div>
         <div className="grid-layout--primary">
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
+          {gridPosts.map((post) => (
+            <PostItem key={post.id} post={post} />
+          ))}
         </div>
       </div>
     </HomeNewestStyles>

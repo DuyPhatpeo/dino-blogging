@@ -19,6 +19,11 @@ const PostItemStyles = styled.div`
         height: 100%;
         object-fit: cover;
         border-radius: ${({ theme }) => theme.radius.lg};
+        transition: transform 0.3s ease;
+      }
+
+      &:hover img {
+        transform: scale(1.05);
       }
     }
 
@@ -51,27 +56,38 @@ const PostItemStyles = styled.div`
       font-size: ${({ theme }) => theme.fontSize.base};
       margin-bottom: 8px;
       color: ${({ theme }) => theme.colors.text};
+      transition: color 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        color: ${({ theme }) => theme.colors.primary};
+      }
     }
   }
 `;
 
-const PostItem = () => {
+const PostItem = ({ post }) => {
+  if (!post) return null;
+
   return (
     <PostItemStyles>
-      <div className="post-image">
-        <img
-          src="https://images.unsplash.com/photo-1570993492881-25240ce854f4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2290&q=80"
-          alt="post thumbnail"
-        />
-      </div>
-      <PostCategory>Kiến thức</PostCategory>
-      <h3 className="post-title">
-        Hướng dẫn setup phòng cực chill dành cho người mới toàn tập
-      </h3>
+      <a href={`/post/${post.slug || post.id}`} className="post-image">
+        <img src={post.image} alt={post.title} />
+      </a>
+      {post.categories && post.categories.length > 0 && (
+        <PostCategory>{post.categories[0]}</PostCategory>
+      )}
+      <h3 className="post-title">{post.title}</h3>
       <div className="post-info">
-        <span className="post-time">Mar 23</span>
+        <span className="post-time">
+          {post.createdAt
+            ? new Date(post.createdAt.seconds * 1000).toLocaleDateString(
+                "vi-VN"
+              )
+            : "N/A"}
+        </span>
         <span className="post-dot"></span>
-        <span className="post-author">Andiez Le</span>
+        <span className="post-author">{post.author || "Unknown"}</span>
       </div>
     </PostItemStyles>
   );
