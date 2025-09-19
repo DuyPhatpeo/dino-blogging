@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
-import CategoryDelete from "@module/Category/CategoryDelete";
+import CategoryDelete from "@module/dasdas/CategoryDelete";
 
 const CategoryDeletePage = () => {
   return (
