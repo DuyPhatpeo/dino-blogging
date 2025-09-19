@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import slugify from "slugify";
 import { toast } from "react-toastify";
-import { db } from "@/firebase/firebase-config";
+import { db } from "@firebase/firebase-config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";

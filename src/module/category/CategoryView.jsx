@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase/firebase-config";
+import { db } from "@firebase/firebase-config";
 
 import Button from "@components/Button/Button";
 import { ArrowLeft, Edit3, Trash2 } from "lucide-react";

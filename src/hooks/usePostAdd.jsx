@@ -6,7 +6,7 @@ import slugify from "slugify";
 import { toast } from "react-toastify";
 import { postStatus } from "@utils/constants";
 import { useImageUpload } from "@hooks/useImageUpload";
-import { db } from "@/firebase/firebase-config";
+import { db } from "@firebase/firebase-config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";

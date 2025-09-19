@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "@/firebase/firebase-config";
+import { storage } from "@firebase/firebase-config";
 
 export function useImageUpload() {
   const [uploadProgress, setUploadProgress] = useState(0);

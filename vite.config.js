@@ -7,7 +7,6 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
       "@components": path.resolve(__dirname, "./src/components"),
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@styles": path.resolve(__dirname, "./src/styles"),
@@ -17,6 +16,7 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "./src/utils"),
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@module": path.resolve(__dirname, "./src/module"),
+      "@firebase": path.resolve(__dirname, "./src/firebase"),
     },
   },
 });
