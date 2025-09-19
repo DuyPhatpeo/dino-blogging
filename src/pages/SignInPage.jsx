@@ -1,10 +1,10 @@
 import React from "react";
 import { Mail, Lock } from "lucide-react";
-import Field from "src/temp/field/Field";
-import Label from "src/temp/label/Label";
-import Input from "src/temp/input/Input";
-import Button from "src/temp/button/Button";
-import ExtraText from "src/temp/extraText/ExtraText";
+import Field from "@components/Field/Field";
+import Label from "@components/Label/Label";
+import Input from "@components/Input/Input";
+import Button from "@components/Button/Button";
+import ExtraText from "@components/Extratext/ExtraText";
 import FormError from "src/temp/error/FormError";
 import { useSignIn } from "@hooks/useSignIn";
 import { FormProvider } from "react-hook-form";

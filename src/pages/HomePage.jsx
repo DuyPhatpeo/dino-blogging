@@ -4,7 +4,7 @@ import HomeBanner from "@module/Home/HomeBanner";
 import Layout from "src/temp/layout/Layout";
 import HomeFeature from "@module/Home/HomeFeature";
 import HomeNewest from "@module/Home/HomeNewest";
-import LoadingSpinner from "src/temp/loading/LoadingSpinner";
+import LoadingSpinner from "@components/Loading/LoadingSpinner";
 
 const HomePageStyles = styled.div`
   .loading {

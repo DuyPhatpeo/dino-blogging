@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "src/temp/button/Button";
+import Button from "@components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { FilePlus } from "lucide-react";
 

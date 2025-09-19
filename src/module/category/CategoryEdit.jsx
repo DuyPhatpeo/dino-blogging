@@ -5,11 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ArrowLeft, Save } from "lucide-react";
 
-import Button from "src/temp/button/Button";
-import Field from "src/temp/field/Field";
-import Input from "src/temp/input/Input";
-import Label from "src/temp/label/Label";
-import Radio from "src/temp/checkbox/Radio";
+import Button from "@components/Button/Button";
+import Field from "@components/Field/Field";
+import Input from "@components/Input/Input";
+import Label from "@components/Label/Label";
+import Radio from "@components/CheckBox/Radio";
 import FormError from "src/temp/error/FormError";
 import { useCategoryEdit } from "@hooks/useCategoryEdit";
 

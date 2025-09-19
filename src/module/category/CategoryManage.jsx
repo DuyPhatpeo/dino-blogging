@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "src/temp/table/Table";
-import Pagination from "src/temp/pagination/Pagination";
+import Pagination from "@components/Pagination/Pagination";
 import { Edit, Trash2, Plus, ArrowUp, ArrowDown, Eye } from "lucide-react";
 import { db } from "@services/firebase/firebase-config";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import LoadingSpinner from "src/temp/loading/LoadingSpinner";
+import LoadingSpinner from "@components/Loading/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
-import Button from "src/temp/button/Button";
-import InputSearch from "src/temp/input/InputSearch";
+import Button from "@components/Button/Button";
+import InputSearch from "@components/Input/InputSearch";
 
 const CategoryManageStyles = styled.div`
   background: #fff;

@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "src/temp/button/Button";
-import Field from "src/temp/field/Field";
-import Input from "src/temp/input/Input";
-import Label from "src/temp/label/Label";
-import Radio from "src/temp/checkbox/Radio";
+import Button from "@components/Button/Button";
+import Field from "@components/Field/Field";
+import Input from "@components/Input/Input";
+import Label from "@components/Label/Label";
+import Radio from "@components/CheckBox/Radio";
 import FormError from "src/temp/error/FormError";
 
 import { useUserEdit } from "@hooks/useUserEdit";
