@@ -1,15 +1,15 @@
 import React from "react";
 import DashboardLayout from "@module/dasboard/DashboardLayout";
-import UserEdit from "@module/user/UserEdit";
+import UserDelete from "@module/User/UserDelete";
 
-const UserEditPage = () => {
+const UserDeletePage = () => {
   return (
     <DashboardLayout>
       <div className="mt-8">
-        <UserEdit />
+        <UserDelete />
       </div>
     </DashboardLayout>
   );
 };
 
-export default UserEditPage;
+export default UserDeletePage;

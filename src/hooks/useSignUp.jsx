@@ -69,7 +69,7 @@ export function useSignUp() {
       });
 
       toast.success("Register successful!");
-      navigate("/signin");
+      navigate("/sign-in");
     } catch (error) {
       console.error("Sign up error:", error);
       if (error.code === "auth/email-already-in-use") {
