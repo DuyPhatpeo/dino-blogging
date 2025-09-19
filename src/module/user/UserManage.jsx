@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
-import { Edit, Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { Edit, Trash2, ArrowUp, ArrowDown, Eye } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
@@ -285,6 +285,11 @@ export default function UserManage() {
   ];
 
   const actions = [
+    {
+      type: "view",
+      icon: <Eye size={18} />,
+      onClick: (item) => navigate(`/manage/view-user/${item.id}`),
+    },
     {
       type: "edit",
       icon: <Edit size={18} />,
