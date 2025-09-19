@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
 import Radio from "@components/CheckBox/Radio";
-import Dropdown from "@components/Dropdown/Dropdown";
+import Dropdown from "@components/Dropdown/DropDown";
 import Option from "@components/Dropdown/Option";
 import Button from "@components/Button/Button";
 import Field from "@components/Field/Field";
