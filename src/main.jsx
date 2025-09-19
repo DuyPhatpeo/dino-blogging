@@ -1,7 +1,6 @@
 import React, { StrictMode } from "react";
 import "@styles/index.scss";
 import App from "./App";
-import reportWebVitals from "@/reportWebVitals";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "@styles/GlobalStyles";
 import { theme } from "@utils/theme";
@@ -30,5 +29,3 @@ createRoot(document.getElementById("root")).render(
     </ThemeProvider>
   </StrictMode>
 );
-
-reportWebVitals();
