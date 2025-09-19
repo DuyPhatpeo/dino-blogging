@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@components/button/Button";
 import { useNavigate } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
+import { useAuth } from "@contexts/authContext";
+import { db } from "@/firebase/firebase-config";
+import { doc, getDoc } from "firebase/firestore";
 
 const DashboardHeaderStyles = styled.header`
   background-color: #fff;
@@ -28,7 +31,6 @@ const DashboardHeaderStyles = styled.header`
     gap: 14px;
   }
 
-  /* Nút menu cho mobile */
   .menu-toggle {
     display: none;
     @media (max-width: 767px) {
@@ -78,39 +80,65 @@ const DashboardHeaderStyles = styled.header`
     @media (max-width: 640px) {
       padding: 0 12px;
       span {
-        display: none; /* Ẩn chữ trên mobile */
+        display: none; /* ẩn chữ Home trên mobile */
       }
     }
   }
 
   .header-avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
-    flex-shrink: 0;
-    border: 2px solid ${(props) => props.theme.primary};
 
     img {
-      width: 100%;
-      height: 100%;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
       object-fit: cover;
-      display: block;
+      border: 2px solid ${(props) => props.theme.primary};
+      transition: transform 0.2s;
+      &:hover {
+        transform: scale(1.05);
+      }
     }
 
-    &:hover {
-      transform: scale(1.05);
+    span {
+      font-weight: 500;
+      font-size: ${(props) => props.theme.fontSize.sm};
+
+      @media (max-width: 640px) {
+        display: none; /* ẩn tên trên mobile */
+      }
     }
   }
 `;
 
 const DashboardHeader = ({ onToggleMenu }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [avatarURL, setAvatarURL] = useState("https://i.pravatar.cc/300");
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (!user?.uid) return;
+      try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setAvatarURL(data.avatar || "https://i.pravatar.cc/300");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchAvatar();
+  }, [user]);
+
   return (
     <DashboardHeaderStyles>
       <div className="header-left">
-        {/* Nút menu (mobile) */}
         <div className="menu-toggle" onClick={onToggleMenu}>
           <Menu />
         </div>
@@ -121,7 +149,8 @@ const DashboardHeader = ({ onToggleMenu }) => {
           <Home /> <span>Home</span>
         </Button>
         <div className="header-avatar">
-          <img src="https://i.pravatar.cc/300" alt="User Avatar" />
+          <img src={avatarURL} alt={user?.displayName || "User"} />
+          <span>{user?.displayName || "User"}</span>
         </div>
       </div>
     </DashboardHeaderStyles>

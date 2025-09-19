@@ -6,9 +6,10 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-import { auth, db } from "@/firebase/firebase-config";
+import { auth, db, storage } from "@/firebase/firebase-config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { ref, getDownloadURL } from "firebase/storage";
 import { userRole, userStatus } from "@utils/constants";
 
 // ✅ Schema validation
@@ -47,24 +48,29 @@ export function useSignUp() {
     try {
       setLoading(true);
 
-      // Tạo user trên Firebase Auth
+      // 1️⃣ Tạo user trên Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
 
-      // Update displayName
+      // 2️⃣ Update displayName
       await updateProfile(userCredential.user, { displayName: fullname });
 
-      // Thêm user vào Firestore
+      // 3️⃣ Lấy avatar mặc định từ Storage
+      const avatarRef = ref(storage, "avatars/default.jpeg");
+      const avatarURL = await getDownloadURL(avatarRef);
+
+      // 4️⃣ Thêm user vào Firestore
       const userRef = doc(db, "users", userCredential.user.uid);
       await setDoc(userRef, {
         uid: userCredential.user.uid,
         fullname,
         email,
-        role: userRole.USER, // 0
-        status: userStatus.ACTIVE, // 1
+        role: userRole.USER,
+        status: userStatus.ACTIVE,
+        avatar: avatarURL, // ✅ avatar mặc định
         createdAt: new Date(),
       });
 

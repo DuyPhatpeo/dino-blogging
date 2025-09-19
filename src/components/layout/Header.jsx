@@ -7,6 +7,7 @@ import Button from "../button/Button";
 import { useAuth } from "@contexts/authContext";
 import { db } from "@/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
+import { userRoleLabel } from "@/utils/constants";
 
 const HeaderStyles = styled.header`
   width: 100%;
@@ -88,7 +89,6 @@ const HeaderStyles = styled.header`
     }
   }
 
-  /* User dropdown */
   .user-menu {
     position: relative;
     .user {
@@ -103,14 +103,24 @@ const HeaderStyles = styled.header`
       cursor: pointer;
       background: #fff;
       transition: background 0.2s, transform 0.2s;
+
       &:hover {
         background: ${(props) => props.theme.colors.primary}11;
         transform: translateY(-1px);
       }
+
+      img {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
       span {
         font-size: ${(props) => props.theme.fontSize.sm};
       }
     }
+
     .dropdown {
       position: absolute;
       right: 0;
@@ -121,8 +131,37 @@ const HeaderStyles = styled.header`
       box-shadow: ${(props) => props.theme.shadow.card};
       display: flex;
       flex-direction: column;
-      min-width: 160px;
+      min-width: 180px;
       animation: fadeIn 0.2s ease;
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-bottom: 1px solid ${(props) => props.theme.colors.border};
+
+        img {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .info-text {
+          display: flex;
+          flex-direction: column;
+          font-size: ${(props) => props.theme.fontSize.sm};
+          font-weight: 500;
+          color: ${(props) => props.theme.colors.text};
+        }
+
+        .role {
+          font-size: 0.75rem;
+          color: #6b7280;
+        }
+      }
+
       a,
       button {
         display: flex;
@@ -143,7 +182,6 @@ const HeaderStyles = styled.header`
     }
   }
 
-  /* Mobile */
   .menu-toggle {
     display: none;
     background: none;
@@ -161,60 +199,8 @@ const HeaderStyles = styled.header`
     .menu-toggle {
       display: block;
     }
-
-    /* 🔥 Ẩn tên user khi mobile */
     .user-menu .user span {
       display: none;
-    }
-
-    .mobile-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 998;
-    }
-
-    .mobile-nav {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100vh;
-      width: 260px;
-      background: ${(props) => props.theme.colors.background};
-      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 20px;
-      z-index: 999;
-      animation: slideInRight 0.3s ease forwards;
-
-      a,
-      button {
-        text-align: left;
-        font-size: ${(props) => props.theme.fontSize.base};
-        font-weight: 500;
-        color: ${(props) => props.theme.colors.text};
-        text-decoration: none;
-        border: none;
-        background: none;
-        padding: 10px 0;
-        &:hover {
-          color: ${(props) => props.theme.colors.primary};
-        }
-      }
-
-      .close-btn {
-        align-self: flex-end;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 6px;
-        color: ${(props) => props.theme.colors.text};
-      }
     }
   }
 
@@ -226,17 +212,6 @@ const HeaderStyles = styled.header`
     to {
       opacity: 1;
       transform: translateY(0);
-    }
-  }
-
-  @keyframes slideInRight {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
     }
   }
 `;
@@ -253,11 +228,12 @@ const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loadingRole, setLoadingRole] = useState(true);
+  const [avatarURL, setAvatarURL] = useState(null);
+  const [roleName, setRoleName] = useState(null);
   const timerRef = useRef(null);
 
-  // 🔥 check role trong Firestore
   useEffect(() => {
-    const fetchRole = async () => {
+    const fetchUserData = async () => {
       if (!user?.uid) {
         setIsAdmin(false);
         setLoadingRole(false);
@@ -269,15 +245,17 @@ const Header = () => {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setIsAdmin(data.role === 1 || data.role === 2);
+          setAvatarURL(data.avatar || null);
+          setRoleName(userRoleLabel[data.role] || "User");
         }
       } catch (error) {
-        console.error("Error fetching user role:", error);
+        console.error("Error fetching user data:", error);
         setIsAdmin(false);
       } finally {
         setLoadingRole(false);
       }
     };
-    fetchRole();
+    fetchUserData();
   }, [user]);
 
   const handleMouseEnter = () => {
@@ -291,7 +269,6 @@ const Header = () => {
   return (
     <HeaderStyles>
       <div className="container">
-        {/* Logo + Nav */}
         <div className="left">
           <NavLink to="/" className="logo">
             <img src={Logo} alt="Logo" />
@@ -305,7 +282,6 @@ const Header = () => {
           </nav>
         </div>
 
-        {/* Actions */}
         <div className="actions">
           <div className="search">
             <Search className="search-icon" />
@@ -319,11 +295,24 @@ const Header = () => {
               onMouseLeave={handleMouseLeave}
             >
               <div className="user">
-                <User size={20} />
+                {avatarURL ? (
+                  <img src={avatarURL} alt={user.displayName} />
+                ) : (
+                  <User size={20} />
+                )}
                 <span>{user.displayName || "User"}</span>
               </div>
               {dropdownOpen && (
                 <div className="dropdown">
+                  <div className="user-info">
+                    {avatarURL && (
+                      <img src={avatarURL} alt={user.displayName} />
+                    )}
+                    <div className="info-text">
+                      <span>{user.displayName || "User"}</span>
+                      <span className="role">{roleName}</span>
+                    </div>
+                  </div>
                   {!loadingRole && isAdmin && (
                     <NavLink to="/dashboard">
                       <LayoutDashboard size={18} />
@@ -352,16 +341,13 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile nav + overlay */}
       {menuOpen && (
         <>
           <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />
           <div className="mobile-nav">
-            {/* Close button */}
             <button className="close-btn" onClick={() => setMenuOpen(false)}>
               <X size={24} />
             </button>
-
             {NAV_LINKS.map(({ path, label }) => (
               <NavLink key={path} to={path} onClick={() => setMenuOpen(false)}>
                 {label}
