@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
-import { Eye, Edit, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2, Flame } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
 import {
   collection,
@@ -45,12 +45,6 @@ const PostManageStyles = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
   }
 
   .clickable-status {
@@ -307,11 +301,28 @@ export default function PostManage() {
     {
       key: "hot",
       render: (val, item) => (
-        <input
-          type="checkbox"
-          checked={val}
-          onChange={() => toggleHot(item.id, val)}
-        />
+        <span
+          onClick={() => toggleHot(item.id, val)}
+          style={{
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "4px",
+            borderRadius: "6px",
+            transition: "all 0.2s ease",
+            backgroundColor: val ? "#fee2e2" : "#f3f4f6", // đỏ nhạt khi bật, xám nhạt khi tắt
+          }}
+          title={val ? "Hot post" : "Not hot"}
+        >
+          <Flame
+            size={18}
+            style={{
+              color: val ? "#b91c1c" : "#9ca3af", // đỏ đậm khi bật, xám khi tắt
+              transition: "color 0.2s ease",
+            }}
+          />
+        </span>
       ),
     },
   ];
