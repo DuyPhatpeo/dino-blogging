@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Heading from "src/temp/layout/Heading";
-import PostItem from "@module/dasddddd/PostItem";
-import PostNewestItem from "@module/dasddddd/PostNewestItem";
-import PostNewestLarge from "@module/dasddddd/PostNewestLarge";
+import PostItem from "@module/Post/PostItem";
+import PostNewestItem from "@module/Post/PostNewestItem";
+import PostNewestLarge from "@module/Post/PostNewestLarge";
 import { db } from "@services/firebase/firebase-config";
 import {
   collection,

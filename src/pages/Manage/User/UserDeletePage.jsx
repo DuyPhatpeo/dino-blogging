@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
-import UserDelete from "@module/dada/UserDelete";
+import UserDelete from "@module/User/UserDelete";
 
 const UserDeletePage = () => {
   return (

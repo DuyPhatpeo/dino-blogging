@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
-import CategoryAdd from "@module/dasdas/CategoryAdd";
+import CategoryAdd from "@module/Category/CategoryAdd";
 
 const CategoryAddPage = () => {
   return (

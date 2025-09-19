@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
-import UserManage from "@module/dada/UserManage";
+import UserManage from "@module/User/UserManage";
 
 const UserManagePage = () => {
   return (

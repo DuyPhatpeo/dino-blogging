@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import HomeBanner from "@module/ome/HomeBanner";
+import HomeBanner from "@module/Home/HomeBanner";
 import Layout from "src/temp/layout/Layout";
-import HomeFeature from "@module/ome/HomeFeature";
-import HomeNewest from "@module/ome/HomeNewest";
+import HomeFeature from "@module/Home/HomeFeature";
+import HomeNewest from "@module/Home/HomeNewest";
 import LoadingSpinner from "@components/Loading/LoadingSpinner";
 
 const HomePageStyles = styled.div`

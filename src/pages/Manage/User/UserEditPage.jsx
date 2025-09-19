@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
-import UserEdit from "@module/dada/UserEdit";
+import UserEdit from "@module/User/UserEdit";
 
 const UserEditPage = () => {
   return (

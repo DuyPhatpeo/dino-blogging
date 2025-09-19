@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
-import PostAdd from "@module/dasddddd/PostAdd";
+import PostAdd from "@module/Post/PostAdd";
 
 const PostAddNewPage = () => {
   return (
