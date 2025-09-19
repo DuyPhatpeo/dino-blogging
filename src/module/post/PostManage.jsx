@@ -20,16 +20,20 @@ const PostManageStyles = styled.div`
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  overflow-x: auto; /* Scroll ngang cho bảng nếu tràn */
 
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 32px;
     color: #0ea5e9;
+    text-align: center;
   }
 
   .table-image {
-    width: 300px;
+    width: 220px;
+    max-width: 100%;
     height: auto;
     object-fit: cover;
     border-radius: 8px;
@@ -58,6 +62,74 @@ const PostManageStyles = styled.div`
     padding: 20px;
     color: #6b7280;
     font-style: italic;
+  }
+  .post-info h3 {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.4;
+    word-break: break-word;
+    white-space: normal;
+    margin: 0 0 4px 0;
+  }
+
+  /* Responsive cho tablet */
+  @media (max-width: 1024px) {
+    padding: 20px;
+
+    h1.dashboard-heading {
+      font-size: 1.5rem;
+    }
+
+    .table-image {
+      width: 160px;
+    }
+
+    table th:nth-child(3), /* ID */
+    table td:nth-child(3),
+    table th:nth-child(5), /* Author */
+    table td:nth-child(5) {
+      display: none; /* Ẩn cột ít quan trọng */
+    }
+  }
+
+  /* Responsive cho mobile */
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    h1.dashboard-heading {
+      font-size: 1.3rem;
+    }
+
+    .table-image {
+      width: 120px;
+    }
+
+    table {
+      font-size: 0.85rem;
+    }
+
+    table th:nth-child(4), /* Category */
+    table td:nth-child(4) {
+      display: none; /* Ẩn category nếu quá nhỏ */
+    }
+  }
+
+  /* Mobile siêu nhỏ */
+  @media (max-width: 480px) {
+    .table-image {
+      width: 80px;
+    }
+
+    table {
+      font-size: 0.75rem;
+    }
+
+    table th:nth-child(6), /* Status */
+    table td:nth-child(6),
+    table th:nth-child(7), /* Hot Post */
+    table td:nth-child(7) {
+      display: none;
+    }
   }
 `;
 
@@ -162,7 +234,7 @@ export default function PostManage() {
       key: "title",
       render: (val, item) => (
         <div className="post-info">
-          <h3 style={{ fontWeight: 600 }}>{val}</h3>
+          <h3>{val}</h3>
           <time style={{ fontSize: "0.85rem", color: "#6b7280" }}>
             {item.createdAt}
           </time>
@@ -171,7 +243,10 @@ export default function PostManage() {
     },
     {
       key: "id",
-      render: (val) => <span className="id-badge">#{val.slice(0, 10)}</span>,
+      render: (val) => {
+        const shortId = val.length > 10 ? val.slice(0, 10) + "..." : val;
+        return <span className="id-badge">#{shortId}</span>;
+      },
     },
     {
       key: "category",
@@ -189,7 +264,7 @@ export default function PostManage() {
                   fontSize: "0.75rem",
                 }}
               >
-                {categories[id] || id}
+                {categories[id] ? categories[id] : "Unknown"}
               </span>
             ))}
           </div>
@@ -197,6 +272,7 @@ export default function PostManage() {
           <span>—</span>
         ),
     },
+    { key: "author" },
     {
       key: "status",
       render: (val, item) => (
@@ -229,7 +305,6 @@ export default function PostManage() {
         />
       ),
     },
-    { key: "author" },
   ];
 
   const actions = [
@@ -267,9 +342,9 @@ export default function PostManage() {
                 <th>Post Info</th>
                 <th>ID</th>
                 <th>Category</th>
+                <th>Author</th>
                 <th>Status</th>
                 <th>Hot Post</th>
-                <th>Author</th>
                 <th>Actions</th>
               </tr>
             </thead>
