@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
-import { Eye, Edit, Trash2, Flame } from "lucide-react";
+import { Eye, Edit, Trash2, Flame, Plus } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
 import {
   collection,
@@ -14,27 +14,41 @@ import {
 } from "firebase/firestore";
 import { postStatusLabel, postStatusStyle } from "@/utils/constants";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
+import Button from "@components/button/Button";
+import InputSearch from "@components/input/InputSearch";
+import { useNavigate } from "react-router-dom";
 
 const PostManageStyles = styled.div`
   background: #fff;
   padding: 32px;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  overflow-x: auto; /* Scroll ngang cho bảng nếu tràn */
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 32px;
     color: #0ea5e9;
-    text-align: center;
+    margin: 0;
   }
 
   .table-image {
-    width: 220px;
-    max-width: 100%;
-    height: auto;
+    width: 120px;
+    height: 80px;
     object-fit: cover;
     border-radius: 8px;
   }
@@ -57,16 +71,15 @@ const PostManageStyles = styled.div`
     color: #6b7280;
     font-style: italic;
   }
+
   .post-info h3 {
     font-weight: 600;
     font-size: 1rem;
     line-height: 1.4;
-    word-break: break-word;
-    white-space: normal;
     margin: 0 0 4px 0;
   }
 
-  /* Responsive cho tablet */
+  /* Responsive */
   @media (max-width: 1024px) {
     padding: 20px;
 
@@ -75,18 +88,18 @@ const PostManageStyles = styled.div`
     }
 
     .table-image {
-      width: 160px;
+      width: 100px;
+      height: 70px;
     }
 
-    table th:nth-child(3), /* ID */
+    table th:nth-child(3),
     table td:nth-child(3),
-    table th:nth-child(5), /* Author */
+    table th:nth-child(5),
     table td:nth-child(5) {
-      display: none; /* Ẩn cột ít quan trọng */
+      display: none;
     }
   }
 
-  /* Responsive cho mobile */
   @media (max-width: 768px) {
     padding: 16px;
 
@@ -94,33 +107,29 @@ const PostManageStyles = styled.div`
       font-size: 1.3rem;
     }
 
-    .table-image {
-      width: 120px;
-    }
-
     table {
       font-size: 0.85rem;
     }
 
-    table th:nth-child(4), /* Category */
+    table th:nth-child(4),
     table td:nth-child(4) {
-      display: none; /* Ẩn category nếu quá nhỏ */
+      display: none;
     }
   }
 
-  /* Mobile siêu nhỏ */
   @media (max-width: 480px) {
     .table-image {
       width: 80px;
+      height: 60px;
     }
 
     table {
       font-size: 0.75rem;
     }
 
-    table th:nth-child(6), /* Status */
+    table th:nth-child(6),
     table td:nth-child(6),
-    table th:nth-child(7), /* Hot Post */
+    table th:nth-child(7),
     table td:nth-child(7) {
       display: none;
     }
@@ -130,10 +139,12 @@ const PostManageStyles = styled.div`
 const POSTS_PER_PAGE = 10;
 
 export default function PostManage() {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch categories
   useEffect(() => {
@@ -183,7 +194,14 @@ export default function PostManage() {
     fetchPosts();
   }, []);
 
-  const paginatedPosts = posts.slice(
+  // Filter
+  const filteredPosts = posts.filter(
+    (p) =>
+      p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.author?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * POSTS_PER_PAGE,
     currentPage * POSTS_PER_PAGE
   );
@@ -201,8 +219,7 @@ export default function PostManage() {
   };
 
   const toggleStatus = async (postId, currentStatus) => {
-    // Flow: PENDING (2) → APPROVED (1) → HIDDEN (4) → REJECTED (3) → PENDING (2)
-    const flow = [2, 1, 4, 3];
+    const flow = [2, 1, 4, 3]; // pending -> approved -> hidden -> rejected
     const currentIndex = flow.indexOf(currentStatus);
     const nextStatus = flow[(currentIndex + 1) % flow.length];
 
@@ -250,7 +267,6 @@ export default function PostManage() {
             {val.map((id, index) => (
               <span
                 key={id + index}
-                className="badge"
                 style={{
                   background: "#f3f4f6",
                   padding: "2px 8px",
@@ -288,7 +304,6 @@ export default function PostManage() {
               fontWeight: 600,
               textTransform: "capitalize",
               cursor: "pointer",
-              transition: "all 0.2s ease",
             }}
             onClick={() => toggleStatus(item.id, val)}
             title="Click to change status"
@@ -310,16 +325,14 @@ export default function PostManage() {
             justifyContent: "center",
             padding: "4px",
             borderRadius: "6px",
-            transition: "all 0.2s ease",
-            backgroundColor: val ? "#fee2e2" : "#f3f4f6", // đỏ nhạt khi bật, xám nhạt khi tắt
+            backgroundColor: val ? "#fee2e2" : "#f3f4f6",
           }}
           title={val ? "Hot post" : "Not hot"}
         >
           <Flame
             size={18}
             style={{
-              color: val ? "#b91c1c" : "#9ca3af", // đỏ đậm khi bật, xám khi tắt
-              transition: "color 0.2s ease",
+              color: val ? "#b91c1c" : "#9ca3af",
             }}
           />
         </span>
@@ -331,23 +344,43 @@ export default function PostManage() {
     {
       type: "view",
       icon: <Eye size={18} />,
-      onClick: (item) => console.log("View", item),
+      onClick: (item) => navigate(`/manage/view-post/${item.id}`),
     },
     {
       type: "edit",
       icon: <Edit size={18} />,
-      onClick: (item) => console.log("Edit", item),
+      onClick: (item) => navigate(`/manage/update-post/${item.id}`),
     },
     {
       type: "delete",
       icon: <Trash2 size={18} />,
-      onClick: (item) => console.log("Delete", item),
+      onClick: (item) => navigate(`/manage/delete-post/${item.id}`),
     },
   ];
 
   return (
     <PostManageStyles>
-      <h1 className="dashboard-heading">Manage post</h1>
+      <div className="header">
+        <div className="header-top">
+          <h1 className="dashboard-heading">Manage posts</h1>
+          <Button
+            className="header-button"
+            onClick={() => navigate("/manage/add-post")}
+          >
+            <Plus size={18} style={{ marginRight: 6 }} />
+            New Post
+          </Button>
+        </div>
+
+        <InputSearch
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
+          placeholder="Search by title or author..."
+        />
+      </div>
 
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
@@ -381,20 +414,20 @@ export default function PostManage() {
               ) : (
                 <tr>
                   <td colSpan={columns.length + 1} className="no-data">
-                    No posts yet
+                    No posts found
                   </td>
                 </tr>
               )}
             </tbody>
           </Table>
 
-          {posts.length > 0 && (
+          {filteredPosts.length > 0 && (
             <Pagination
-              total={Math.ceil(posts.length / POSTS_PER_PAGE)}
+              total={Math.ceil(filteredPosts.length / POSTS_PER_PAGE)}
               current={currentPage}
               onChange={setCurrentPage}
               pageSize={POSTS_PER_PAGE}
-              totalItems={posts.length}
+              totalItems={filteredPosts.length}
             />
           )}
         </>
