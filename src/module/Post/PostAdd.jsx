@@ -14,7 +14,7 @@ import ImageUpload from "@components/ImageUpload/ImageUpload";
 import Toggle from "@components/Toggle/Toggle";
 import { usePostAdd } from "@hooks/usePostAdd";
 import useCategories from "@hooks/useCategories";
-import FormError from "src/temp/error/FormError";
+import FormError from "@components/Error/FormError";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
 

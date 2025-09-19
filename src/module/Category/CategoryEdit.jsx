@@ -10,7 +10,7 @@ import Field from "@components/Field/Field";
 import Input from "@components/Input/Input";
 import Label from "@components/Label/Label";
 import Radio from "@components/CheckBox/Radio";
-import FormError from "src/temp/error/FormError";
+import FormError from "@components/Error/FormError";
 import { useCategoryEdit } from "@hooks/useCategoryEdit";
 
 const schema = yup.object({

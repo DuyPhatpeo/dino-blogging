@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Home } from "lucide-react";
-import Layout from "src/temp/layout/Layout";
+import Layout from "@components/Layout/Layout";
 import Button from "@components/Button/Button";
 
 const NotFoundStyles = styled.div`

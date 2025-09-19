@@ -5,10 +5,10 @@ import Label from "@components/Label/Label";
 import Input from "@components/Input/Input";
 import Button from "@components/Button/Button";
 import ExtraText from "@components/Extratext/ExtraText";
-import FormError from "src/temp/error/FormError";
+import FormError from "@components/Error/FormError";
 import { useSignUp } from "@hooks/useSignUp";
 import { FormProvider } from "react-hook-form";
-import LayoutAuth from "src/temp/layout/LayoutAuth";
+import LayoutAuth from "@components/Layout/LayoutAuth";
 
 const SignUpPage = () => {
   const { form, signUpHandler, loading, navigate } = useSignUp();
