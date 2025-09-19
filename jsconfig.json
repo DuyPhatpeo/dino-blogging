@@ -10,7 +10,8 @@
       "@contexts/*": ["src/contexts/*"],
       "@pages/*": ["src/pages/*"],
       "@module/*": ["src/module/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@services/*": ["src/services/*"]
     }
   },
   "include": ["src/**/*"]

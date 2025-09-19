@@ -6,7 +6,7 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-import { auth, db, storage } from "@firebase/firebase-config";
+import { auth, db, storage } from "@services/firebase/firebase-config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";

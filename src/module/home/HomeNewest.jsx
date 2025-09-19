@@ -4,7 +4,7 @@ import Heading from "@components/Layout/Heading";
 import PostItem from "@module/Post/PostItem";
 import PostNewestItem from "@module/Post/PostNewestItem";
 import PostNewestLarge from "@module/Post/PostNewestLarge";
-import { db } from "@firebase/firebase-config";
+import { db } from "@services/firebase/firebase-config";
 import {
   collection,
   query,

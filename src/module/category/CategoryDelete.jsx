@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@firebase/firebase-config";
+import { db } from "@services/firebase/firebase-config";
 import { toast } from "react-toastify";
 
 import Button from "@components/Button/Button";

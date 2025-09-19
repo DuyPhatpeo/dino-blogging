@@ -16,7 +16,7 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "./src/utils"),
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@module": path.resolve(__dirname, "./src/module"),
-      "@firebase": path.resolve(__dirname, "./src/firebase"),
+      "@services": path.resolve(__dirname, "./src/services"),
     },
   },
 });

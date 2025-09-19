@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "@firebase/firebase-config";
+import { auth, db } from "@services/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@contexts/authContext";
 import { userStatus } from "@utils/constants";

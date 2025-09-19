@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import slugify from "slugify";
-import { db } from "@firebase/firebase-config";
+import { db } from "@services/firebase/firebase-config";
 
 export function useCategoryEdit(reset) {
   const { id } = useParams();

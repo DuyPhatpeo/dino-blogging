@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
-import { db } from "@firebase/firebase-config";
+import { db } from "@services/firebase/firebase-config";
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { userRole, userStatus } from "@utils/constants"; // 👈 import constants

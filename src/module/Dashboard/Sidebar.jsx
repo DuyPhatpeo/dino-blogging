@@ -10,7 +10,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { auth, db } from "@firebase/firebase-config";
+import { auth, db } from "@services/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import { userRole } from "@utils/constants";
 import { useAuth } from "@contexts/authContext";

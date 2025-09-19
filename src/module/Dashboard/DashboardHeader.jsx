@@ -4,7 +4,7 @@ import Button from "@components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
 import { useAuth } from "@contexts/authContext";
-import { db } from "@firebase/firebase-config";
+import { db } from "@services/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 
 const DashboardHeaderStyles = styled.header`
