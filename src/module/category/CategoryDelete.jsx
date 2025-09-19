@@ -6,7 +6,7 @@ import { db } from "@/firebase/firebase-config";
 import { toast } from "react-toastify";
 
 import Button from "@components/button/Button";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, X } from "lucide-react";
 
 import { useCategoryDelete } from "@/hooks/useCategoryDelete";
 
@@ -89,20 +89,22 @@ const CategoryDelete = () => {
 
       <div className="confirm-box">
         <p>
-          Bạn có chắc chắn muốn xoá category{" "}
-          <strong>{category?.name || "..."} </strong> không?
+          Are you sure you want to delete category{" "}
+          <strong>{category?.name || "..."}</strong>
+          {category?.id && ` (ID: ${category.id})`}?
         </p>
         <div className="actions">
           <Button
-            onClick={() => deleteCategoryHandler(id)} // 👈 dùng hook
+            onClick={() => deleteCategoryHandler(id)}
             isLoading={loading}
-            style={{ backgroundColor: "#ef4444" }}
+            variant="delete"
           >
             <Trash2 size={18} style={{ marginRight: "8px" }} />
-            Xoá
+            Delete
           </Button>
-          <Button variant="secondary" onClick={() => navigate(-1)}>
-            Huỷ
+          <Button variant="cancel" onClick={() => navigate(-1)}>
+            <X size={18} style={{ marginRight: "8px" }} />
+            Cancel
           </Button>
         </div>
       </div>

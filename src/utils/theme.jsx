@@ -30,6 +30,9 @@ export const theme = {
 
     delete: "#EF4444", // đỏ
     deleteHover: "#DC2626",
+
+    cancel: "#6B7280", // xám
+    cancelHover: "#4B5563",
   },
 
   // 🔠 Font size

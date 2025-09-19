@@ -24,9 +24,9 @@ const variantStyles = {
     }
   `,
   error: css`
-    background: ${(props) => props.theme.colors.error};
+    background: ${(props) => props.theme.colors.delete};
     &:hover {
-      background: ${(props) => props.theme.colors.deleteHover || "#DC2626"};
+      background: ${(props) => props.theme.colors.deleteHover};
     }
   `,
   warning: css`
@@ -51,6 +51,12 @@ const variantStyles = {
     background: ${(props) => props.theme.colors.delete};
     &:hover {
       background: ${(props) => props.theme.colors.deleteHover};
+    }
+  `,
+  cancel: css`
+    background: ${(props) => props.theme.colors.cancel};
+    &:hover {
+      background: ${(props) => props.theme.colors.cancelHover};
     }
   `,
 };

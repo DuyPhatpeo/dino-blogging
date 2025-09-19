@@ -1,7 +1,6 @@
 // CategoryAdd.jsx
 import React from "react";
 import styled from "styled-components";
-import { Controller } from "react-hook-form";
 import Button from "@components/button/Button";
 import Field from "@components/field/Field";
 import Input from "@components/input/Input";
@@ -10,7 +9,7 @@ import Radio from "@components/checkbox/Radio";
 import FormError from "@components/error/FormError";
 import { useCategoryAdd } from "@hooks/useCategoryAdd";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
 
 const CategoryAddNewStyles = styled.div`
   background: #fff;
@@ -128,7 +127,9 @@ const CategoryAdd = () => {
             height="52px"
             className="px-10"
             isLoading={loading}
+            variant="secondary"
           >
+            <Save size={18} style={{ marginRight: "8px" }} />
             Add new category
           </Button>
         </div>

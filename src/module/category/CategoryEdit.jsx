@@ -165,6 +165,7 @@ const CategoryEdit = () => {
             height="52px"
             className="px-10"
             isLoading={loading}
+            variant="secondary"
           >
             <Save size={18} style={{ marginRight: "8px" }} />
             Update category
