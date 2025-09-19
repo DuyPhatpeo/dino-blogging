@@ -88,7 +88,7 @@ const DropdownList = styled.div`
   overflow-y: auto;
 `;
 
-export function Dropdown({
+export default function Dropdown({
   placeholder = "Select...",
   children,
   selected,
