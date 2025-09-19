@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Heading from "@/components/layout/Heading";
-import PostItem from "@/module/post/PostItem";
-import PostNewestItem from "@/module/post/PostNewestItem";
-import PostNewestLarge from "@/module/post/PostNewestLarge";
+import Heading from "@components/Layout/Heading";
+import PostItem from "@/module/Post/PostItem";
+import PostNewestItem from "@/module/Post/PostNewestItem";
+import PostNewestLarge from "@/module/Post/PostNewestLarge";
 import { db } from "@/firebase/firebase-config";
 import {
   collection,
@@ -14,7 +14,7 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import { postStatus } from "@/utils/constants"; // ✅ import status
+import { postStatus } from "@/utils/constants";
 
 const HomeNewestStyles = styled.section`
   padding: 40px 0;

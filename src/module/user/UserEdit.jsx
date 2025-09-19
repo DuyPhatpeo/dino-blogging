@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "@components/button/Button";
-import Field from "@components/field/Field";
-import Input from "@components/input/Input";
-import Label from "@components/label/Label";
-import Radio from "@components/checkbox/Radio";
-import FormError from "@components/error/FormError"; // 👈 dùng error chung
+import Button from "@components/Button/Button";
+import Field from "@components/Field/Field";
+import Input from "@components/Input/Input";
+import Label from "@components/Label/Label";
+import Radio from "@components/Checkbox/Radio";
+import FormError from "@components/Error/FormError";
 
 import { useUserEdit } from "@/hooks/useUserEdit";
 import {

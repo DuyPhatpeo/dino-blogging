@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import Header from "@components/layout/Header";
-import Footer from "@components/layout/Footer";
+import Header from "@components/Layout/Header";
+import Footer from "@components/Layout/Footer";
 
 const LayoutWrapper = styled.div`
   min-height: 100vh;

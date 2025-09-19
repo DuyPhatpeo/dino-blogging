@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-config";
 
-import Button from "@components/button/Button";
+import Button from "@components/Button/Button";
 import { ArrowLeft, Edit3, Trash2 } from "lucide-react";
 
 const CategoryViewStyles = styled.div`

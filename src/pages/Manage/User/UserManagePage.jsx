@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@module/dasboard/DashboardLayout";
-import UserManage from "@module/user/UserManage";
+import DashboardLayout from "@/module/Dasboard/DashboardLayout";
+import UserManage from "@/module/User/UserManage";
 
 const UserManagePage = () => {
   return (

@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@module/dasboard/DashboardLayout";
-import CategoryEdit from "@/module/category/CategoryEdit";
+import DashboardLayout from "@/module/Dasboard/DashboardLayout";
+import CategoryEdit from "@/module/Category/CategoryEdit";
 
 const CategoryEditPage = () => {
   return (

@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@module/dasboard/DashboardLayout";
-import CategoryManage from "@module/category/CategoryManage";
+import DashboardLayout from "@/module/Dasboard/DashboardLayout";
+import CategoryManage from "@/module/Category/CategoryManage";
 
 const CategoryManagePage = () => {
   return (

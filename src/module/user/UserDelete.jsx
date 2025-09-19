@@ -5,7 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-config";
 import { toast } from "react-toastify";
 
-import Button from "@components/button/Button";
+import Button from "@components/Button/Button";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { useUserDelete } from "@/hooks/useUserDelete";
 

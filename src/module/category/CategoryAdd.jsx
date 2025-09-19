@@ -1,12 +1,12 @@
 // CategoryAdd.jsx
 import React from "react";
 import styled from "styled-components";
-import Button from "@components/button/Button";
-import Field from "@components/field/Field";
-import Input from "@components/input/Input";
-import Label from "@components/label/Label";
-import Radio from "@components/checkbox/Radio";
-import FormError from "@components/error/FormError";
+import Button from "@components/Button/Button";
+import Field from "@components/Field/Field";
+import Input from "@components/Input/Input";
+import Label from "@components/Label/Label";
+import Radio from "@components/Checkbox/Radio";
+import FormError from "@components/Error/FormError";
 import { useCategoryAdd } from "@hooks/useCategoryAdd";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";

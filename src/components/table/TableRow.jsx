@@ -1,6 +1,5 @@
 import React from "react";
-import { Eye, Edit, Trash2 } from "lucide-react";
-import { ActionButton } from "@components/table/Table";
+import { ActionButton } from "@/components/Table/Table";
 
 const TableRow = ({ item, columns, actions }) => {
   return (

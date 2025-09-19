@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Eye, Edit, Trash2 } from "lucide-react";
 
 // Table Wrapper
 const TableWrapper = styled.div`

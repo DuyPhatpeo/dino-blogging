@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@module/dasboard/DashboardLayout";
-import UserDelete from "@module/user/UserDelete";
+import DashboardLayout from "@/module/Dasboard/DashboardLayout";
+import UserDelete from "@/module/User/UserDelete";
 
 const UserDeletePage = () => {
   return (

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { Search, User, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import Logo from "@assets/logo.png";
-import Button from "../button/Button";
+import Button from "../Button/Button";
 import { useAuth } from "@contexts/authContext";
 import { db } from "@/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";

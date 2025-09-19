@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Home } from "lucide-react";
-import Button from "@components/button/Button";
-import Layout from "@components/layout/Layout";
+import Button from "@components/Button/Button";
+import Layout from "@components/Layout/Layout";
 
 const NotFoundStyles = styled.div`
   min-height: calc(100vh - 120px); /* trừ header + footer */

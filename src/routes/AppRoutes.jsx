@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import LoadingSpinner from "@components/loading/LoadingSpinner";
+import LoadingSpinner from "@components/Loading/LoadingSpinner";
 
 // Pages
 const HomePage = lazy(() => import("@pages/HomePage"));
@@ -9,30 +9,30 @@ const SignInPage = lazy(() => import("@pages/SignInPage"));
 const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
-const DashboardPage = lazy(() => import("@pages/mangage/DashboardPage"));
-const PostManagePage = lazy(() => import("@pages/mangage/post/PostManagePage"));
-const PostAddPage = lazy(() => import("@pages/mangage/post/PostAddPage"));
+const DashboardPage = lazy(() => import("@pages/Manage/DashboardPage"));
+const PostManagePage = lazy(() => import("@pages/Manage/Post/PostManagePage"));
+const PostAddPage = lazy(() => import("@pages/Manage/Post/PostAddPage"));
 
 const CategoryManagePage = lazy(() =>
-  import("@pages/mangage/category/CategoryManagePage")
+  import("@pages/Manage/Category/CategoryManagePage")
 );
 const CategoryAddPage = lazy(() =>
-  import("@pages/mangage/category/CategoryAddPage")
+  import("@pages/Manage/Category/CategoryAddPage")
 );
 const CategoryEditPage = lazy(() =>
-  import("@pages/mangage/category/CategoryEditPage")
+  import("@pages/Manage/Category/CategoryEditPage")
 );
 const CategoryDeletePage = lazy(() =>
-  import("@pages/mangage/category/CategoryDeletePage")
+  import("@pages/Manage/Category/CategoryDeletePage")
 );
 const CategoryViewPage = lazy(() =>
-  import("@pages/mangage/category/CategoryViewPage")
+  import("@pages/Manage/Category/CategoryViewPage")
 );
 
-const UserManagePage = lazy(() => import("@pages/mangage/user/UserManagePage"));
-const UserEditPage = lazy(() => import("@pages/mangage/user/UserEditPage"));
-const UserDeletePage = lazy(() => import("@pages/mangage/user/UserDeletePage"));
-const UserDetailPage = lazy(() => import("@pages/mangage/user/UserDetailPage"));
+const UserManagePage = lazy(() => import("@pages/Manage/User/UserManagePage"));
+const UserEditPage = lazy(() => import("@pages/Manage/User/UserEditPage"));
+const UserDeletePage = lazy(() => import("@pages/Manage/User/UserDeletePage"));
+const UserDetailPage = lazy(() => import("@pages/Manage/User/UserDetailPage"));
 
 export default function AppRoutes() {
   return (

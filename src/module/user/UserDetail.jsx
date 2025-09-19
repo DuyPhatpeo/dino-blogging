@@ -6,9 +6,9 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-config";
 import { toast } from "react-toastify";
 
-import Button from "@components/button/Button";
-import Field from "@components/field/Field";
-import Label from "@components/label/Label";
+import Button from "@components/Button/Button";
+import Field from "@components/Field/Field";
+import Label from "@components/Label/Label";
 import {
   userRoleLabel,
   userStatusLabel,

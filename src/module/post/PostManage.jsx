@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Table from "@components/table/Table";
-import Pagination from "@components/pagination/Pagination";
+import Table from "@components/Table/Table";
+import Pagination from "@components/Pagination/Pagination";
 import { Eye, Edit, Trash2, Flame, Plus } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
 import {
@@ -13,9 +13,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { postStatusLabel, postStatusStyle } from "@/utils/constants";
-import LoadingSpinner from "@components/loading/LoadingSpinner";
-import Button from "@components/button/Button";
-import InputSearch from "@components/input/InputSearch";
+import LoadingSpinner from "@components/Loading/LoadingSpinner";
+import Button from "@components/Button/Button";
+import InputSearch from "@components/Input/InputSearch";
 import { useNavigate } from "react-router-dom";
 
 const PostManageStyles = styled.div`
