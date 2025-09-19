@@ -67,10 +67,10 @@ export function useCategoryAdd() {
         slug: "",
       });
 
-      toast.success("✅ Category added successfully!");
+      toast.success("Category added successfully!");
       navigate("/manage/category");
     } catch (error) {
-      console.error("❌ Error adding category:", error);
+      console.error("Error adding category:", error);
       toast.error(error.message || "Error adding category");
     } finally {
       setLoading(false);

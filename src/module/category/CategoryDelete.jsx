@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { doc, getDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase-config";
 import { toast } from "react-toastify";
 
 import Button from "@components/button/Button";
 import { ArrowLeft, Trash2 } from "lucide-react";
+
+import { useCategoryDelete } from "@/hooks/useCategoryDelete";
 
 const CategoryDeleteStyles = styled.div`
   background: #fff;
@@ -47,10 +49,12 @@ const CategoryDeleteStyles = styled.div`
 `;
 
 const CategoryDelete = () => {
-  const { id } = useParams(); // lấy id từ URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const [category, setCategory] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  // 🟢 dùng hook delete
+  const { deleteCategoryHandler, loading } = useCategoryDelete();
 
   // fetch category để hiển thị tên
   useEffect(() => {
@@ -73,21 +77,6 @@ const CategoryDelete = () => {
     fetchCategory();
   }, [id, navigate]);
 
-  // Xoá category
-  const handleDelete = async () => {
-    try {
-      setLoading(true);
-      await deleteDoc(doc(db, "categories", id));
-      toast.success("🗑️ Category deleted successfully!");
-      navigate("/manage/category");
-    } catch (error) {
-      console.error(error);
-      toast.error("❌ Error deleting category");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <CategoryDeleteStyles>
       <div className="header">
@@ -101,11 +90,11 @@ const CategoryDelete = () => {
       <div className="confirm-box">
         <p>
           Bạn có chắc chắn muốn xoá category{" "}
-          <strong>{category?.name || "..."}</strong> không?
+          <strong>{category?.name || "..."} </strong> không?
         </p>
         <div className="actions">
           <Button
-            onClick={handleDelete}
+            onClick={() => deleteCategoryHandler(id)} // 👈 dùng hook
             isLoading={loading}
             style={{ backgroundColor: "#ef4444" }}
           >

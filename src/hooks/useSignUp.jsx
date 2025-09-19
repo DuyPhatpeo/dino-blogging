@@ -68,10 +68,10 @@ export function useSignUp() {
         createdAt: new Date(),
       });
 
-      toast.success("✅ Register successful!");
+      toast.success("Register successful!");
       navigate("/signin");
     } catch (error) {
-      console.error("❌ Sign up error:", error);
+      console.error("Sign up error:", error);
       if (error.code === "auth/email-already-in-use") {
         toast.error("Email is already registered. Please use another email.");
       } else {

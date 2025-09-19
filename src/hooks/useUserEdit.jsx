@@ -64,10 +64,10 @@ export function useUserEdit() {
         updatedAt: serverTimestamp(),
       });
 
-      toast.success("✅ User updated successfully!");
+      toast.success("User updated successfully!");
       navigate("/manage/user");
     } catch (error) {
-      console.error("❌ Error updating user:", error);
+      console.error("Error updating user:", error);
       toast.error(error.message || "Error updating user");
     } finally {
       setLoading(false);

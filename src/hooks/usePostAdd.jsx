@@ -91,10 +91,10 @@ export function usePostAdd() {
         hot: false,
       });
 
-      toast.success("✅ Post added successfully!");
+      toast.success("Post added successfully!");
       navigate("/manage/post");
     } catch (error) {
-      console.error("❌ Error adding post:", error);
+      console.error("Error adding post:", error);
       toast.error(error.message || "Error adding post");
     } finally {
       setLoading(false);
