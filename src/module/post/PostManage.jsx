@@ -12,7 +12,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { postStatusLabel, postStatusColor } from "@/utils/constants";
+import { postStatusLabel, postStatusStyle } from "@/utils/constants";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
 
 const PostManageStyles = styled.div`
@@ -275,25 +275,34 @@ export default function PostManage() {
     { key: "author" },
     {
       key: "status",
-      render: (val, item) => (
-        <span
-          className="clickable-status"
-          style={{
-            display: "inline-block",
-            padding: "4px 10px",
-            borderRadius: "4px",
-            color: "#fff",
-            backgroundColor: postStatusColor[val] || "#6b7280",
-            fontSize: "0.8rem",
-            fontWeight: 500,
-            textTransform: "capitalize",
-          }}
-          onClick={() => toggleStatus(item.id, val)}
-          title="Click to change status"
-        >
-          {postStatusLabel[val] || "UNKNOWN"}
-        </span>
-      ),
+      render: (val, item) => {
+        const style = postStatusStyle[val] || {
+          bg: "#e5e7eb",
+          color: "#374151",
+        };
+
+        return (
+          <span
+            className="clickable-status"
+            style={{
+              display: "inline-block",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              backgroundColor: style.bg,
+              color: style.color,
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              textTransform: "capitalize",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
+            onClick={() => toggleStatus(item.id, val)}
+            title="Click to change status"
+          >
+            {postStatusLabel[val] || "UNKNOWN"}
+          </span>
+        );
+      },
     },
     {
       key: "hot",

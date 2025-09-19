@@ -223,24 +223,33 @@ export default function CategoryManage() {
     { key: "slug", className: "slug-col" }, // 👈 sẽ bị ẩn ở mobile
     {
       key: "status",
-      render: (val, item) => (
-        <span
-          className="clickable-status"
-          style={{
-            display: "inline-block",
-            padding: "4px 10px",
-            borderRadius: "4px",
-            color: "#fff",
-            backgroundColor: val === 1 ? "#22c55e" : "#6b7280",
-            fontSize: "0.8rem",
-            fontWeight: 500,
-          }}
-          onClick={() => toggleStatus(item.id, val)}
-          title="Click to change status"
-        >
-          {val === 1 ? "Active" : "Inactive"}
-        </span>
-      ),
+      render: (val, item) => {
+        const style =
+          val === 1
+            ? { bg: "#dcfce7", color: "#15803d", label: "Active" } // xanh nhạt
+            : { bg: "#f3f4f6", color: "#4b5563", label: "Inactive" }; // xám nhạt
+
+        return (
+          <span
+            className="clickable-status"
+            style={{
+              display: "inline-block",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              backgroundColor: style.bg,
+              color: style.color,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
+            onClick={() => toggleStatus(item.id, val)}
+            title="Click to change status"
+          >
+            {style.label}
+          </span>
+        );
+      },
     },
   ];
 

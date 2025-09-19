@@ -30,11 +30,11 @@ export const userStatusLabel = {
   [userStatus.BANNED]: "BANNED",
 };
 
-// Màu hiển thị theo status
-export const userStatusColor = {
-  [userStatus.INACTIVE]: "#9ca3af", // xám nhạt
-  [userStatus.ACTIVE]: "#22c55e", // xanh
-  [userStatus.BANNED]: "#ef4444", // đỏ
+// Badge style (bg + text)
+export const userStatusStyle = {
+  [userStatus.INACTIVE]: { bg: "#f3f4f6", color: "#4b5563" }, // xám nhạt bg, chữ đậm
+  [userStatus.ACTIVE]: { bg: "#dcfce7", color: "#15803d" }, // xanh nhạt bg, xanh đậm chữ
+  [userStatus.BANNED]: { bg: "#fee2e2", color: "#b91c1c" }, // đỏ nhạt bg, đỏ đậm chữ
 };
 
 // ======================
@@ -57,10 +57,10 @@ export const postStatusLabel = {
   [postStatus.HIDDEN]: "HIDDEN",
 };
 
-// Màu hiển thị theo status
-export const postStatusColor = {
-  [postStatus.APPROVED]: "#22c55e", // xanh
-  [postStatus.PENDING]: "#facc15", // vàng
-  [postStatus.REJECTED]: "#ef4444", // đỏ
-  [postStatus.HIDDEN]: "#6b7280", // xám
+// Badge style (bg + text)
+export const postStatusStyle = {
+  [postStatus.APPROVED]: { bg: "#dcfce7", color: "#15803d" }, // xanh
+  [postStatus.PENDING]: { bg: "#fef9c3", color: "#a16207" }, // vàng
+  [postStatus.REJECTED]: { bg: "#fee2e2", color: "#b91c1c" }, // đỏ
+  [postStatus.HIDDEN]: { bg: "#e5e7eb", color: "#374151" }, // xám
 };

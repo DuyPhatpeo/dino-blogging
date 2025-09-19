@@ -14,7 +14,7 @@ import {
   userRoleLabel,
   userStatus,
   userStatusLabel,
-  userStatusColor,
+  userStatusStyle,
 } from "@/utils/constants";
 
 const UserManageStyles = styled.div`
@@ -226,35 +226,61 @@ export default function UserManage() {
     {
       key: "role",
       label: "Role",
-      render: (val) => (
-        <span
-          className="role-badge"
-          style={{
-            backgroundColor:
-              val === userRole.ADMIN
-                ? "#f97316"
-                : val === userRole.MODERATOR
-                ? "#3b82f6"
-                : "#6b7280",
-          }}
-        >
-          {userRoleLabel[val]}
-        </span>
-      ),
+      render: (val) => {
+        // định nghĩa style riêng cho role
+        const roleStyle = {
+          [userRole.USER]: { bg: "#e5e7eb", color: "#374151" }, // xám nhạt
+          [userRole.ADMIN]: { bg: "#ffedd5", color: "#c2410c" }, // cam
+          [userRole.MODERATOR]: { bg: "#dbeafe", color: "#1d4ed8" }, // xanh dương
+        };
+
+        return (
+          <span
+            className="role-badge"
+            style={{
+              display: "inline-block",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              backgroundColor: roleStyle[val]?.bg,
+              color: roleStyle[val]?.color,
+            }}
+          >
+            {userRoleLabel[val]}
+          </span>
+        );
+      },
     },
     {
       key: "status",
       label: "Status",
-      render: (val, item) => (
-        <span
-          className="status-badge"
-          style={{ backgroundColor: userStatusColor[val] }}
-          onClick={() => toggleStatus(item.id, val)}
-          title="Click to toggle status"
-        >
-          {userStatusLabel[val]}
-        </span>
-      ),
+      render: (val, item) => {
+        const style = userStatusStyle[val] || {
+          bg: "#f3f4f6",
+          color: "#374151",
+        };
+
+        return (
+          <span
+            className="status-badge"
+            style={{
+              display: "inline-block",
+              padding: "4px 10px",
+              borderRadius: "6px",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              backgroundColor: style.bg,
+              color: style.color,
+              cursor: "pointer",
+            }}
+            onClick={() => toggleStatus(item.id, val)}
+            title="Click to toggle status"
+          >
+            {userStatusLabel[val]}
+          </span>
+        );
+      },
     },
   ];
 
