@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import banner from "@assets/banner.png";
+import Banner from "@assets/banner.png";
 
 const HomeBannerStyles = styled.section`
   width: 100%;
@@ -97,7 +97,7 @@ const HomeBanner = () => {
           </p>
         </div>
         <div className="banner-image">
-          <img src={banner} alt="Dino Blogging" />
+          <img src={Banner} alt="Dino Blogging" />
         </div>
       </div>
     </HomeBannerStyles>
