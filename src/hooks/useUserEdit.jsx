@@ -44,11 +44,11 @@ export function useUserEdit() {
         if (docSnap.exists()) {
           reset(docSnap.data());
         } else {
-          toast.error("❌ User not found!");
+          toast.error("User not found!");
           navigate("/manage/user");
         }
       } catch (error) {
-        console.error("❌ Error fetching user:", error);
+        console.error("Error fetching user:", error);
         toast.error("Error fetching user data");
       }
     }
