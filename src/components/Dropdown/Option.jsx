@@ -1,7 +1,7 @@
 // Option.js
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { DropdownContext } from "@components/Dropdown/Dropdown";
+import { DropdownContext } from "./Dropdown";
 import { CheckSquare, Square } from "lucide-react";
 
 const OptionItem = styled.div`
