@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Table from "@components/Table/Table";
-import Pagination from "@components/Pagination/Pagination";
+import Table from "src/temp/table/Table";
+import Pagination from "src/temp/pagination/Pagination";
 import { Edit, Trash2, ArrowUp, ArrowDown, Eye } from "lucide-react";
 import { db } from "@services/firebase/firebase-config";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import LoadingSpinner from "@components/Loading/LoadingSpinner";
+import LoadingSpinner from "src/temp/loading/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
-import InputSearch from "@components/Input/InputSearch";
+import InputSearch from "src/temp/input/InputSearch";
 
 import {
   userRoleLabel,

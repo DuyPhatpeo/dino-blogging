@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Heading from "@components/Layout/Heading";
+import Heading from "src/temp/layout/Heading";
 import PostFeatureItem from "@module/Post/PostFeatureItem";
 import { db } from "@services/firebase/firebase-config";
 import {

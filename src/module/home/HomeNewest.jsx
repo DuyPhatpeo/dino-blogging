@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Heading from "@components/Layout/Heading";
+import Heading from "src/temp/layout/Heading";
 import PostItem from "@module/Post/PostItem";
 import PostNewestItem from "@module/Post/PostNewestItem";
 import PostNewestLarge from "@module/Post/PostNewestLarge";

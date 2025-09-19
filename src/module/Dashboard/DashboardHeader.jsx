@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Button from "@components/Button/Button";
+import Button from "src/temp/button/Button";
 import { useNavigate } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
 import { useAuth } from "@contexts/authContext";

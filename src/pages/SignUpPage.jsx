@@ -1,14 +1,14 @@
 import React from "react";
 import { Mail, Lock, User } from "lucide-react";
-import Field from "@components/Field/Field";
-import Label from "@components/Label/Label";
-import Input from "@components/Input/Input";
-import Button from "@components/Button/Button";
-import ExtraText from "@components/ExtraText/ExtraText";
-import FormError from "@components/Error/FormError";
+import Field from "src/temp/field/Field";
+import Label from "src/temp/label/Label";
+import Input from "src/temp/input/Input";
+import Button from "src/temp/button/Button";
+import ExtraText from "src/temp/extraText/ExtraText";
+import FormError from "src/temp/error/FormError";
 import { useSignUp } from "@hooks/useSignUp";
 import { FormProvider } from "react-hook-form";
-import LayoutAuth from "@components/Layout/LayoutAuth";
+import LayoutAuth from "src/temp/layout/LayoutAuth";
 
 const SignUpPage = () => {
   const { form, signUpHandler, loading, navigate } = useSignUp();
