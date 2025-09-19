@@ -1,3 +1,4 @@
+// PostAdd.jsx
 import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
@@ -13,7 +14,9 @@ import ImageUpload from "@components/imageUpload/ImageUpload";
 import Toggle from "@components/toggle/Toggle";
 import { usePostAdd } from "@/hooks/usePostAdd";
 import useCategories from "@hooks/useCategories";
-import FormError from "@components/error/FormError"; // ✅ import
+import FormError from "@components/error/FormError";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Save } from "lucide-react";
 
 const PostAddNewStyles = styled.div`
   background: #fff;
@@ -21,36 +24,50 @@ const PostAddNewStyles = styled.div`
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 32px;
     color: #0ea5e9;
   }
+
   form {
     display: flex;
     flex-direction: column;
     gap: 32px;
   }
+
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
   }
+
   .form-actions {
     display: flex;
     justify-content: center;
     margin-top: 16px;
   }
+
   .status-group {
     display: flex;
     align-items: center;
     gap: 20px;
     margin-top: 8px;
   }
+
   .progress-bar {
     height: 6px;
     background: #0ea5e9;
@@ -60,6 +77,7 @@ const PostAddNewStyles = styled.div`
 `;
 
 const PostAdd = () => {
+  const navigate = useNavigate();
   const { uploadProgress, form, addPostHandler, loading } = usePostAdd();
   const { control, watch, handleSubmit, formState } = form;
   const { errors } = formState;
@@ -68,7 +86,20 @@ const PostAdd = () => {
 
   return (
     <PostAddNewStyles>
-      <h1 className="dashboard-heading">Add new post</h1>
+      <div className="header">
+        <h1 className="dashboard-heading">Add new post</h1>
+        <Button
+          type="button"
+          height="52px"
+          className="px-10"
+          variant="outline"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft size={18} style={{ marginRight: 8 }} />
+          Back
+        </Button>
+      </div>
+
       <form onSubmit={handleSubmit(addPostHandler)}>
         {/* Title + Slug */}
         <div className="form-row">
@@ -86,7 +117,7 @@ const PostAdd = () => {
             <Input
               control={control}
               name="slug"
-              placeholder="Enter your slug (auto if empty)"
+              placeholder="Enter slug (auto if empty)"
             />
             <FormError message={errors.slug?.message} />
           </Field>
@@ -164,7 +195,6 @@ const PostAdd = () => {
                 const activeCategories = categories.filter(
                   (c) => c.status === 1
                 );
-
                 const selected =
                   activeCategories.filter((c) => value?.includes(c.id)) || [];
 
@@ -213,12 +243,15 @@ const PostAdd = () => {
 
         {/* Submit */}
         <div className="form-actions">
+          <div />
           <Button
             type="submit"
             height="52px"
             className="px-10"
             isLoading={loading}
+            variant="secondary"
           >
+            <Save size={18} style={{ marginRight: 8 }} />
             Add new post
           </Button>
         </div>
