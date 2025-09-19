@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Heading from "src/temp/layout/Heading";
-import PostFeatureItem from "@module/Post/PostFeatureItem";
+import PostFeatureItem from "@module/dasddddd/PostFeatureItem";
 import { db } from "@services/firebase/firebase-config";
 import {
   collection,
