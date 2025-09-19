@@ -88,20 +88,20 @@ const UserDelete = () => {
 
       <div className="confirm-box">
         <p>
-          Bạn có chắc chắn muốn xoá user{" "}
-          <strong>{user?.fullname || user?.email || "..."}</strong> không?
+          Are you sure you want to delete user{" "}
+          <strong>{user?.fullname || user?.email || "..."}</strong>?
         </p>
         <div className="actions">
           <Button
             onClick={() => deleteUserHandler(id)}
             isLoading={loading}
-            style={{ backgroundColor: "#ef4444" }}
+            variant="delete"
           >
             <Trash2 size={18} style={{ marginRight: "8px" }} />
-            Xoá
+            Delete
           </Button>
-          <Button variant="secondary" onClick={() => navigate(-1)}>
-            Huỷ
+          <Button variant="cancel" onClick={() => navigate(-1)}>
+            Cancel
           </Button>
         </div>
       </div>

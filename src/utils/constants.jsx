@@ -16,6 +16,13 @@ export const userRoleLabel = {
   [userRole.MODERATOR]: "MODERATOR",
 };
 
+// Badge style cho Role
+export const userRoleStyle = {
+  [userRole.USER]: { bg: "#e5e7eb", color: "#374151" }, // xám nhạt bg, chữ đậm
+  [userRole.ADMIN]: { bg: "#ffedd5", color: "#c2410c" }, // cam nhạt bg, chữ cam đậm
+  [userRole.MODERATOR]: { bg: "#dbeafe", color: "#1d4ed8" }, // xanh dương nhạt bg, chữ xanh đậm
+};
+
 // Status của user
 export const userStatus = {
   INACTIVE: 0,

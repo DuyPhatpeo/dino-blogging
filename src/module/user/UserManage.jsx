@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import InputSearch from "@components/input/InputSearch";
 
 import {
-  userRole,
   userRoleLabel,
+  userRoleStyle,
   userStatus,
   userStatusLabel,
   userStatusStyle,
@@ -66,12 +66,11 @@ const UserManageStyles = styled.div`
   .role-badge {
     display: inline-block;
     padding: 4px 10px;
-    border-radius: 4px;
-    color: #fff;
+    border-radius: 6px;
     font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
+    font-weight: 600;
     text-transform: uppercase;
+    cursor: pointer;
   }
 
   .no-data {
@@ -81,20 +80,16 @@ const UserManageStyles = styled.div`
     font-style: italic;
   }
 
-  /* 🔹 Responsive */
   @media (max-width: 1024px) {
     padding: 20px;
-
     h1.dashboard-heading {
       font-size: 1.5rem;
     }
-
     th,
     td {
       font-size: 0.9rem;
       padding: 8px;
     }
-
     .header-top {
       flex-direction: column;
       align-items: flex-start;
@@ -109,13 +104,10 @@ const UserManageStyles = styled.div`
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
-
     th,
     td {
       white-space: nowrap;
     }
-
-    /* Ẩn email khi mobile */
     .email-col {
       display: none;
     }
@@ -123,15 +115,12 @@ const UserManageStyles = styled.div`
 
   @media (max-width: 480px) {
     padding: 16px;
-
     h1.dashboard-heading {
       font-size: 1.2rem;
     }
-
     .header {
       gap: 12px;
     }
-
     .header-top {
       gap: 6px;
     }
@@ -167,14 +156,13 @@ export default function UserManage() {
     fetchUsers();
   }, []);
 
-  // Filter
+  // Filter & sort
   const filteredUsers = users.filter(
     (u) =>
       u.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort theo fullname
   const sortedUsers = [...filteredUsers].sort((a, b) => {
     const aVal = a.fullname ?? "";
     const bVal = b.fullname ?? "";
@@ -207,7 +195,6 @@ export default function UserManage() {
 
   const toggleSort = () =>
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-
   const renderSortIcon = () =>
     sortDirection === "asc" ? (
       <ArrowUp size={16} color="#0ea5e9" />
@@ -222,30 +209,17 @@ export default function UserManage() {
       render: (val) => <span className="id-badge">#{val}</span>,
     },
     { key: "fullname", label: "Full Name" },
-    { key: "email", label: "Email", className: "email-col" }, // ẩn khi mobile
+    { key: "email", label: "Email", className: "email-col" },
     {
       key: "role",
       label: "Role",
       render: (val) => {
-        // định nghĩa style riêng cho role
-        const roleStyle = {
-          [userRole.USER]: { bg: "#e5e7eb", color: "#374151" }, // xám nhạt
-          [userRole.ADMIN]: { bg: "#ffedd5", color: "#c2410c" }, // cam
-          [userRole.MODERATOR]: { bg: "#dbeafe", color: "#1d4ed8" }, // xanh dương
-        };
-
+        const style = userRoleStyle[val] || { bg: "#e5e7eb", color: "#374151" };
         return (
           <span
             className="role-badge"
-            style={{
-              display: "inline-block",
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              backgroundColor: roleStyle[val]?.bg,
-              color: roleStyle[val]?.color,
-            }}
+            style={{ backgroundColor: style.bg, color: style.color }}
+            title={userRoleLabel[val]}
           >
             {userRoleLabel[val]}
           </span>
@@ -260,20 +234,10 @@ export default function UserManage() {
           bg: "#f3f4f6",
           color: "#374151",
         };
-
         return (
           <span
             className="status-badge"
-            style={{
-              display: "inline-block",
-              padding: "4px 10px",
-              borderRadius: "6px",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              backgroundColor: style.bg,
-              color: style.color,
-              cursor: "pointer",
-            }}
+            style={{ backgroundColor: style.bg, color: style.color }}
             onClick={() => toggleStatus(item.id, val)}
             title="Click to toggle status"
           >
@@ -288,7 +252,7 @@ export default function UserManage() {
     {
       type: "view",
       icon: <Eye size={18} />,
-      onClick: (item) => navigate(`/manage/view-user/${item.id}`),
+      onClick: (item) => navigate(`/manage/detail-user/${item.id}`),
     },
     {
       type: "edit",
