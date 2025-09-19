@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import LoadingSpinner from "@components/Loading/LoadingSpinner";
 
 // Pages
 const HomePage = lazy(() => import("@pages/HomePage"));
@@ -36,21 +35,7 @@ const UserDetailPage = lazy(() => import("@pages/Manage/User/UserDetailPage"));
 
 export default function AppRoutes() {
   return (
-    <Suspense
-      fallback={
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "linear-gradient(135deg, #f0f4ff, #e0f7fa)",
-          }}
-        >
-          <LoadingSpinner size="70px" />
-        </div>
-      }
-    >
+    <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
