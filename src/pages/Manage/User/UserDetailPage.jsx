@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@/module/Dasboard/DashboardLayout";
-import UserDetail from "@/module/User/UserDetail";
+import DashboardLayout from "@module/Dashboard/DashboardLayout";
+import UserDetail from "@module/User/UserDetail";
 
 const UserDetailPage = () => {
   return (

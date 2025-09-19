@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@/module/Dasboard/DashboardLayout";
-import UserEdit from "@/module/User/UserEdit";
+import DashboardLayout from "@module/Dashboard/DashboardLayout";
+import UserEdit from "@module/User/UserEdit";
 
 const UserEditPage = () => {
   return (

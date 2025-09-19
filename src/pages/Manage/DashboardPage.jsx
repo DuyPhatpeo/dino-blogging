@@ -1,6 +1,6 @@
 // DashboardPage.jsx
 import React, { useEffect, useState } from "react";
-import DashboardLayout from "@/module/Dasboard/DashboardLayout";
+import DashboardLayout from "@module/Dashboard/DashboardLayout";
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({

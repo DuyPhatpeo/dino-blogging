@@ -1,6 +1,6 @@
 import React from "react";
-import DashboardLayout from "@/module/Dasboard/DashboardLayout";
-import PostManage from "@/module/Post/PostManage";
+import DashboardLayout from "@module/Dashboard/DashboardLayout";
+import PostManage from "@module/Post/PostManage";
 
 const PostManagePage = () => {
   return (

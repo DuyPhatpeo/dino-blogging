@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import Layout from "@components/Layout/Layout";
 import Heading from "@components/Layout/Heading";
-import PostCategory from "@/module/Post/PostCategory";
-import PostImage from "@/module/Post/PostImage";
-import PostItem from "@/module/Post/PostItem";
-import PostMeta from "@/module/Post/PostMeta";
+import PostCategory from "@module/Post/PostCategory";
+import PostImage from "@module/Post/PostImage";
+import PostItem from "@module/Post/PostItem";
+import PostMeta from "@module/Post/PostMeta";
 
 const PostDetailsPageStyles = styled.div`
   padding-bottom: 100px;

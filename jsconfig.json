@@ -7,10 +7,9 @@
       "@assets/*": ["src/assets/*"],
       "@styles/*": ["src/styles/*"],
       "@images/*": ["src/assets/images/*"],
-      "@routers/*": ["src/routes/*"],
+      "@routes/*": ["src/routes/*"],
       "@hooks/*": ["src/hooks/*"],
       "@contexts/*": ["src/contexts/*"],
-      "@apis/*": ["src/apis/*"],
       "@pages/*": ["src/pages/*"],
       "@module/*": ["src/module/*"],
       "@utils/*": ["src/utils/*"]
