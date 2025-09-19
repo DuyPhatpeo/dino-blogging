@@ -25,6 +25,9 @@ const CategoryEditPage = lazy(() =>
 const CategoryDeletePage = lazy(() =>
   import("@pages/mangage/category/CategoryDeletePage")
 );
+const CategoryViewPage = lazy(() =>
+  import("@pages/mangage/category/CategoryViewPage")
+);
 
 const UserManagePage = lazy(() => import("@pages/mangage/user/UserManagePage"));
 const UserEditPage = lazy(() => import("@pages/mangage/user/UserEditPage"));
@@ -71,6 +74,10 @@ export default function AppRoutes() {
         <Route
           path="/manage/delete-category/:id"
           element={<CategoryDeletePage />}
+        />
+        <Route
+          path="/manage/view-category/:id"
+          element={<CategoryViewPage />}
         />
 
         {/* Users */}
