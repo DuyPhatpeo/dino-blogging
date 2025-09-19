@@ -10,7 +10,7 @@ import Label from "@components/Label/Label";
 import Radio from "@components/Checkbox/Radio";
 import FormError from "@components/Error/FormError";
 
-import { useUserEdit } from "@/hooks/useUserEdit";
+import { useUserEdit } from "@hooks/useUserEdit";
 import {
   userRole,
   userRoleLabel,

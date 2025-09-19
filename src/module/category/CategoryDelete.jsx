@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import Button from "@components/Button/Button";
 import { ArrowLeft, Trash2, X } from "lucide-react";
 
-import { useCategoryDelete } from "@/hooks/useCategoryDelete";
+import { useCategoryDelete } from "@hooks/useCategoryDelete";
 
 const CategoryDeleteStyles = styled.div`
   background: #fff;

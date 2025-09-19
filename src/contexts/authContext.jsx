@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { userRole, userStatus } from "@/utils/constants";
+import { userRole, userStatus } from "@utils/constants";
 
 const AuthContext = createContext();
 

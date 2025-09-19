@@ -9,7 +9,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@contexts/authContext";
-import { userStatus } from "@/utils/constants";
+import { userStatus } from "@utils/constants";
 
 // ✅ Schema validate
 const schema = yup.object().shape({

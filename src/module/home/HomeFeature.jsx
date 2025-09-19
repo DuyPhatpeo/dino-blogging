@@ -12,7 +12,7 @@ import {
   getDoc,
   getDocs,
 } from "firebase/firestore";
-import { postStatus } from "@/utils/constants"; // 👈 import constants
+import { postStatus } from "@utils/constants"; // 👈 import constants
 
 const HomeFeatureStyles = styled.section`
   padding: 40px 0;

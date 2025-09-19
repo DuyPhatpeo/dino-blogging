@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import slugify from "slugify";
 import { toast } from "react-toastify";
-import { postStatus } from "@/utils/constants";
+import { postStatus } from "@utils/constants";
 import { useImageUpload } from "@hooks/useImageUpload";
 import { db } from "@/firebase/firebase-config";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";

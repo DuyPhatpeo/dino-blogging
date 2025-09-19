@@ -14,7 +14,7 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import { postStatus } from "@/utils/constants";
+import { postStatus } from "@utils/constants";
 
 const HomeNewestStyles = styled.section`
   padding: 40px 0;

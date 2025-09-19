@@ -12,7 +12,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { postStatusLabel, postStatusStyle } from "@/utils/constants";
+import { postStatusLabel, postStatusStyle } from "@utils/constants";
 import LoadingSpinner from "@components/Loading/LoadingSpinner";
 import Button from "@components/Button/Button";
 import InputSearch from "@components/Input/InputSearch";

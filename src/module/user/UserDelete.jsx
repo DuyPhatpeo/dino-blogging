@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 import Button from "@components/Button/Button";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import { useUserDelete } from "@/hooks/useUserDelete";
+import { useUserDelete } from "@hooks/useUserDelete";
 
 const UserDeleteStyles = styled.div`
   background: #fff;

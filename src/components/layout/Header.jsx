@@ -7,7 +7,7 @@ import Button from "../Button/Button";
 import { useAuth } from "@contexts/authContext";
 import { db } from "@/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
-import { userRoleLabel } from "@/utils/constants";
+import { userRoleLabel } from "@utils/constants";
 
 const HeaderStyles = styled.header`
   width: 100%;

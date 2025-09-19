@@ -15,7 +15,7 @@ import {
   userStatus,
   userStatusLabel,
   userStatusStyle,
-} from "@/utils/constants";
+} from "@utils/constants";
 
 const UserManageStyles = styled.div`
   background: #fff;
