@@ -65,6 +65,72 @@ const CategoryManageStyles = styled.div`
     color: #6b7280;
     font-style: italic;
   }
+
+  /* 🔹 Responsive */
+  @media (max-width: 1024px) {
+    padding: 20px;
+
+    h1.dashboard-heading {
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+
+    .header-top {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .header-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    th,
+    td {
+      white-space: nowrap;
+    }
+
+    /* Ẩn slug khi mobile */
+    .slug-col {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+
+    h1.dashboard-heading {
+      font-size: 1.2rem;
+    }
+
+    .header {
+      gap: 12px;
+    }
+
+    .header-top {
+      gap: 6px;
+    }
+
+    .header-button {
+      font-size: 0.9rem;
+      padding: 6px 12px;
+    }
+  }
 `;
 
 const CATEGORIES_PER_PAGE = 10;
@@ -154,7 +220,7 @@ export default function CategoryManage() {
       render: (val) => <span className="id-badge">#{val}</span>,
     },
     { key: "name" },
-    { key: "slug" },
+    { key: "slug", className: "slug-col" }, // 👈 sẽ bị ẩn ở mobile
     {
       key: "status",
       render: (val, item) => (
@@ -233,7 +299,7 @@ export default function CategoryManage() {
                 <th className="sortable" onClick={toggleSort}>
                   Name {renderSortIcon()}
                 </th>
-                <th>Slug</th>
+                <th className="slug-col">Slug</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>

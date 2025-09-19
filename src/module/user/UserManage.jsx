@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Table from "@components/table/Table";
 import Pagination from "@components/pagination/Pagination";
-import { Edit, Trash2, Plus, ArrowUp, ArrowDown } from "lucide-react";
+import { Edit, Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { db } from "@/firebase/firebase-config";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import LoadingSpinner from "@components/loading/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
-import Button from "@components/button/Button";
 import InputSearch from "@components/input/InputSearch";
 
 import {
@@ -81,6 +80,62 @@ const UserManageStyles = styled.div`
     color: #6b7280;
     font-style: italic;
   }
+
+  /* 🔹 Responsive */
+  @media (max-width: 1024px) {
+    padding: 20px;
+
+    h1.dashboard-heading {
+      font-size: 1.5rem;
+    }
+
+    th,
+    td {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+
+    .header-top {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    th,
+    td {
+      white-space: nowrap;
+    }
+
+    /* Ẩn email khi mobile */
+    .email-col {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+
+    h1.dashboard-heading {
+      font-size: 1.2rem;
+    }
+
+    .header {
+      gap: 12px;
+    }
+
+    .header-top {
+      gap: 6px;
+    }
+  }
 `;
 
 const USERS_PER_PAGE = 10;
@@ -93,6 +148,7 @@ export default function UserManage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDirection, setSortDirection] = useState("asc");
 
+  // Fetch users
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -118,7 +174,7 @@ export default function UserManage() {
       u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Sort
+  // Sort theo fullname
   const sortedUsers = [...filteredUsers].sort((a, b) => {
     const aVal = a.fullname ?? "";
     const bVal = b.fullname ?? "";
@@ -132,8 +188,8 @@ export default function UserManage() {
     currentPage * USERS_PER_PAGE
   );
 
+  // Toggle status
   const toggleStatus = async (userId, currentStatus) => {
-    // Nếu đang BANNED hoặc INACTIVE thì toggle chỉ ACTIVE <-> INACTIVE
     const nextStatus =
       currentStatus === userStatus.ACTIVE
         ? userStatus.INACTIVE
@@ -151,6 +207,7 @@ export default function UserManage() {
 
   const toggleSort = () =>
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+
   const renderSortIcon = () =>
     sortDirection === "asc" ? (
       <ArrowUp size={16} color="#0ea5e9" />
@@ -159,11 +216,16 @@ export default function UserManage() {
     );
 
   const columns = [
-    { key: "id", render: (val) => <span className="id-badge">#{val}</span> },
+    {
+      key: "id",
+      label: "ID",
+      render: (val) => <span className="id-badge">#{val}</span>,
+    },
     { key: "fullname", label: "Full Name" },
-    { key: "email", label: "Email" },
+    { key: "email", label: "Email", className: "email-col" }, // ẩn khi mobile
     {
       key: "role",
+      label: "Role",
       render: (val) => (
         <span
           className="role-badge"
@@ -182,6 +244,7 @@ export default function UserManage() {
     },
     {
       key: "status",
+      label: "Status",
       render: (val, item) => (
         <span
           className="status-badge"
@@ -213,11 +276,8 @@ export default function UserManage() {
       <div className="header">
         <div className="header-top">
           <h1 className="dashboard-heading">Manage users</h1>
-          {/* <Button onClick={() => navigate("/manage/add-user")}>
-            <Plus size={18} style={{ marginRight: 6 }} />
-            New User
-          </Button> */}
         </div>
+
         <InputSearch
           value={searchTerm}
           onChange={(e) => {
@@ -241,7 +301,7 @@ export default function UserManage() {
                 <th className="sortable" onClick={toggleSort}>
                   Full Name {renderSortIcon()}
                 </th>
-                <th>Email</th>
+                <th className="email-col">Email</th>
                 <th>Role</th>
                 <th>Status</th>
                 <th>Actions</th>

@@ -22,6 +22,15 @@ const LayoutStyles = styled.div`
     padding: 24px;
   }
 
+  .footer {
+    background: #fff;
+    border-top: 1px solid #e5e7eb; /* gray-200 */
+    padding: 16px 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6b7280; /* gray-500 */
+  }
+
   /* Responsive */
   @media (max-width: 767px) {
     margin-left: 0 !important; /* Trên mobile bỏ margin */
@@ -41,6 +50,9 @@ const DashboardLayout = ({ children }) => {
       <div className="content">
         <DashboardHeader onToggleMenu={handleToggleMenu} />
         <main className="main">{children}</main>
+        <footer className="footer">
+          © {new Date().getFullYear()} Dino Dashboard. All rights reserved.
+        </footer>
       </div>
       <FloatingWriteButton />
     </LayoutStyles>
