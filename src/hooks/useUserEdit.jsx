@@ -7,8 +7,6 @@ import { db, storage } from "@services/firebase/firebase-config";
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { userRole, userStatus } from "@utils/constants";
-
-// Firebase Storage
 import {
   ref,
   uploadBytes,
@@ -43,6 +41,18 @@ export function useUserEdit() {
 
   const { reset } = form;
 
+  // 🔹 Lấy avatar mặc định trong Storage
+  const getDefaultAvatar = async () => {
+    try {
+      const avatarRef = ref(storage, "avatars/default.jpeg");
+      return await getDownloadURL(avatarRef);
+    } catch {
+      console.warn("⚠️ Không tìm thấy avatars/default.jpeg trong Storage");
+      return "https://via.placeholder.com/150?text=Default+Avatar";
+    }
+  };
+
+  // 🚀 Load dữ liệu user
   useEffect(() => {
     async function fetchUser() {
       try {
@@ -64,48 +74,54 @@ export function useUserEdit() {
     fetchUser();
   }, [id, reset, navigate]);
 
-  // helper upload ảnh
+  // 🔹 Upload ảnh
   const uploadImage = async (file, folder = "avatars") => {
     const imageRef = ref(storage, `${folder}/${Date.now()}-${file.name}`);
     await uploadBytes(imageRef, file);
     return await getDownloadURL(imageRef);
   };
 
-  // helper xóa ảnh
+  // 🔹 Xoá ảnh
   const deleteImage = async (url) => {
     if (!url) return;
     try {
       const imageRef = ref(storage, url);
       await deleteObject(imageRef);
     } catch (err) {
-      console.warn("Không xóa được ảnh cũ:", err.message);
+      console.warn("⚠️ Không xóa được ảnh cũ:", err.message);
     }
   };
 
+  // 🔹 Submit cập nhật user
   const updateUserHandler = async (values) => {
     try {
       setLoading(true);
       const docRef = doc(db, "users", id);
 
-      // lấy dữ liệu user cũ
+      // Lấy user cũ
       const oldSnap = await getDoc(docRef);
       const oldData = oldSnap.data();
       let avatarUrl = oldData?.avatar || "";
 
-      // nếu chọn avatar mới (File)
+      // Case 1: Upload avatar mới
       if (values.avatar instanceof File) {
-        // chỉ xóa nếu avatar cũ KHÔNG phải default.jpeg
         if (avatarUrl && !avatarUrl.includes("default.jpeg")) {
           await deleteImage(avatarUrl);
         }
-        // upload ảnh mới
         avatarUrl = await uploadImage(values.avatar, "avatars");
       }
 
-      // nếu sau tất cả mà avatar vẫn rỗng → dùng mặc định
+      // Case 2: Xoá avatar → thay bằng default
+      if (values.avatar === null) {
+        if (avatarUrl && !avatarUrl.includes("default.jpeg")) {
+          await deleteImage(avatarUrl);
+        }
+        avatarUrl = await getDefaultAvatar();
+      }
+
+      // Case 3: Nếu vẫn không có avatar → dùng default luôn
       if (!avatarUrl) {
-        avatarUrl =
-          "https://firebasestorage.googleapis.com/v0/b/<your-bucket>/o/avatars%2Fdefault.jpeg?alt=media";
+        avatarUrl = await getDefaultAvatar();
       }
 
       await updateDoc(docRef, {
