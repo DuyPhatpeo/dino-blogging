@@ -63,7 +63,7 @@ export function useSignUp() {
       try {
         const avatarRef = ref(storage, "avatars/default.jpeg"); // ảnh mặc định trong bucket
         avatarURL = await getDownloadURL(avatarRef);
-      } catch (error) {
+      } catch {
         console.warn("⚠️ Không tìm thấy avatars/default.jpeg trong Storage");
         avatarURL = "https://via.placeholder.com/150?text=Default+Avatar"; // fallback
       }
