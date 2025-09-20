@@ -6,6 +6,7 @@ const HomePage = lazy(() => import("@pages/HomePage"));
 const SignUpPage = lazy(() => import("@pages/SignUpPage"));
 const SignInPage = lazy(() => import("@pages/SignInPage"));
 const NotFoundPage = lazy(() => import("@pages/NotFoundPage"));
+const PostPage = lazy(() => import("@pages/PostPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
 const DashboardPage = lazy(() => import("@pages/Manage/DashboardPage"));
@@ -42,6 +43,7 @@ export default function AppRoutes() {
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/:slug" element={<PostDetailsPage />} />
+        <Route path="/blog" element={<PostPage />} />
 
         {/* Dashboard */}
         <Route path="/dashboard" element={<DashboardPage />} />

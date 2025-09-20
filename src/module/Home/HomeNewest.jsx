@@ -41,19 +41,12 @@ const HomeNewestStyles = styled.section`
     gap: 20px;
   }
 
-  .grid-layout--primary {
-    display: grid;
-    grid-template-columns: 1fr;
+  /* ✅ mỗi post 1 dòng riêng */
+  .list-layout {
+    display: flex;
+    flex-direction: column;
     gap: 30px;
     margin-top: 40px;
-
-    @media screen and (min-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media screen and (min-width: 1024px) {
-      grid-template-columns: repeat(4, 1fr);
-    }
   }
 `;
 
@@ -102,7 +95,7 @@ const HomeNewest = () => {
 
   const [firstPost, ...restPosts] = posts;
   const sidebarPosts = restPosts.slice(0, 3);
-  const gridPosts = restPosts.slice(3);
+  const listPosts = restPosts.slice(3);
 
   return (
     <HomeNewestStyles className="home-block">
@@ -116,8 +109,10 @@ const HomeNewest = () => {
             ))}
           </div>
         </div>
-        <div className="grid-layout--primary">
-          {gridPosts.map((post) => (
+
+        {/* ✅ mỗi post nằm 1 dòng */}
+        <div className="list-layout">
+          {listPosts.map((post) => (
             <PostItem key={post.id} post={post} />
           ))}
         </div>
