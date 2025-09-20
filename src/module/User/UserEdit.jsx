@@ -9,6 +9,7 @@ import Input from "@components/Input/Input";
 import Label from "@components/Label/Label";
 import Radio from "@components/CheckBox/Radio";
 import FormError from "@components/Error/FormError";
+import ImageUpload from "@components/ImageUpload/ImageUpload";
 
 import { useUserEdit } from "@hooks/useUserEdit";
 import {
@@ -28,7 +29,7 @@ const UserEditStyles = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     gap: 16px;
     flex-wrap: wrap;
   }
@@ -36,27 +37,41 @@ const UserEditStyles = styled.div`
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 32px;
+    margin-bottom: 16px;
     color: #0ea5e9;
+    text-align: center;
+    width: 100%;
   }
+
   form {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 28px;
   }
+
+  /* Avatar ở đầu, căn giữa */
+  .avatar-upload {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
   }
+
   .form-actions {
     display: flex;
     justify-content: center;
     margin-top: 16px;
   }
+
   .radio-group {
     display: flex;
     align-items: center;
@@ -82,14 +97,27 @@ const UserEdit = () => {
   return (
     <UserEditStyles>
       <div className="header">
-        <h1 className="dashboard-heading">Edit User</h1>
         <Button onClick={() => navigate(-1)}>
           <ArrowLeft size={18} style={{ marginRight: "8px" }} />
           Back
         </Button>
       </div>
 
+      <h1 className="dashboard-heading">Edit User</h1>
+
       <form onSubmit={handleSubmit(updateUserHandler)}>
+        {/* Avatar Upload trên đầu */}
+        <div className="avatar-upload">
+          <ImageUpload
+            control={control}
+            name="avatar"
+            width="120px"
+            height="120px"
+            shape="circle"
+            defaultValue={form.getValues("avatar")} // hoặc user.avatar từ API
+          />
+        </div>
+
         {/* Fullname + Email */}
         <div className="form-row">
           <Field>

@@ -1,69 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useController } from "react-hook-form";
 import styled from "styled-components";
-import { RefreshCw, Trash2 } from "lucide-react";
-import imagechoose from "@assets/image.png";
+import { RefreshCw, Trash2, Upload } from "lucide-react";
 
 const Wrapper = styled.div`
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   width: 100%;
 `;
+
 const UploadBox = styled.div`
   position: relative;
-  width: 100%;
-  aspect-ratio: 16/9;
+  width: ${(props) => props.width || "220px"};
+  height: ${(props) => props.height || "220px"};
+  aspect-ratio: ${(props) => props.ratio || "auto"};
   background: ${(props) => props.theme.colors.grayLight};
-  border-radius: ${(props) => props.theme.radius.lg};
+  border: 2px dashed ${(props) => props.theme.colors.grayDark};
+  border-radius: ${(props) =>
+    props.shape === "circle" ? "50%" : props.theme.radius.xl};
   overflow: hidden;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: ${(props) => props.theme.shadow.md};
+  max-width: 100%;
+
   &:hover {
-    background: ${(props) => props.theme.colors.gray};
+    transform: scale(1.02);
+    box-shadow: ${(props) => props.theme.shadow.lg};
+    border-color: ${(props) => props.theme.colors.primary};
+  }
+
+  @media (max-width: 768px) {
+    width: 260px;
+    height: 260px;
+  }
+  @media (max-width: 480px) {
+    width: 220px;
+    height: 220px;
   }
 `;
+
 const HiddenInput = styled.input`
   display: none;
 `;
+
 const PreviewImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
-  ${UploadBox}:hover & {
-    transform: scale(1.05);
-  }
+  object-position: center;
+  border-radius: ${(props) =>
+    props.shape === "circle" ? "50%" : props.theme.radius.xl};
 `;
-const Overlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+
+const IconButton = styled.label`
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  ${UploadBox}:hover & {
-    opacity: 1;
-  }
-`;
-const Button = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: ${(props) => props.theme.radius.md};
   color: #fff;
-  font-size: ${(props) => props.theme.fontSize.sm};
-  cursor: pointer;
   background: ${(props) =>
     props.remove ? props.theme.colors.delete : props.theme.colors.detail};
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
   &:hover {
-    background: ${(props) =>
-      props.remove
-        ? props.theme.colors.deleteHover
-        : props.theme.colors.detailHover};
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
   }
 `;
+
 const Placeholder = styled.label`
   width: 100%;
   height: 100%;
@@ -75,23 +101,59 @@ const Placeholder = styled.label`
   gap: 8px;
   cursor: pointer;
   font-size: ${(props) => props.theme.fontSize.sm};
-`;
-const PlaceholderImage = styled.img`
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  opacity: 0.6;
+  font-weight: 500;
+  transition: all 0.25s ease;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.primary};
+  }
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  @media (max-width: 480px) {
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+    font-size: 12px;
+  }
 `;
 
-const ImageUpload = ({ control, name }) => {
+const Controls = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+`;
+
+const ImageUpload = ({
+  control,
+  name,
+  width,
+  height,
+  ratio,
+  shape = "rectangle",
+  defaultValue,
+}) => {
   const { field } = useController({ name, control });
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState(defaultValue || null);
+
+  useEffect(() => {
+    if (defaultValue && !preview) {
+      setPreview(defaultValue);
+      field.onChange(defaultValue);
+    }
+  }, [defaultValue]); // eslint-disable-line
 
   const handleSelectImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setPreview(URL.createObjectURL(file)); // chỉ preview
-    field.onChange(file); // lưu File object
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    field.onChange(file);
   };
 
   const handleRemoveImage = () => {
@@ -101,32 +163,34 @@ const ImageUpload = ({ control, name }) => {
 
   return (
     <Wrapper>
-      <UploadBox>
+      <UploadBox width={width} height={height} ratio={ratio} shape={shape}>
         <HiddenInput
           type="file"
           accept="image/*"
           onChange={handleSelectImage}
           id={`upload-${name}`}
         />
+
         {preview ? (
-          <>
-            <PreviewImage src={preview} alt="preview" />
-            <Overlay>
-              <Button htmlFor={`upload-${name}`}>
-                <RefreshCw size={16} /> Change
-              </Button>
-              <Button as="button" remove onClick={handleRemoveImage}>
-                <Trash2 size={16} /> Remove
-              </Button>
-            </Overlay>
-          </>
+          <PreviewImage src={preview} alt="preview" shape={shape} />
         ) : (
           <Placeholder htmlFor={`upload-${name}`}>
-            <PlaceholderImage src={imagechoose} alt="choose" />
-            <span>Choose Image</span>
+            <Upload />
+            <span>Upload Image</span>
           </Placeholder>
         )}
       </UploadBox>
+
+      {preview && (
+        <Controls>
+          <IconButton htmlFor={`upload-${name}`}>
+            <RefreshCw />
+          </IconButton>
+          <IconButton as="button" remove onClick={handleRemoveImage}>
+            <Trash2 />
+          </IconButton>
+        </Controls>
+      )}
     </Wrapper>
   );
 };

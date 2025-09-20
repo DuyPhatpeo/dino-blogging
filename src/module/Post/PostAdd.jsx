@@ -232,6 +232,9 @@ const PostAdd = () => {
               control={control}
               name="image"
               label="Upload post thumbnail"
+              shape="rectangle"
+              width="600px"
+              height="400px"
             />
             <FormError message={errors.image?.message} />
             {uploadProgress > 0 && (
