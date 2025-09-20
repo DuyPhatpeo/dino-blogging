@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "@components/Button/Button";
@@ -29,7 +29,7 @@ const UserEditStyles = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     gap: 16px;
     flex-wrap: wrap;
   }
@@ -37,10 +37,8 @@ const UserEditStyles = styled.div`
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 16px;
     color: #0ea5e9;
-    text-align: center;
-    width: 100%;
+    margin: 0;
   }
 
   form {
@@ -49,7 +47,6 @@ const UserEditStyles = styled.div`
     gap: 28px;
   }
 
-  /* Avatar ở đầu, căn giữa */
   .avatar-upload {
     display: flex;
     justify-content: center;
@@ -96,17 +93,23 @@ const UserEdit = () => {
 
   return (
     <UserEditStyles>
+      {/* Header */}
       <div className="header">
-        <Button onClick={() => navigate(-1)}>
+        <h1 className="dashboard-heading">Edit User</h1>
+        <Button
+          type="button"
+          height="52px"
+          className="px-10"
+          variant="outline"
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeft size={18} style={{ marginRight: "8px" }} />
           Back
         </Button>
       </div>
 
-      <h1 className="dashboard-heading">Edit User</h1>
-
       <form onSubmit={handleSubmit(updateUserHandler)}>
-        {/* Avatar Upload trên đầu */}
+        {/* Avatar */}
         <div className="avatar-upload">
           <ImageUpload
             control={control}
@@ -114,7 +117,7 @@ const UserEdit = () => {
             width="120px"
             height="120px"
             shape="circle"
-            defaultValue={form.getValues("avatar")} // hoặc user.avatar từ API
+            defaultValue={form.getValues("avatar")}
           />
         </div>
 
@@ -199,6 +202,7 @@ const UserEdit = () => {
             className="px-10"
             isLoading={loading}
           >
+            <Save size={18} style={{ marginRight: "8px" }} />
             Update User
           </Button>
         </div>

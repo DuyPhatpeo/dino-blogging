@@ -102,6 +102,12 @@ export function useUserEdit() {
         avatarUrl = await uploadImage(values.avatar, "avatars");
       }
 
+      // nếu sau tất cả mà avatar vẫn rỗng → dùng mặc định
+      if (!avatarUrl) {
+        avatarUrl =
+          "https://firebasestorage.googleapis.com/v0/b/<your-bucket>/o/avatars%2Fdefault.jpeg?alt=media";
+      }
+
       await updateDoc(docRef, {
         fullname: values.fullname,
         email: values.email,

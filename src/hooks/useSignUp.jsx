@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import { auth, db, storage } from "@services/firebase/firebase-config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { userRole, userStatus } from "@utils/constants";
 
@@ -55,14 +55,20 @@ export function useSignUp() {
         password
       );
 
-      // 2️⃣ Update displayName
+      // 2️⃣ Update displayName trong Auth
       await updateProfile(userCredential.user, { displayName: fullname });
 
-      // 3️⃣ Lấy avatar mặc định từ Storage
-      const avatarRef = ref(storage, "avatars/default.jpeg");
-      const avatarURL = await getDownloadURL(avatarRef);
+      // 3️⃣ Lấy avatar mặc định từ Firebase Storage
+      let avatarURL = "";
+      try {
+        const avatarRef = ref(storage, "avatars/default.jpeg"); // ảnh mặc định trong bucket
+        avatarURL = await getDownloadURL(avatarRef);
+      } catch (error) {
+        console.warn("⚠️ Không tìm thấy avatars/default.jpeg trong Storage");
+        avatarURL = "https://via.placeholder.com/150?text=Default+Avatar"; // fallback
+      }
 
-      // 4️⃣ Thêm user vào Firestore
+      // 4️⃣ Lưu user vào Firestore
       const userRef = doc(db, "users", userCredential.user.uid);
       await setDoc(userRef, {
         uid: userCredential.user.uid,
@@ -70,8 +76,8 @@ export function useSignUp() {
         email,
         role: userRole.USER,
         status: userStatus.ACTIVE,
-        avatar: avatarURL, // ✅ avatar mặc định
-        createdAt: new Date(),
+        avatar: avatarURL, // ✅ avatar mặc định từ Storage
+        createdAt: serverTimestamp(),
       });
 
       toast.success("Register successful!");

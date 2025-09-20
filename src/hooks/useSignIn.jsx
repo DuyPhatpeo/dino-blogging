@@ -1,3 +1,4 @@
+// hooks/useSignIn.js
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -34,7 +35,7 @@ export function useSignIn() {
     try {
       setLoading(true);
 
-      // 1. Đăng nhập Firebase Auth
+      // 1️⃣ Đăng nhập Firebase Auth
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -42,7 +43,7 @@ export function useSignIn() {
       );
       const uid = userCredential.user.uid;
 
-      // 2. Lấy thông tin user từ Firestore
+      // 2️⃣ Lấy thông tin user từ Firestore
       const userRef = doc(db, "users", uid);
       const userSnap = await getDoc(userRef);
 
@@ -53,7 +54,7 @@ export function useSignIn() {
 
       const userData = userSnap.data();
 
-      // 3. Kiểm tra trạng thái
+      // 3️⃣ Kiểm tra trạng thái
       if (userData.status === userStatus.INACTIVE) {
         toast.error("Your account is inactive. Please contact support.");
         return;
@@ -62,7 +63,7 @@ export function useSignIn() {
         return;
       }
 
-      // 4. Nếu ACTIVE, cập nhật context
+      // 4️⃣ Nếu ACTIVE, cập nhật context
       signIn({
         uid,
         email: userData.email,
@@ -72,7 +73,7 @@ export function useSignIn() {
       });
 
       toast.success(`Welcome back, ${userData.fullname || userData.email}!`);
-      navigate("/"); // điều hướng
+      navigate("/");
     } catch (error) {
       console.error(error);
       if (error.code === "auth/user-not-found") {
