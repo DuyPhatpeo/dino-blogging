@@ -2,6 +2,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+
 import Radio from "@components/CheckBox/Radio";
 import Dropdown from "@components/Dropdown/DropDown";
 import Option from "@components/Dropdown/Option";
@@ -240,6 +243,59 @@ const PostAdd = () => {
           </Field>
           <Field />
         </div>
+
+        {/* Content (CKEditor) */}
+        {/* Content (CKEditor) */}
+        <Field>
+          <Label>Content</Label>
+          <Controller
+            control={control}
+            name="content"
+            render={({ field: { value, onChange } }) => (
+              <div style={{ width: "100%", margin: "0 auto" }}>
+                <CKEditor
+                  editor={ClassicEditor}
+                  config={{
+                    toolbar: [
+                      "heading",
+                      "|",
+                      "bold",
+                      "italic",
+                      "link",
+                      "|",
+                      "bulletedList",
+                      "numberedList",
+                      "|",
+                      "undo",
+                      "redo",
+                      "uploadImage",
+                    ],
+                    image: {
+                      toolbar: [
+                        "imageTextAlternative",
+                        "imageStyle:full",
+                        "imageStyle:side",
+                      ],
+                    },
+                    simpleUpload: {
+                      // ✅ upload ảnh - thay URL API bằng server hoặc Firebase của bạn
+                      uploadUrl: "http://localhost:4000/upload",
+                      headers: {
+                        Authorization: "Bearer <your-token-if-any>",
+                      },
+                    },
+                  }}
+                  data={value || ""}
+                  onChange={(event, editor) => {
+                    const data = editor.getData();
+                    onChange(data);
+                  }}
+                />
+              </div>
+            )}
+          />
+          <FormError message={errors.content?.message} />
+        </Field>
 
         {/* Submit */}
         <div className="form-actions">

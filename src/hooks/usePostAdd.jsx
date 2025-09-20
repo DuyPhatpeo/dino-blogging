@@ -15,12 +15,17 @@ import { useNavigate } from "react-router-dom";
 const schema = yup.object({
   title: yup.string().required("Title is required"),
   slug: yup.string(),
-  author: yup.string().required("Author is required"), // nhập text
+  author: yup.string().required("Author is required"),
   category: yup
     .array()
     .min(1, "Please select at least one category")
     .required("Category is required"),
   image: yup.mixed().required("Thumbnail is required"),
+  content: yup
+    .string()
+    .trim()
+    .min(20, "Content must be at least 20 characters")
+    .required("Content is required"),
 });
 
 export function usePostAdd() {
@@ -36,10 +41,11 @@ export function usePostAdd() {
       title: "",
       slug: "",
       status: postStatus.PENDING,
-      author: "", // nhập trực tiếp
+      author: "",
       category: [],
       image: null,
       hot: false,
+      content: "", // 🆕 CKEditor content
     },
   });
 
@@ -64,13 +70,13 @@ export function usePostAdd() {
         throw new Error("You must be logged in to create a post.");
       }
 
-      // ✅ newPost có cả "author" (người nhập) và "createdBy" (người đăng nhập)
+      // ✅ newPost có cả content
       const newPost = {
         ...values,
         slug,
         image: imageUrl,
-        author: values.author, // nhập tay
-        createdBy: user.uid, // người tạo
+        author: values.author,
+        createdBy: user.uid,
         createdAt: serverTimestamp(),
       };
 
@@ -89,6 +95,7 @@ export function usePostAdd() {
         category: [],
         image: null,
         hot: false,
+        content: "",
       });
 
       toast.success("Post added successfully!");
