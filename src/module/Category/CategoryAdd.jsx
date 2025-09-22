@@ -75,27 +75,16 @@ const CategoryAdd = () => {
         </Button>
       </div>
       <form onSubmit={handleSubmit(addCategoryHandler)}>
-        {/* Name + Slug */}
-        <div className="form-row">
-          <Field>
-            <Label>Name</Label>
-            <Input
-              control={control}
-              name="name"
-              placeholder="Enter category name"
-            />
-            <FormError message={errors.name?.message} />
-          </Field>
-          <Field>
-            <Label>Slug</Label>
-            <Input
-              control={control}
-              name="slug"
-              placeholder="Enter slug (auto if empty)"
-            />
-            <FormError message={errors.slug?.message} />
-          </Field>
-        </div>
+        {/* Name */}
+        <Field>
+          <Label>Name</Label>
+          <Input
+            control={control}
+            name="name"
+            placeholder="Enter category name"
+          />
+          <FormError message={errors.name?.message} />
+        </Field>
 
         {/* Status */}
         <Field>

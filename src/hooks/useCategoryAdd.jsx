@@ -9,11 +9,11 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-// ✅ Yup schema cho Category
+// ✅ Yup schema cho Category (bỏ slug)
 const schema = yup.object({
   name: yup.string().required("Category name is required"),
-  slug: yup.string(),
   description: yup.string(),
+  status: yup.number().oneOf([1, 2]).default(1), // 1=active, 2=inactive
 });
 
 export function useCategoryAdd() {
@@ -26,8 +26,8 @@ export function useCategoryAdd() {
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
-      slug: "",
-      status: 1, // 1 = active, 2 = inactive
+      description: "",
+      status: 1,
     },
   });
 
@@ -35,9 +35,8 @@ export function useCategoryAdd() {
     try {
       setLoading(true);
 
-      // 👉 Tạo slug tự động nếu trống
-      const slug =
-        values.slug || slugify(values.name, { lower: true, strict: true });
+      // 👉 Tạo slug tự động từ name
+      const slug = slugify(values.name, { lower: true, strict: true });
 
       // 👉 Lấy user hiện tại từ Firebase Auth
       const auth = getAuth();
@@ -50,9 +49,12 @@ export function useCategoryAdd() {
       const newCategory = {
         name: values.name,
         slug,
-        status: 1, // 1 = active, 2 = inactive
+        description: values.description || "",
+        status: values.status ?? 1,
         createdBy: user.uid,
         createdAt: serverTimestamp(),
+        updatedBy: user.uid, // 🔥 bổ sung
+        updatedAt: serverTimestamp(), // 🔥 bổ sung
       };
 
       // 👉 Lưu vào Firestore
@@ -64,10 +66,11 @@ export function useCategoryAdd() {
       // 👉 Reset form
       form.reset({
         name: "",
-        slug: "",
+        description: "",
+        status: 1,
       });
 
-      toast.success("Category added successfully!");
+      toast.success("✅ Category added successfully!");
       navigate("/manage/category");
     } catch (error) {
       console.error("Error adding category:", error);
