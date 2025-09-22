@@ -1,7 +1,7 @@
 import DashboardLayout from "@module/Dashboard/DashboardLayout";
 import React from "react";
 
-const MyPost = () => {
+const MyPostPage = () => {
   return (
     <DashboardLayout>
       <div className="mt-8">My Post Page</div>
@@ -9,4 +9,4 @@ const MyPost = () => {
   );
 };
 
-export default MyPost;
+export default MyPostPage;

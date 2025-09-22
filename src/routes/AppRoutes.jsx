@@ -10,7 +10,7 @@ const PostPage = lazy(() => import("@pages/PostPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
 const DashboardPage = lazy(() => import("@pages/Manage/DashboardPage"));
-const MyPost = lazy(() => import("@pages/Manage/Post/MyPost"));
+const MyPost = lazy(() => import("@pages/Manage/Post/MyPostPage"));
 const PostManagePage = lazy(() => import("@pages/Manage/Post/PostManagePage"));
 const PostAddPage = lazy(() => import("@pages/Manage/Post/PostAddPage"));
 
