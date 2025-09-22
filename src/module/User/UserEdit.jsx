@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { ArrowLeft, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import slugify from "slugify";
 
 import Button from "@components/Button/Button";
 import Field from "@components/Field/Field";
@@ -85,11 +86,25 @@ const UserEdit = () => {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = form;
 
+  const watchFullname = watch("fullname");
   const watchStatus = watch("status", userStatus.ACTIVE);
   const watchRole = watch("role", userRole.USER);
+
+  // Tự động cập nhật slug khi fullname thay đổi
+  useEffect(() => {
+    if (watchFullname) {
+      const slug = slugify(watchFullname, {
+        lower: true,
+        strict: true,
+        locale: "vi",
+      });
+      setValue("slug", slug, { shouldValidate: true });
+    }
+  }, [watchFullname, setValue]);
 
   return (
     <UserEditStyles>
@@ -157,6 +172,26 @@ const UserEdit = () => {
             />
           </Field>
         </div>
+
+        {/* Slug */}
+        <Field>
+          <Label>
+            Slug
+            {errors.slug && <FormError>{errors.slug.message}</FormError>}
+          </Label>
+          <Input
+            control={control}
+            name="slug"
+            placeholder="auto-generated slug"
+            rules={{
+              required: "Slug is required",
+              pattern: {
+                value: /^[a-z0-9-]+$/g,
+                message: "Slug must be lowercase, no spaces, no special chars",
+              },
+            }}
+          />
+        </Field>
 
         {/* Status */}
         <Field>

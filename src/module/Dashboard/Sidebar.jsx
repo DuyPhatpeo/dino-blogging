@@ -157,7 +157,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const sidebarLinks = [
-    { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
+    { title: "Dashboard", url: "/manage/dashboard", icon: <LayoutDashboard /> },
     ...(sidebarConfig[currentUserRole] || []),
     { title: "Logout", url: "/", icon: <LogOut />, onClick: handleLogout },
   ];

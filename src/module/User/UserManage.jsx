@@ -73,6 +73,13 @@ const UserManageStyles = styled.div`
     cursor: pointer;
   }
 
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
   .no-data {
     text-align: center;
     padding: 20px;
@@ -109,6 +116,9 @@ const UserManageStyles = styled.div`
       white-space: nowrap;
     }
     .email-col {
+      display: none;
+    }
+    .created-col {
       display: none;
     }
   }
@@ -202,13 +212,40 @@ export default function UserManage() {
       <ArrowDown size={16} color="#0ea5e9" />
     );
 
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+    const date =
+      typeof timestamp.toDate === "function"
+        ? timestamp.toDate()
+        : new Date(timestamp);
+    return date.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const columns = [
     {
-      key: "id",
-      label: "ID",
-      render: (val) => <span className="id-badge">#{val}</span>,
+      key: "avatar",
+      label: "Avatar",
+      render: (val) => (
+        <img
+          src={val}
+          alt="avatar"
+          className="avatar"
+          onError={(e) => {
+            e.target.src = "/default-avatar.png";
+          }}
+        />
+      ),
     },
-    { key: "fullname", label: "Full Name" },
+    {
+      key: "fullname",
+      label: "Full Name",
+    },
     { key: "email", label: "Email", className: "email-col" },
     {
       key: "role",
@@ -245,6 +282,12 @@ export default function UserManage() {
           </span>
         );
       },
+    },
+    {
+      key: "createdAt",
+      label: "Created At",
+      className: "created-col",
+      render: (val) => <span>{formatDate(val)}</span>,
     },
   ];
 
@@ -292,13 +335,14 @@ export default function UserManage() {
           <Table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Avatar</th>
                 <th className="sortable" onClick={toggleSort}>
                   Full Name {renderSortIcon()}
                 </th>
                 <th className="email-col">Email</th>
                 <th>Role</th>
                 <th>Status</th>
+                <th className="created-col">Created At</th>
                 <th>Actions</th>
               </tr>
             </thead>

@@ -13,7 +13,7 @@ import {
   userRoleLabel,
   userStatusLabel,
   userStatusStyle,
-  userRoleStyle, // ✅ import style role
+  userRoleStyle,
 } from "@utils/constants";
 
 const UserDetailStyles = styled.div`
@@ -65,6 +65,7 @@ const UserDetailStyles = styled.div`
     margin-top: 8px;
     font-weight: 500;
     color: #111827;
+    word-break: break-word;
   }
 
   .field-label {
@@ -114,7 +115,7 @@ const UserDetail = () => {
       <div className="avatar-section">
         <img
           src={user.avatar || "/default-avatar.png"}
-          alt={`${user.fullname}'s avatar`}
+          alt={`${user.fullname || "User"}'s avatar`}
         />
       </div>
 
@@ -168,7 +169,21 @@ const UserDetail = () => {
 
         <Field>
           <Label className="field-label">User ID</Label>
-          <div className="field-value">{user.id}</div>
+          <div className="field-value">{user.uid || user.id}</div>
+        </Field>
+
+        <Field>
+          <Label className="field-label">Slug</Label>
+          <div className="field-value">{user.slug || "-"}</div>
+        </Field>
+
+        <Field>
+          <Label className="field-label">Created At</Label>
+          <div className="field-value">
+            {user.createdAt?.toDate
+              ? user.createdAt.toDate().toLocaleString()
+              : "-"}
+          </div>
         </Field>
       </div>
     </UserDetailStyles>

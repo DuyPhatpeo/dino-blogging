@@ -55,6 +55,12 @@ const CategoryManageStyles = styled.div`
     word-break: break-all;
   }
 
+  .slug-text {
+    color: #6b7280; /* xám nhạt */
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
   .clickable-status {
     cursor: pointer;
   }
@@ -103,11 +109,6 @@ const CategoryManageStyles = styled.div`
     th,
     td {
       white-space: nowrap;
-    }
-
-    /* Ẩn slug khi mobile */
-    .slug-col {
-      display: none;
     }
   }
 
@@ -220,14 +221,17 @@ export default function CategoryManage() {
       render: (val) => <span className="id-badge">#{val}</span>,
     },
     { key: "name" },
-    { key: "slug", className: "slug-col" }, // 👈 sẽ bị ẩn ở mobile
+    {
+      key: "slug",
+      render: (val) => <span className="slug-text">{val}</span>,
+    },
     {
       key: "status",
       render: (val, item) => {
         const style =
           val === 1
-            ? { bg: "#dcfce7", color: "#15803d", label: "Active" } // xanh nhạt
-            : { bg: "#f3f4f6", color: "#4b5563", label: "Inactive" }; // xám nhạt
+            ? { bg: "#dcfce7", color: "#15803d", label: "Active" }
+            : { bg: "#f3f4f6", color: "#4b5563", label: "Inactive" };
 
         return (
           <span
@@ -291,12 +295,11 @@ export default function CategoryManage() {
           </Button>
         </div>
 
-        {/* Search sử dụng InputSearch */}
         <InputSearch
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            setCurrentPage(1); // reset về trang 1 khi search
+            setCurrentPage(1);
           }}
           placeholder="Search by name or slug..."
         />
@@ -315,7 +318,7 @@ export default function CategoryManage() {
                 <th className="sortable" onClick={toggleSort}>
                   Name {renderSortIcon()}
                 </th>
-                <th className="slug-col">Slug</th>
+                <th>Slug</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
