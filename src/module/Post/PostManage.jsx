@@ -192,21 +192,16 @@ export default function PostManage() {
     {
       key: "author",
       render: (val, item) => (
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {item.authorAvatar && (
-            <img
-              src={item.authorAvatar}
-              alt={val}
-              style={{
-                width: "28px",
-                height: "28px",
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          )}
-          <span>{val}</span>
-        </div>
+        <span
+          style={{
+            color: "#0ea5e9",
+            fontWeight: 500,
+            cursor: "pointer",
+          }}
+          onClick={() => navigate(`/manage/detail-user/${item.authorId}`)}
+        >
+          {val}
+        </span>
       ),
     },
     {

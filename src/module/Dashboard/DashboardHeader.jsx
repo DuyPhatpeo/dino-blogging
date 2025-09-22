@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { Home, Menu } from "lucide-react";
-import { useAuth } from "@contexts/authContext";
-import { db } from "@services/firebase/firebase-config";
-import { doc, getDoc } from "firebase/firestore";
+// import { useAuth } from "@contexts/authContext";
+// import { db } from "@services/firebase/firebase-config";
+// import { doc, getDoc } from "firebase/firestore";
 
 const DashboardHeaderStyles = styled.header`
   background-color: #fff;
@@ -116,25 +116,25 @@ const DashboardHeaderStyles = styled.header`
 
 const DashboardHeader = ({ onToggleMenu }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [avatarURL, setAvatarURL] = useState(null);
+  // const { user } = useAuth();
+  // const [avatarURL, setAvatarURL] = useState(null);
 
-  useEffect(() => {
-    const fetchAvatar = async () => {
-      if (!user?.uid) return;
-      try {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          if (data.avatar) setAvatarURL(data.avatar); // chỉ set nếu có
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchAvatar();
-  }, [user]);
+  // useEffect(() => {
+  //   const fetchAvatar = async () => {
+  //     if (!user?.uid) return;
+  //     try {
+  //       const docRef = doc(db, "users", user.uid);
+  //       const docSnap = await getDoc(docRef);
+  //       if (docSnap.exists()) {
+  //         const data = docSnap.data();
+  //         if (data.avatar) setAvatarURL(data.avatar); // chỉ set nếu có
+  //       }
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+  //   fetchAvatar();
+  // }, [user]);
 
   return (
     <DashboardHeaderStyles>
@@ -148,13 +148,13 @@ const DashboardHeader = ({ onToggleMenu }) => {
         <Button className="header-button" onClick={() => navigate("/")}>
           <Home /> <span>Home</span>
         </Button>
-        <div className="header-avatar">
+        {/* <div className="header-avatar">
           {avatarURL ? (
             <img src={avatarURL} alt={user?.displayName || "User"} />
           ) : (
             <span>{user?.displayName || "User"}</span>
           )}
-        </div>
+        </div> */}
       </div>
     </DashboardHeaderStyles>
   );

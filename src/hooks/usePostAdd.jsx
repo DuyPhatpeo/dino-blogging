@@ -7,13 +7,7 @@ import { toast } from "react-toastify";
 import { postStatus } from "@utils/constants";
 import { useImageUpload } from "@hooks/useImageUpload";
 import { db } from "@services/firebase/firebase-config";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  doc,
-  getDoc,
-} from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -46,7 +40,6 @@ export function usePostAdd() {
       title: "",
       slug: "",
       status: postStatus.PENDING,
-      author: "",
       category: [],
       image: null,
       hot: false,
@@ -59,7 +52,7 @@ export function usePostAdd() {
     try {
       setLoading(true);
 
-      // ✅ xử lý slug: ưu tiên slug user nhập, nếu trống thì tạo từ title
+      // ✅ xử lý slug
       const slug = values.slug
         ? slugify(values.slug, { lower: true, strict: true })
         : slugify(values.title, { lower: true, strict: true });
@@ -75,33 +68,9 @@ export function usePostAdd() {
       const user = auth.currentUser;
       if (!user) throw new Error("You must be logged in to create a post.");
 
-      // ✅ lấy thông tin user từ Firestore
-      const userDocRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userDocRef);
-      if (!userSnap.exists()) throw new Error("User profile not found.");
-      const userData = userSnap.data();
-
-      // ✅ chuẩn hoá author object
-      const author = {
-        avatar: userData.avatar || "",
-        email: userData.email || user.email,
-        fullname: userData.fullname || user.displayName || "",
-        slug:
-          userData.slug ||
-          slugify(userData.fullname || user.displayName || user.email, {
-            lower: true,
-            strict: true,
-          }),
-        uid: user.uid,
-      };
-
-      // ✅ chuẩn hoá categories
+      // ✅ chuẩn hoá categories (chỉ lưu ID)
       const categories = Array.isArray(values.category)
-        ? values.category.map((c) => ({
-            id: c.id,
-            name: c.name,
-            slug: c.slug,
-          }))
+        ? values.category.map((c) => c.id)
         : [];
 
       // ✅ newPost object
@@ -112,10 +81,12 @@ export function usePostAdd() {
         content: values.content,
         hot: values.hot,
         status: values.status,
-        category: categories,
-        author,
+        categoryIds: categories, // 🔥 chỉ lưu danh sách ID category
+        authorId: user.uid, // 🔥 người tạo
         createdBy: user.uid,
         createdAt: serverTimestamp(),
+        updatedBy: user.uid, // 🔥 lưu luôn người cập nhật
+        updatedAt: serverTimestamp(),
       };
 
       // ✅ lưu vào Firestore
@@ -129,7 +100,6 @@ export function usePostAdd() {
         title: "",
         slug: "",
         status: postStatus.PENDING,
-        author: "",
         category: [],
         image: null,
         hot: false,
@@ -137,7 +107,7 @@ export function usePostAdd() {
       });
 
       toast.success("✅ Post added successfully!");
-      navigate("/manage//my-posts");
+      navigate("/manage/my-posts");
     } catch (error) {
       console.error("Error adding post:", error);
       toast.error(error.message || "Error adding post");

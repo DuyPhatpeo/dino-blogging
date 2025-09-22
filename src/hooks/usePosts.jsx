@@ -48,7 +48,7 @@ export function usePosts() {
             image: data.image,
             // Author (map)
             author: data.author?.fullname || "Anonymous",
-            authorAvatar: data.author?.avatar || "",
+            authorId: data.author?.uid || "",
             authorEmail: data.author?.email || "",
             // Category (array of map)
             category: Array.isArray(data.category) ? data.category : [],
