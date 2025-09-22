@@ -137,7 +137,7 @@ export function usePostAdd() {
       });
 
       toast.success("✅ Post added successfully!");
-      navigate("/manage/post");
+      navigate("/manage//my-posts");
     } catch (error) {
       console.error("Error adding post:", error);
       toast.error(error.message || "Error adding post");

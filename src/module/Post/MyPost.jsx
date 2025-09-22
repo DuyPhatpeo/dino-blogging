@@ -1,3 +1,4 @@
+// MyPost.jsx
 import React, { useState } from "react";
 import styled from "styled-components";
 import Table from "@components/Table/Table";
@@ -8,7 +9,8 @@ import LoadingSpinner from "@components/Loading/LoadingSpinner";
 import Button from "@components/Button/Button";
 import InputSearch from "@components/Input/InputSearch";
 import { useNavigate } from "react-router-dom";
-import { usePosts } from "@hooks/usePosts";
+import { useMyPosts } from "@hooks/useMyPosts";
+import { useAuth } from "@contexts/authcontext";
 
 const MyPostStyles = styled.div`
   background: #fff;
@@ -71,7 +73,6 @@ const MyPostStyles = styled.div`
     margin: 0 0 4px 0;
   }
 
-  /* Responsive */
   @media (max-width: 1024px) {
     padding: 20px;
     h1.dashboard-heading {
@@ -124,12 +125,13 @@ const POSTS_PER_PAGE = 10;
 
 export default function MyPost() {
   const navigate = useNavigate();
-  const { posts, loading, toggleHot, toggleStatus } = usePosts();
+  const { user } = useAuth(); // ✅ user hiện tại
+  const { posts, loading, toggleHot, toggleStatus } = useMyPosts(user?.uid);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter
+  // Filter theo search
   const filteredPosts = posts.filter(
     (p) =>
       p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -287,7 +289,7 @@ export default function MyPost() {
     <MyPostStyles>
       <div className="header">
         <div className="header-top">
-          <h1 className="dashboard-heading">Manage posts</h1>
+          <h1 className="dashboard-heading">My Posts</h1>
           <Button
             className="header-button"
             onClick={() => navigate("/manage/add-post")}

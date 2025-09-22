@@ -288,13 +288,13 @@ export default function PostManage() {
       <div className="header">
         <div className="header-top">
           <h1 className="dashboard-heading">Manage posts</h1>
-          <Button
+          {/* <Button
             className="header-button"
             onClick={() => navigate("/manage/add-post")}
           >
             <Plus size={18} style={{ marginRight: 6 }} />
             New Post
-          </Button>
+          </Button> */}
         </div>
 
         <InputSearch
