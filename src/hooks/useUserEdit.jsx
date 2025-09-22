@@ -13,18 +13,17 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import slugify from "slugify";
 
 // ✅ Yup schema
 const schema = yup.object({
   fullname: yup.string().required("Fullname is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  slug: yup
+  username: yup
     .string()
-    .required("Slug is required")
+    .required("Username is required")
     .matches(
-      /^[a-z0-9-]+$/,
-      "Slug must be lowercase, no spaces, no special chars"
+      /^[a-zA-Z0-9._-]+$/,
+      "Only letters, numbers, dot, dash, underscore allowed"
     ),
   role: yup.number().required("Role is required"),
   status: yup.number().required("Status is required"),
@@ -41,14 +40,14 @@ export function useUserEdit() {
     defaultValues: {
       fullname: "",
       email: "",
-      slug: "",
+      username: "",
       role: userRole.USER,
       status: userStatus.ACTIVE,
       avatar: "",
     },
   });
 
-  const { reset, watch, setValue } = form;
+  const { reset } = form;
 
   // 🔹 Lấy avatar mặc định trong Storage
   const getDefaultAvatar = async () => {
@@ -82,19 +81,6 @@ export function useUserEdit() {
     }
     fetchUser();
   }, [id, reset, navigate]);
-
-  // 🔹 Auto generate slug từ fullname (nếu slug chưa được chỉnh tay)
-  const watchFullname = watch("fullname");
-  useEffect(() => {
-    if (watchFullname) {
-      const slug = slugify(watchFullname, {
-        lower: true,
-        strict: true,
-        locale: "vi",
-      });
-      setValue("slug", slug, { shouldValidate: true });
-    }
-  }, [watchFullname, setValue]);
 
   // 🔹 Upload ảnh
   const uploadImage = async (file, folder = "avatars") => {
@@ -150,9 +136,7 @@ export function useUserEdit() {
       await updateDoc(docRef, {
         fullname: values.fullname,
         email: values.email,
-        slug:
-          values.slug ||
-          slugify(values.fullname, { lower: true, strict: true, locale: "vi" }),
+        username: values.username.trim().toLowerCase(), // giữ nguyên input, chỉ chuẩn hóa lowercase
         role: Number(values.role),
         status: Number(values.status),
         avatar: avatarUrl,

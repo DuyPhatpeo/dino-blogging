@@ -34,14 +34,16 @@ const UserDetailStyles = styled.div`
   h1.dashboard-heading {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 32px;
     color: #0ea5e9;
+    margin: 0;
   }
 
-  .avatar-section {
+  .profile {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 32px;
+    text-align: center;
 
     img {
       width: 120px;
@@ -49,6 +51,19 @@ const UserDetailStyles = styled.div`
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #0ea5e9;
+      margin-bottom: 16px;
+    }
+
+    .fullname {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .username {
+      font-size: 1rem;
+      color: #6b7280;
     }
   }
 
@@ -111,46 +126,26 @@ const UserDetail = () => {
         </Button>
       </div>
 
-      {/* Avatar */}
-      <div className="avatar-section">
+      {/* Profile */}
+      <div className="profile">
         <img
           src={user.avatar || "/default-avatar.png"}
           alt={`${user.fullname || "User"}'s avatar`}
         />
+        <div className="fullname">{user.fullname || "-"}</div>
+        <div className="username">@{user.username || "-"}</div>
       </div>
 
       {/* Info Grid */}
       <div className="info-grid">
+        {/* Left column */}
         <Field>
-          <Label className="field-label">Full Name</Label>
-          <div className="field-value">{user.fullname || "-"}</div>
-        </Field>
-
-        <Field>
-          <Label className="field-label">Email</Label>
+          <Label className="field-label">Email:</Label>
           <div className="field-value">{user.email || "-"}</div>
         </Field>
 
         <Field>
-          <Label className="field-label">Status</Label>
-          <div
-            className="field-value"
-            style={{
-              display: "inline-block",
-              padding: "4px 12px",
-              borderRadius: "12px",
-              backgroundColor: userStatusStyle[user.status]?.bg,
-              color: userStatusStyle[user.status]?.color,
-              fontWeight: 600,
-              fontSize: "0.9rem",
-            }}
-          >
-            {userStatusLabel[user.status] || "-"}
-          </div>
-        </Field>
-
-        <Field>
-          <Label className="field-label">Role</Label>
+          <Label className="field-label">Role:</Label>
           <div
             className="field-value"
             style={{
@@ -168,17 +163,30 @@ const UserDetail = () => {
         </Field>
 
         <Field>
-          <Label className="field-label">User ID</Label>
+          <Label className="field-label">User ID:</Label>
           <div className="field-value">{user.uid || user.id}</div>
         </Field>
 
         <Field>
-          <Label className="field-label">Slug</Label>
-          <div className="field-value">{user.slug || "-"}</div>
+          <Label className="field-label">Status:</Label>
+          <div
+            className="field-value"
+            style={{
+              display: "inline-block",
+              padding: "4px 12px",
+              borderRadius: "12px",
+              backgroundColor: userStatusStyle[user.status]?.bg,
+              color: userStatusStyle[user.status]?.color,
+              fontWeight: 600,
+              fontSize: "0.9rem",
+            }}
+          >
+            {userStatusLabel[user.status] || "-"}
+          </div>
         </Field>
 
         <Field>
-          <Label className="field-label">Created At</Label>
+          <Label className="field-label">Created At:</Label>
           <div className="field-value">
             {user.createdAt?.toDate
               ? user.createdAt.toDate().toLocaleString()

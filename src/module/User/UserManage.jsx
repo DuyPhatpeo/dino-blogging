@@ -137,6 +137,8 @@ const UserManageStyles = styled.div`
   }
 `;
 
+// ... imports giữ nguyên
+
 const USERS_PER_PAGE = 10;
 
 export default function UserManage() {
@@ -166,11 +168,12 @@ export default function UserManage() {
     fetchUsers();
   }, []);
 
-  // Filter & sort
+  // Filter & sort (fullname, email, username)
   const filteredUsers = users.filter(
     (u) =>
       u.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.username?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const sortedUsers = [...filteredUsers].sort((a, b) => {
@@ -246,6 +249,7 @@ export default function UserManage() {
       key: "fullname",
       label: "Full Name",
     },
+    { key: "username", label: "Username" }, // 👉 thêm cột Username
     { key: "email", label: "Email", className: "email-col" },
     {
       key: "role",
@@ -322,7 +326,7 @@ export default function UserManage() {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
-          placeholder="Search by fullname or email..."
+          placeholder="Search by fullname, email or username..."
         />
       </div>
 
@@ -339,6 +343,7 @@ export default function UserManage() {
                 <th className="sortable" onClick={toggleSort}>
                   Full Name {renderSortIcon()}
                 </th>
+                <th>Username</th>
                 <th className="email-col">Email</th>
                 <th>Role</th>
                 <th>Status</th>

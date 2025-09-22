@@ -27,6 +27,13 @@ const SignUpPage = () => {
       type: "text",
     },
     {
+      name: "username",
+      label: "Username",
+      placeholder: "Enter a unique username",
+      icon: User,
+      type: "text",
+    },
+    {
       name: "email",
       label: "Email",
       placeholder: "Enter your email",

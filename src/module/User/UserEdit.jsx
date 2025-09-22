@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { ArrowLeft, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import slugify from "slugify";
 
 import Button from "@components/Button/Button";
 import Field from "@components/Field/Field";
@@ -86,25 +85,11 @@ const UserEdit = () => {
     control,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors },
   } = form;
 
-  const watchFullname = watch("fullname");
   const watchStatus = watch("status", userStatus.ACTIVE);
   const watchRole = watch("role", userRole.USER);
-
-  // Tự động cập nhật slug khi fullname thay đổi
-  useEffect(() => {
-    if (watchFullname) {
-      const slug = slugify(watchFullname, {
-        lower: true,
-        strict: true,
-        locale: "vi",
-      });
-      setValue("slug", slug, { shouldValidate: true });
-    }
-  }, [watchFullname, setValue]);
 
   return (
     <UserEditStyles>
@@ -139,24 +124,17 @@ const UserEdit = () => {
         {/* Fullname + Email */}
         <div className="form-row">
           <Field>
-            <Label>
-              Full Name
-              {errors.fullname && (
-                <FormError>{errors.fullname.message}</FormError>
-              )}
-            </Label>
+            <Label>Full Name</Label>
             <Input
               control={control}
               name="fullname"
               placeholder="Enter full name"
               rules={{ required: "Full name is required" }}
             />
+            <FormError message={errors.fullname?.message} />
           </Field>
           <Field>
-            <Label>
-              Email
-              {errors.email && <FormError>{errors.email.message}</FormError>}
-            </Label>
+            <Label>Email</Label>
             <Input
               control={control}
               name="email"
@@ -170,27 +148,30 @@ const UserEdit = () => {
                 },
               }}
             />
+            <FormError message={errors.email?.message} />
           </Field>
         </div>
 
-        {/* Slug */}
+        {/* Username */}
         <Field>
-          <Label>
-            Slug
-            {errors.slug && <FormError>{errors.slug.message}</FormError>}
-          </Label>
+          <Label>Username</Label>
           <Input
             control={control}
-            name="slug"
-            placeholder="auto-generated slug"
+            name="username"
+            placeholder="Enter unique username"
             rules={{
-              required: "Slug is required",
+              required: "Username is required",
               pattern: {
-                value: /^[a-z0-9-]+$/g,
-                message: "Slug must be lowercase, no spaces, no special chars",
+                value: /^[a-zA-Z0-9_]+$/, // chỉ cho chữ, số, _
+                message: "Username must only contain letters, numbers, or _",
+              },
+              minLength: {
+                value: 3,
+                message: "Username must be at least 3 characters",
               },
             }}
           />
+          <FormError message={errors.username?.message} />
         </Field>
 
         {/* Status */}
@@ -209,6 +190,7 @@ const UserEdit = () => {
               </Radio>
             ))}
           </div>
+          <FormError message={errors.status?.message} />
         </Field>
 
         {/* Role */}
@@ -227,6 +209,7 @@ const UserEdit = () => {
               </Radio>
             ))}
           </div>
+          <FormError message={errors.role?.message} />
         </Field>
 
         {/* Submit */}

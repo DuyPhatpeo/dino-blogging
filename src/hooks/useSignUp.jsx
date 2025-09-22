@@ -11,11 +11,16 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { userRole, userStatus } from "@utils/constants";
-import slugify from "slugify"; // ✅ thêm slugify
 
 // ✅ Schema validation
 const schema = yup.object().shape({
   fullname: yup.string().required("Full name is required"),
+  username: yup
+    .string()
+    .matches(/^[a-zA-Z0-9_]+$/, "Only letters, numbers, underscores allowed")
+    .min(3, "Username must be at least 3 characters")
+    .max(20, "Username must not exceed 20 characters")
+    .required("Username is required"),
   email: yup
     .string()
     .email("Invalid email format")
@@ -39,13 +44,14 @@ export function useSignUp() {
     mode: "onChange",
     defaultValues: {
       fullname: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const signUpHandler = async ({ fullname, email, password }) => {
+  const signUpHandler = async ({ fullname, username, email, password }) => {
     try {
       setLoading(true);
 
@@ -69,18 +75,13 @@ export function useSignUp() {
         avatarURL = "https://via.placeholder.com/150?text=Default+Avatar";
       }
 
-      const slug = slugify(fullname, {
-        lower: true,
-        strict: true,
-      });
-
       // 4️⃣ Lưu user vào Firestore
       const userRef = doc(db, "users", userCredential.user.uid);
       await setDoc(userRef, {
         uid: userCredential.user.uid,
         fullname,
+        username, // ✅ dùng username thay slug
         email,
-        slug,
         role: userRole.USER,
         status: userStatus.ACTIVE,
         avatar: avatarURL,
