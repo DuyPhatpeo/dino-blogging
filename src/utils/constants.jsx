@@ -4,9 +4,10 @@
 
 // Roles
 export const userRole = {
-  USER: 0,
   ADMIN: 1,
   MODERATOR: 2,
+  AUTHOR: 3,
+  USER: 0,
 };
 
 // Map ngược: number -> text
@@ -14,13 +15,15 @@ export const userRoleLabel = {
   [userRole.USER]: "USER",
   [userRole.ADMIN]: "ADMIN",
   [userRole.MODERATOR]: "MODERATOR",
+  [userRole.AUTHOR]: "AUTHOR",
 };
 
 // Badge style cho Role
 export const userRoleStyle = {
-  [userRole.USER]: { bg: "#e5e7eb", color: "#374151" }, // xám nhạt bg, chữ đậm
-  [userRole.ADMIN]: { bg: "#ffedd5", color: "#c2410c" }, // cam nhạt bg, chữ cam đậm
-  [userRole.MODERATOR]: { bg: "#dbeafe", color: "#1d4ed8" }, // xanh dương nhạt bg, chữ xanh đậm
+  [userRole.USER]: { bg: "#e5e7eb", color: "#374151" },
+  [userRole.ADMIN]: { bg: "#ffedd5", color: "#c2410c" },
+  [userRole.MODERATOR]: { bg: "#dbeafe", color: "#1d4ed8" },
+  [userRole.AUTHOR]: { bg: "#f0f9ff", color: "#0369a1" },
 };
 
 // Status của user
@@ -39,9 +42,9 @@ export const userStatusLabel = {
 
 // Badge style (bg + text)
 export const userStatusStyle = {
-  [userStatus.INACTIVE]: { bg: "#f3f4f6", color: "#4b5563" }, // xám nhạt bg, chữ đậm
-  [userStatus.ACTIVE]: { bg: "#dcfce7", color: "#15803d" }, // xanh nhạt bg, xanh đậm chữ
-  [userStatus.BANNED]: { bg: "#fee2e2", color: "#b91c1c" }, // đỏ nhạt bg, đỏ đậm chữ
+  [userStatus.INACTIVE]: { bg: "#f3f4f6", color: "#4b5563" },
+  [userStatus.ACTIVE]: { bg: "#dcfce7", color: "#15803d" },
+  [userStatus.BANNED]: { bg: "#fee2e2", color: "#b91c1c" },
 };
 
 // ======================
@@ -66,8 +69,8 @@ export const postStatusLabel = {
 
 // Badge style (bg + text)
 export const postStatusStyle = {
-  [postStatus.APPROVED]: { bg: "#dcfce7", color: "#15803d" }, // xanh
-  [postStatus.PENDING]: { bg: "#fef9c3", color: "#a16207" }, // vàng
-  [postStatus.REJECTED]: { bg: "#fee2e2", color: "#b91c1c" }, // đỏ
-  [postStatus.HIDDEN]: { bg: "#e5e7eb", color: "#374151" }, // xám
+  [postStatus.APPROVED]: { bg: "#dcfce7", color: "#15803d" },
+  [postStatus.PENDING]: { bg: "#fef9c3", color: "#a16207" },
+  [postStatus.REJECTED]: { bg: "#fee2e2", color: "#b91c1c" },
+  [postStatus.HIDDEN]: { bg: "#e5e7eb", color: "#374151" },
 };

@@ -11,6 +11,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
 import { userRole, userStatus } from "@utils/constants";
+import slugify from "slugify"; // ✅ thêm slugify
 
 // ✅ Schema validation
 const schema = yup.object().shape({
@@ -61,12 +62,17 @@ export function useSignUp() {
       // 3️⃣ Lấy avatar mặc định từ Firebase Storage
       let avatarURL = "";
       try {
-        const avatarRef = ref(storage, "avatars/default.jpeg"); // ảnh mặc định trong bucket
+        const avatarRef = ref(storage, "avatars/default.jpeg");
         avatarURL = await getDownloadURL(avatarRef);
       } catch {
         console.warn("⚠️ Không tìm thấy avatars/default.jpeg trong Storage");
-        avatarURL = "https://via.placeholder.com/150?text=Default+Avatar"; // fallback
+        avatarURL = "https://via.placeholder.com/150?text=Default+Avatar";
       }
+
+      const slug = slugify(fullname, {
+        lower: true,
+        strict: true,
+      });
 
       // 4️⃣ Lưu user vào Firestore
       const userRef = doc(db, "users", userCredential.user.uid);
@@ -74,9 +80,10 @@ export function useSignUp() {
         uid: userCredential.user.uid,
         fullname,
         email,
+        slug,
         role: userRole.USER,
         status: userStatus.ACTIVE,
-        avatar: avatarURL, // ✅ avatar mặc định từ Storage
+        avatar: avatarURL,
         createdAt: serverTimestamp(),
       });
 

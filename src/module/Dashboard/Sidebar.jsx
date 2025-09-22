@@ -76,7 +76,7 @@ const SidebarStyles = styled.div`
   }
 
   @media (min-width: 768px) {
-    left: 0; /* luôn hiện trên desktop */
+    left: 0;
   }
 `;
 
@@ -142,15 +142,33 @@ const Sidebar = () => {
     }
   };
 
-  const sidebarLinks = [
+  // ⚡️ Build menu theo role
+  let sidebarLinks = [
     { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
-    { title: "Post", url: "/manage/post", icon: <FileText /> },
-    { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
-    ...(currentUserRole === userRole.ADMIN
-      ? [{ title: "User", url: "/manage/user", icon: <Users /> }]
-      : []),
-    { title: "Logout", url: "/", icon: <LogOut />, onClick: handleLogout },
   ];
+
+  if (currentUserRole === userRole.ADMIN) {
+    sidebarLinks.push(
+      { title: "Post", url: "/manage/post", icon: <FileText /> },
+      { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
+      { title: "User", url: "/manage/user", icon: <Users /> }
+    );
+  } else if (currentUserRole === userRole.AUTHOR) {
+    sidebarLinks.push(
+      { title: "My Posts", url: "/manage/my-posts", icon: <FileText /> },
+      { title: "Category", url: "/manage/category", icon: <FolderKanban /> }
+    );
+  } else {
+    // USER thường chỉ có Dashboard thôi
+  }
+
+  // Logout cho tất cả
+  sidebarLinks.push({
+    title: "Logout",
+    url: "/",
+    icon: <LogOut />,
+    onClick: handleLogout,
+  });
 
   return (
     <>
@@ -173,7 +191,7 @@ const Sidebar = () => {
               key={link.title}
               onClick={() => {
                 if (link.onClick) link.onClick();
-                setIsOpen(false); // tự đóng sidebar khi click link
+                setIsOpen(false);
               }}
             >
               <span className="menu-icon">{link.icon}</span>
