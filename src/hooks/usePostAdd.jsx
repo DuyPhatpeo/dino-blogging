@@ -7,15 +7,20 @@ import { toast } from "react-toastify";
 import { postStatus } from "@utils/constants";
 import { useImageUpload } from "@hooks/useImageUpload";
 import { db } from "@services/firebase/firebase-config";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-// ✅ Yup schema
+// ✅ Yup schema validation
 const schema = yup.object({
   title: yup.string().required("Title is required"),
   slug: yup.string(),
-  author: yup.string().required("Author is required"),
   category: yup
     .array()
     .min(1, "Please select at least one category")
@@ -45,48 +50,81 @@ export function usePostAdd() {
       category: [],
       image: null,
       hot: false,
-      content: "", // 🆕 CKEditor content
+      content: "",
     },
   });
 
+  // ✅ Handler add post
   const addPostHandler = async (values) => {
     try {
       setLoading(true);
 
-      // tạo slug tự động nếu trống
-      const slug =
-        values.slug || slugify(values.title, { lower: true, strict: true });
+      // ✅ xử lý slug: ưu tiên slug user nhập, nếu trống thì tạo từ title
+      const slug = values.slug
+        ? slugify(values.slug, { lower: true, strict: true })
+        : slugify(values.title, { lower: true, strict: true });
 
-      // upload ảnh
+      // ✅ upload thumbnail
       let imageUrl = "";
       if (values.image) {
         imageUrl = await uploadImage(values.image, "posts");
       }
 
-      // lấy user từ Firebase Auth
+      // ✅ lấy user hiện tại
       const auth = getAuth();
       const user = auth.currentUser;
-      if (!user) {
-        throw new Error("You must be logged in to create a post.");
-      }
+      if (!user) throw new Error("You must be logged in to create a post.");
 
-      // ✅ newPost có cả content
+      // ✅ lấy thông tin user từ Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userDocRef);
+      if (!userSnap.exists()) throw new Error("User profile not found.");
+      const userData = userSnap.data();
+
+      // ✅ chuẩn hoá author object
+      const author = {
+        avatar: userData.avatar || "",
+        email: userData.email || user.email,
+        fullname: userData.fullname || user.displayName || "",
+        slug:
+          userData.slug ||
+          slugify(userData.fullname || user.displayName || user.email, {
+            lower: true,
+            strict: true,
+          }),
+        uid: user.uid,
+      };
+
+      // ✅ chuẩn hoá categories
+      const categories = Array.isArray(values.category)
+        ? values.category.map((c) => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+          }))
+        : [];
+
+      // ✅ newPost object
       const newPost = {
-        ...values,
+        title: values.title,
         slug,
         image: imageUrl,
-        author: values.author,
+        content: values.content,
+        hot: values.hot,
+        status: values.status,
+        category: categories,
+        author,
         createdBy: user.uid,
         createdAt: serverTimestamp(),
       };
 
-      // lưu Firestore
+      // ✅ lưu vào Firestore
       const docRef = await addDoc(collection(db, "posts"), newPost);
 
-      // cập nhật local state
+      // ✅ update state local
       setPosts((prev) => [...prev, { ...newPost, id: docRef.id }]);
 
-      // reset form
+      // ✅ reset form
       form.reset({
         title: "",
         slug: "",
@@ -98,7 +136,7 @@ export function usePostAdd() {
         content: "",
       });
 
-      toast.success("Post added successfully!");
+      toast.success("✅ Post added successfully!");
       navigate("/manage/post");
     } catch (error) {
       console.error("Error adding post:", error);

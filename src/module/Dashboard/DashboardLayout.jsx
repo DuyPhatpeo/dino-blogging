@@ -1,5 +1,5 @@
 // DashboardLayout.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import DashboardHeader from "./DashboardHeader";
 import Sidebar from "./Sidebar";
@@ -33,12 +33,28 @@ const LayoutStyles = styled.div`
   }
 
   @media (min-width: 768px) {
-    margin-left: ${(props) => (props.$isSidebarOpen ? "260px" : "0")};
+    margin-left: 260px; /* luôn chừa chỗ cho sidebar */
   }
 `;
 
 const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // luôn mở sidebar trên desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(true);
+      } else {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    handleResize(); // chạy lần đầu
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleToggleMenu = () => setIsSidebarOpen((prev) => !prev);
   const handleCloseSidebar = () => setIsSidebarOpen(false);

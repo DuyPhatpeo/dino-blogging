@@ -1,9 +1,11 @@
-// PostAdd.jsx
+// pages/PostAdd.jsx
 import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Save } from "lucide-react";
 
 import Radio from "@components/CheckBox/Radio";
 import Dropdown from "@components/Dropdown/DropDown";
@@ -14,12 +16,10 @@ import Input from "@components/Input/Input";
 import Label from "@components/Label/Label";
 import { postStatus } from "@utils/constants";
 import ImageUpload from "@components/ImageUpload/ImageUpload";
-import Toggle from "@components/Toggle/Toggle";
+import FormError from "@components/Error/FormError";
 import { usePostAdd } from "@hooks/usePostAdd";
 import useCategories from "@hooks/useCategories";
-import FormError from "@components/Error/FormError";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Save } from "lucide-react";
+import HotToggle from "@components/Toggle/HotToggle";
 
 const PostAddNewStyles = styled.div`
   background: #fff;
@@ -77,6 +77,10 @@ const PostAddNewStyles = styled.div`
     border-radius: 4px;
     margin-top: 8px;
   }
+
+  .ck-editor__editable {
+    min-height: 300px; /* cao hơn cho content */
+  }
 `;
 
 const PostAdd = () => {
@@ -104,7 +108,7 @@ const PostAdd = () => {
       </div>
 
       <form onSubmit={handleSubmit(addPostHandler)}>
-        {/* Title + Slug */}
+        {/* Title + Slug (Slug optional) */}
         <div className="form-row">
           <Field>
             <Label>Title</Label>
@@ -116,11 +120,11 @@ const PostAdd = () => {
             <FormError message={errors.title?.message} />
           </Field>
           <Field>
-            <Label>Slug</Label>
+            <Label>Slug (optional)</Label>
             <Input
               control={control}
               name="slug"
-              placeholder="Enter slug (auto if empty)"
+              placeholder="Leave empty to auto-generate"
             />
             <FormError message={errors.slug?.message} />
           </Field>
@@ -164,7 +168,7 @@ const PostAdd = () => {
               control={control}
               name="hot"
               render={({ field: { value, onChange } }) => (
-                <Toggle
+                <HotToggle
                   checked={value}
                   onChange={(e) => onChange(e.target.checked)}
                   label="Mark as hot"
@@ -174,81 +178,64 @@ const PostAdd = () => {
           </Field>
         </div>
 
-        {/* Author + Category */}
-        <div className="form-row">
-          <Field>
-            <Label>Author</Label>
-            <Input
-              control={control}
-              name="author"
-              placeholder="Enter author name"
-            />
-            <FormError message={errors.author?.message} />
-          </Field>
+        {/* Category */}
+        <Field>
+          <Label>Category</Label>
+          <Controller
+            control={control}
+            name="category"
+            render={({ field: { value, onChange } }) => {
+              if (catLoading) return <p>Loading categories...</p>;
+              if (error) return <p>Error loading categories</p>;
 
-          <Field>
-            <Label>Category</Label>
-            <Controller
-              control={control}
-              name="category"
-              render={({ field: { value, onChange } }) => {
-                if (catLoading) return <p>Loading categories...</p>;
-                if (error) return <p>Error loading categories</p>;
+              const activeCategories = categories.filter((c) => c.status === 1);
+              const selected =
+                activeCategories.filter((c) =>
+                  value?.some((v) => v.id === c.id)
+                ) || [];
 
-                const activeCategories = categories.filter(
-                  (c) => c.status === 1
-                );
-                const selected =
-                  activeCategories.filter((c) => value?.includes(c.id)) || [];
+              const handleChange = (selectedItems) => {
+                onChange(selectedItems);
+              };
 
-                const handleChange = (selectedItems) => {
-                  const ids = selectedItems.map((item) => item.id);
-                  onChange(ids);
-                };
-
-                return (
-                  <Dropdown
-                    placeholder="Select categories"
-                    selected={selected}
-                    onChange={handleChange}
-                    multiple
-                  >
-                    {activeCategories.map((cat) => (
-                      <Option key={cat.id} value={cat} />
-                    ))}
-                  </Dropdown>
-                );
-              }}
-            />
-            <FormError message={errors.category?.message} />
-          </Field>
-        </div>
+              return (
+                <Dropdown
+                  placeholder="Select categories"
+                  selected={selected}
+                  onChange={handleChange}
+                  multiple
+                >
+                  {activeCategories.map((cat) => (
+                    <Option key={cat.id} value={cat} />
+                  ))}
+                </Dropdown>
+              );
+            }}
+          />
+          <FormError message={errors.category?.message} />
+        </Field>
 
         {/* Thumbnail */}
-        <div className="form-row">
-          <Field>
-            <Label>Thumbnail</Label>
-            <ImageUpload
-              control={control}
-              name="image"
-              label="Upload post thumbnail"
-              shape="rectangle"
-              width="600px"
-              height="400px"
+        <Field>
+          <Label>Thumbnail</Label>
+          <ImageUpload
+            control={control}
+            name="image"
+            label="Upload post thumbnail"
+            shape="rectangle"
+            width="600px"
+            height="400px"
+          />
+          <FormError message={errors.image?.message} />
+          {uploadProgress > 0 && (
+            <div
+              className="progress-bar"
+              style={{ width: `${uploadProgress}%` }}
             />
-            <FormError message={errors.image?.message} />
-            {uploadProgress > 0 && (
-              <div
-                className="progress-bar"
-                style={{ width: `${uploadProgress}%` }}
-              />
-            )}
-          </Field>
-          <Field />
-        </div>
+          )}
+        </Field>
 
-        {/* Content (CKEditor) */}
-        {/* Content (CKEditor) */}
+        {/* Content */}
         <Field>
           <Label>Content</Label>
           <Controller
@@ -280,13 +267,6 @@ const PostAdd = () => {
                         "imageStyle:side",
                       ],
                     },
-                    simpleUpload: {
-                      // ✅ upload ảnh - thay URL API bằng server hoặc Firebase của bạn
-                      uploadUrl: "http://localhost:4000/upload",
-                      headers: {
-                        Authorization: "Bearer <your-token-if-any>",
-                      },
-                    },
                   }}
                   data={value || ""}
                   onChange={(event, editor) => {
@@ -302,7 +282,6 @@ const PostAdd = () => {
 
         {/* Submit */}
         <div className="form-actions">
-          <div />
           <Button
             type="submit"
             height="52px"

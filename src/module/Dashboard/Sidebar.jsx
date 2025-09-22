@@ -23,7 +23,6 @@ const SidebarStyles = styled.div`
   left: ${(props) => (props.$isOpen ? "0" : "-260px")};
   background: #ffffff;
   box-shadow: 10px 10px 20px rgba(218, 213, 213, 0.15);
-  border-radius: 0 12px 12px 0;
   display: flex;
   flex-direction: column;
   z-index: 200;
@@ -88,10 +87,9 @@ const SidebarStyles = styled.div`
     }
   }
 
-  /* Desktop: sidebar luôn hiện, ko overlay */
+  /* Desktop: sidebar luôn fixed, không overlay */
   @media (min-width: 768px) {
     left: 0;
-    position: relative; /* chiếm chỗ, đẩy content */
     border-radius: 0;
   }
 `;
