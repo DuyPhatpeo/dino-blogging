@@ -246,7 +246,7 @@ const UserMenu = () => {
   const renderRoleLink = () => {
     if (role === userRole.ADMIN) {
       return (
-        <MenuItem to="/dashboard" onClick={() => setOpen(false)}>
+        <MenuItem to="/manage/dashboard" onClick={() => setOpen(false)}>
           <LayoutDashboard size={18} />
           Dashboard
         </MenuItem>
@@ -254,7 +254,7 @@ const UserMenu = () => {
     }
     if (role === userRole.AUTHOR) {
       return (
-        <MenuItem to="/dashboard/my-posts" onClick={() => setOpen(false)}>
+        <MenuItem to="/manage/my-posts" onClick={() => setOpen(false)}>
           <FileText size={18} />
           My Posts
         </MenuItem>

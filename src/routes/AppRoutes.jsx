@@ -10,6 +10,7 @@ const PostPage = lazy(() => import("@pages/PostPage"));
 
 const PostDetailsPage = lazy(() => import("@pages/PostDetailsPage"));
 const DashboardPage = lazy(() => import("@pages/Manage/DashboardPage"));
+const MyPost = lazy(() => import("@pages/Manage/Post/MyPost"));
 const PostManagePage = lazy(() => import("@pages/Manage/Post/PostManagePage"));
 const PostAddPage = lazy(() => import("@pages/Manage/Post/PostAddPage"));
 
@@ -46,11 +47,12 @@ export default function AppRoutes() {
         <Route path="/blog" element={<PostPage />} />
 
         {/* Dashboard */}
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/manage/dashboard" element={<DashboardPage />} />
 
         {/* Posts */}
         <Route path="/manage/post" element={<PostManagePage />} />
         <Route path="/manage/add-post" element={<PostAddPage />} />
+        <Route path="/manage/my-posts" element={<MyPost />} />
 
         {/* Categories */}
         <Route path="/manage/category" element={<CategoryManagePage />} />
