@@ -22,17 +22,17 @@ export const theme = {
     warning: "#facc15",
 
     // 🎯 Màu riêng cho actions
-    detail: "#3B82F6", // xanh dương
-    detailHover: "#2563EB",
+    detail: "#3B82F6", // xanh dương sáng, chính
+    detailHover: "#2563EB", // xanh dương đậm
 
-    edit: "#22C55E", // xanh lá
-    editHover: "#16A34A",
+    edit: "#10B981", // xanh lá tươi, chỉnh sửa
+    editHover: "#047857", // xanh lá đậm
 
-    delete: "#EF4444", // đỏ
-    deleteHover: "#DC2626",
+    delete: "#EF4444", // đỏ tươi, xóa
+    deleteHover: "#B91C1C", // đỏ đậm
 
-    cancel: "#6B7280", // xám
-    cancelHover: "#4B5563",
+    cancel: "#F59E0B", // cam vàng, hủy
+    cancelHover: "#B45309", // cam vàng đậm
   },
 
   // 🔠 Font size

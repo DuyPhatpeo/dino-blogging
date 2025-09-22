@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit3, Trash2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@services/firebase/firebase-config";
@@ -71,6 +71,7 @@ const UserDetailStyles = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+    margin-bottom: 24px;
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
@@ -86,6 +87,13 @@ const UserDetailStyles = styled.div`
   .field-label {
     font-weight: 700;
     color: #6b7280;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
   }
 `;
 
@@ -138,7 +146,6 @@ const UserDetail = () => {
 
       {/* Info Grid */}
       <div className="info-grid">
-        {/* Left column */}
         <Field>
           <Label className="field-label">Email:</Label>
           <div className="field-value">{user.email || "-"}</div>
@@ -193,6 +200,24 @@ const UserDetail = () => {
               : "-"}
           </div>
         </Field>
+      </div>
+
+      {/* Actions */}
+      <div className="actions">
+        <Button
+          onClick={() => navigate(`/manage/update-user/${user.id}`)}
+          variant="edit"
+        >
+          <Edit3 size={18} style={{ marginRight: "8px" }} />
+          Edit
+        </Button>
+        <Button
+          onClick={() => navigate(`/manage/delete-user/${user.id}`)}
+          variant="delete"
+        >
+          <Trash2 size={18} style={{ marginRight: "8px" }} />
+          Delete
+        </Button>
       </div>
     </UserDetailStyles>
   );

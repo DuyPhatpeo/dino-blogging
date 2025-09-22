@@ -6,7 +6,7 @@ import { db } from "@services/firebase/firebase-config";
 import { toast } from "react-toastify";
 
 import Button from "@components/Button/Button";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, X } from "lucide-react";
 import { useUserDelete } from "@hooks/useUserDelete";
 
 const UserDeleteStyles = styled.div`
@@ -101,6 +101,7 @@ const UserDelete = () => {
             Delete
           </Button>
           <Button variant="cancel" onClick={() => navigate(-1)}>
+            <X size={18} style={{ marginRight: "8px" }} />
             Cancel
           </Button>
         </div>
