@@ -7,7 +7,6 @@ import {
   FolderKanban,
   Users,
   LogOut,
-  Menu,
   X,
 } from "lucide-react";
 import { auth, db } from "@services/firebase/firebase-config";
@@ -29,24 +28,39 @@ const SidebarStyles = styled.div`
   z-index: 200;
   transition: left 0.3s ease;
 
-  .sidebar-logo {
+  .sidebar-header {
     display: flex;
     align-items: center;
-    font-weight: 600;
-    gap: 0 12px;
-    img {
-      max-width: 36px;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      gap: 8px;
+      img {
+        max-width: 32px;
+      }
+      color: ${(props) => props.theme.primary};
     }
-    margin-bottom: 24px;
-    padding: 20px 20px 0;
-    font-size: 1.1rem;
-    color: ${(props) => props.theme.primary};
+    .close-btn {
+      display: none;
+      cursor: pointer;
+      svg {
+        width: 22px;
+        height: 22px;
+      }
+      @media (max-width: 767px) {
+        display: block;
+      }
+    }
   }
 
   .menu {
     display: flex;
     flex-direction: column;
-    padding: 0 12px;
+    padding: 12px;
     flex: 1;
   }
 
@@ -62,12 +76,10 @@ const SidebarStyles = styled.div`
     border-radius: 8px;
     transition: all 0.2s ease;
     cursor: pointer;
-
     svg {
       width: 20px;
       height: 20px;
     }
-
     &.active,
     &:hover {
       background: #f1fbf7;
@@ -75,25 +87,11 @@ const SidebarStyles = styled.div`
     }
   }
 
+  /* Desktop: sidebar luôn hiện, ko overlay */
   @media (min-width: 768px) {
     left: 0;
-  }
-`;
-
-const ToggleButton = styled.button`
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 300;
-  background: ${(props) => props.theme.primary};
-  color: white;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-
-  @media (min-width: 768px) {
-    display: none;
+    position: relative; /* chiếm chỗ, đẩy content */
+    border-radius: 0;
   }
 `;
 
@@ -103,17 +101,32 @@ const Overlay = styled.div`
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   z-index: 150;
-
   @media (min-width: 768px) {
     display: none;
   }
 `;
 
-const Sidebar = () => {
+const sidebarConfig = {
+  [userRole.ADMIN]: [
+    { title: "Post", url: "/manage/post", icon: <FileText /> },
+    { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
+    { title: "User", url: "/manage/user", icon: <Users /> },
+  ],
+  [userRole.MOD]: [
+    { title: "Review Posts", url: "/manage/review", icon: <FileText /> },
+    { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
+  ],
+  [userRole.AUTHOR]: [
+    { title: "My Posts", url: "/manage/my-posts", icon: <FileText /> },
+    { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
+  ],
+  [userRole.USER]: [],
+};
+
+const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [currentUserRole, setCurrentUserRole] = useState(user?.role || null);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -142,46 +155,24 @@ const Sidebar = () => {
     }
   };
 
-  // ⚡️ Build menu theo role
-  let sidebarLinks = [
+  const sidebarLinks = [
     { title: "Dashboard", url: "/dashboard", icon: <LayoutDashboard /> },
+    ...(sidebarConfig[currentUserRole] || []),
+    { title: "Logout", url: "/", icon: <LogOut />, onClick: handleLogout },
   ];
-
-  if (currentUserRole === userRole.ADMIN) {
-    sidebarLinks.push(
-      { title: "Post", url: "/manage/post", icon: <FileText /> },
-      { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
-      { title: "User", url: "/manage/user", icon: <Users /> }
-    );
-  } else if (currentUserRole === userRole.AUTHOR) {
-    sidebarLinks.push(
-      { title: "My Posts", url: "/manage/my-posts", icon: <FileText /> },
-      { title: "Category", url: "/manage/category", icon: <FolderKanban /> }
-    );
-  } else {
-    // USER thường chỉ có Dashboard thôi
-  }
-
-  // Logout cho tất cả
-  sidebarLinks.push({
-    title: "Logout",
-    url: "/",
-    icon: <LogOut />,
-    onClick: handleLogout,
-  });
 
   return (
     <>
-      <ToggleButton onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? <X /> : <Menu />}
-      </ToggleButton>
-
-      <Overlay $isOpen={isOpen} onClick={() => setIsOpen(false)} />
-
+      <Overlay $isOpen={isOpen} onClick={onClose} />
       <SidebarStyles $isOpen={isOpen}>
-        <div className="sidebar-logo">
-          <img srcSet="/logo.png 2x" alt="logo" />
-          <span>Monkey Blogging</span>
+        <div className="sidebar-header">
+          <div className="logo">
+            <img src="/logo.png" alt="Logo" />
+            <span>Monkey Blogging</span>
+          </div>
+          <div className="close-btn" onClick={onClose}>
+            <X />
+          </div>
         </div>
         <div className="menu">
           {sidebarLinks.map((link) => (
@@ -191,7 +182,7 @@ const Sidebar = () => {
               key={link.title}
               onClick={() => {
                 if (link.onClick) link.onClick();
-                setIsOpen(false);
+                onClose();
               }}
             >
               <span className="menu-icon">{link.icon}</span>

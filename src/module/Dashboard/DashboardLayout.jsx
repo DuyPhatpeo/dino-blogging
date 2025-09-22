@@ -1,3 +1,4 @@
+// DashboardLayout.jsx
 import React, { useState } from "react";
 import styled from "styled-components";
 import DashboardHeader from "./DashboardHeader";
@@ -7,7 +8,7 @@ import FloatingWriteButton from "./FloatingWriteButton";
 const LayoutStyles = styled.div`
   display: flex;
   min-height: 100vh;
-  background-color: #f1f5f9; /* slate-100 */
+  background-color: #f1f5f9;
   transition: margin-left 0.3s ease;
 
   .content {
@@ -24,31 +25,32 @@ const LayoutStyles = styled.div`
 
   .footer {
     background: #fff;
-    border-top: 1px solid #e5e7eb; /* gray-200 */
+    border-top: 1px solid #e5e7eb;
     padding: 16px 24px;
     text-align: center;
     font-size: 0.9rem;
-    color: #6b7280; /* gray-500 */
+    color: #6b7280;
   }
 
-  /* Responsive */
-  @media (max-width: 767px) {
-    margin-left: 0 !important; /* Trên mobile bỏ margin */
+  @media (min-width: 768px) {
+    margin-left: ${(props) => (props.$isSidebarOpen ? "260px" : "0")};
   }
 `;
 
 const DashboardLayout = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleToggleMenu = () => {
-    setIsSidebarOpen((prev) => !prev);
-  };
+  const handleToggleMenu = () => setIsSidebarOpen((prev) => !prev);
+  const handleCloseSidebar = () => setIsSidebarOpen(false);
 
   return (
-    <LayoutStyles style={{ marginLeft: isSidebarOpen ? 260 : 0 }}>
-      <Sidebar isOpen={isSidebarOpen} />
+    <LayoutStyles $isSidebarOpen={isSidebarOpen}>
+      <Sidebar isOpen={isSidebarOpen} onClose={handleCloseSidebar} />
       <div className="content">
-        <DashboardHeader onToggleMenu={handleToggleMenu} />
+        <DashboardHeader
+          onToggleMenu={handleToggleMenu}
+          isSidebarOpen={isSidebarOpen}
+        />
         <main className="main">{children}</main>
         <footer className="footer">
           © {new Date().getFullYear()} Dino Dashboard. All rights reserved.

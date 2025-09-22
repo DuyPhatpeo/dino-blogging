@@ -17,7 +17,7 @@ const DashboardHeaderStyles = styled.header`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
 
   .header-left {
     display: flex;
@@ -117,7 +117,7 @@ const DashboardHeaderStyles = styled.header`
 const DashboardHeader = ({ onToggleMenu }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [avatarURL, setAvatarURL] = useState("https://i.pravatar.cc/300");
+  const [avatarURL, setAvatarURL] = useState(null);
 
   useEffect(() => {
     const fetchAvatar = async () => {
@@ -127,7 +127,7 @@ const DashboardHeader = ({ onToggleMenu }) => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setAvatarURL(data.avatar || "https://i.pravatar.cc/300");
+          if (data.avatar) setAvatarURL(data.avatar); // chỉ set nếu có
         }
       } catch (err) {
         console.error(err);
@@ -149,8 +149,11 @@ const DashboardHeader = ({ onToggleMenu }) => {
           <Home /> <span>Home</span>
         </Button>
         <div className="header-avatar">
-          <img src={avatarURL} alt={user?.displayName || "User"} />
-          <span>{user?.displayName || "User"}</span>
+          {avatarURL ? (
+            <img src={avatarURL} alt={user?.displayName || "User"} />
+          ) : (
+            <span>{user?.displayName || "User"}</span>
+          )}
         </div>
       </div>
     </DashboardHeaderStyles>
