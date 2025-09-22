@@ -8,6 +8,7 @@ import {
   Users,
   LogOut,
   X,
+  Edit3,
 } from "lucide-react";
 import { auth, db } from "@services/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
@@ -108,12 +109,14 @@ const Overlay = styled.div`
 
 const sidebarConfig = {
   [userRole.ADMIN]: [
+    { title: "My Posts", url: "/manage/my-posts", icon: <Edit3 /> },
     { title: "Post", url: "/manage/post", icon: <FileText /> },
     { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
     { title: "User", url: "/manage/user", icon: <Users /> },
   ],
-  [userRole.MOD]: [
-    { title: "Review Posts", url: "/manage/review", icon: <FileText /> },
+  [userRole.MODERATOR]: [
+    { title: "My Posts", url: "/manage/my-posts", icon: <FileText /> },
+    { title: "Post", url: "/manage/post", icon: <FileText /> },
     { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
   ],
   [userRole.AUTHOR]: [

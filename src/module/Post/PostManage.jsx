@@ -1,22 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Table from "@components/Table/Table";
 import Pagination from "@components/Pagination/Pagination";
 import { Eye, Edit, Trash2, Flame, Plus } from "lucide-react";
-import { db } from "@services/firebase/firebase-config";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
 import { postStatusLabel, postStatusStyle } from "@utils/constants";
 import LoadingSpinner from "@components/Loading/LoadingSpinner";
 import Button from "@components/Button/Button";
 import InputSearch from "@components/Input/InputSearch";
 import { useNavigate } from "react-router-dom";
+import { usePosts } from "@hooks/usePosts";
 
 const PostManageStyles = styled.div`
   background: #fff;
@@ -82,16 +74,13 @@ const PostManageStyles = styled.div`
   /* Responsive */
   @media (max-width: 1024px) {
     padding: 20px;
-
     h1.dashboard-heading {
       font-size: 1.5rem;
     }
-
     .table-image {
       width: 100px;
       height: 70px;
     }
-
     table th:nth-child(3),
     table td:nth-child(3),
     table th:nth-child(5),
@@ -102,15 +91,12 @@ const PostManageStyles = styled.div`
 
   @media (max-width: 768px) {
     padding: 16px;
-
     h1.dashboard-heading {
       font-size: 1.3rem;
     }
-
     table {
       font-size: 0.85rem;
     }
-
     table th:nth-child(4),
     table td:nth-child(4) {
       display: none;
@@ -122,11 +108,9 @@ const PostManageStyles = styled.div`
       width: 80px;
       height: 60px;
     }
-
     table {
       font-size: 0.75rem;
     }
-
     table th:nth-child(6),
     table td:nth-child(6),
     table th:nth-child(7),
@@ -140,59 +124,10 @@ const POSTS_PER_PAGE = 10;
 
 export default function PostManage() {
   const navigate = useNavigate();
+  const { posts, loading, toggleHot, toggleStatus } = usePosts();
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [posts, setPosts] = useState([]);
-  const [categories, setCategories] = useState({});
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Fetch categories
-  useEffect(() => {
-    async function fetchCategories() {
-      const colRef = collection(db, "categories");
-      const snapshot = await getDocs(colRef);
-      const map = {};
-      snapshot.docs.forEach((doc) => {
-        map[doc.id] = doc.data().name;
-      });
-      setCategories(map);
-    }
-    fetchCategories();
-  }, []);
-
-  // Fetch posts
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const colRef = collection(db, "posts");
-        const q = query(colRef, orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-
-        const result = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title,
-            image: data.image,
-            category: Array.isArray(data.category) ? data.category : [],
-            status: data.status,
-            author: data.author || "Anonymous",
-            createdAt: data.createdAt?.toDate
-              ? data.createdAt.toDate().toLocaleDateString("vi-VN")
-              : "",
-            hot: data.hot || false,
-          };
-        });
-
-        setPosts(result);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchPosts();
-  }, []);
 
   // Filter
   const filteredPosts = posts.filter(
@@ -205,34 +140,6 @@ export default function PostManage() {
     (currentPage - 1) * POSTS_PER_PAGE,
     currentPage * POSTS_PER_PAGE
   );
-
-  const toggleHot = async (postId, currentHot) => {
-    try {
-      const docRef = doc(db, "posts", postId);
-      await updateDoc(docRef, { hot: !currentHot });
-      setPosts((prev) =>
-        prev.map((p) => (p.id === postId ? { ...p, hot: !currentHot } : p))
-      );
-    } catch (error) {
-      console.error("Error updating hot status:", error);
-    }
-  };
-
-  const toggleStatus = async (postId, currentStatus) => {
-    const flow = [2, 1, 4, 3]; // pending -> approved -> hidden -> rejected
-    const currentIndex = flow.indexOf(currentStatus);
-    const nextStatus = flow[(currentIndex + 1) % flow.length];
-
-    try {
-      const docRef = doc(db, "posts", postId);
-      await updateDoc(docRef, { status: nextStatus });
-      setPosts((prev) =>
-        prev.map((p) => (p.id === postId ? { ...p, status: nextStatus } : p))
-      );
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
 
   const columns = [
     {
@@ -264,9 +171,9 @@ export default function PostManage() {
       render: (val) =>
         val.length > 0 ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-            {val.map((id, index) => (
+            {val.map((c, index) => (
               <span
-                key={id + index}
+                key={c.id + index}
                 style={{
                   background: "#f3f4f6",
                   padding: "2px 8px",
@@ -274,7 +181,7 @@ export default function PostManage() {
                   fontSize: "0.75rem",
                 }}
               >
-                {categories[id] ? categories[id] : "Unknown"}
+                {c.name}
               </span>
             ))}
           </div>
@@ -282,7 +189,26 @@ export default function PostManage() {
           <span>—</span>
         ),
     },
-    { key: "author" },
+    {
+      key: "author",
+      render: (val, item) => (
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {item.authorAvatar && (
+            <img
+              src={item.authorAvatar}
+              alt={val}
+              style={{
+                width: "28px",
+                height: "28px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          )}
+          <span>{val}</span>
+        </div>
+      ),
+    },
     {
       key: "status",
       render: (val, item) => {
@@ -290,7 +216,6 @@ export default function PostManage() {
           bg: "#e5e7eb",
           color: "#374151",
         };
-
         return (
           <span
             className="clickable-status"
