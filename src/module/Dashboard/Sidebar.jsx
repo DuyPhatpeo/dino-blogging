@@ -107,6 +107,7 @@ const Overlay = styled.div`
 
 const sidebarConfig = {
   [userRole.ADMIN]: [
+    { title: "Dashboard", url: "/manage/dashboard", icon: <LayoutDashboard /> },
     { title: "My Posts", url: "/manage/my-posts", icon: <Edit3 /> },
     { title: "Post", url: "/manage/post", icon: <FileText /> },
     { title: "Category", url: "/manage/category", icon: <FolderKanban /> },
@@ -157,7 +158,6 @@ const Sidebar = ({ isOpen, onClose }) => {
   };
 
   const sidebarLinks = [
-    { title: "Dashboard", url: "/manage/dashboard", icon: <LayoutDashboard /> },
     ...(sidebarConfig[currentUserRole] || []),
     { title: "Logout", url: "/", icon: <LogOut />, onClick: handleLogout },
   ];
