@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@services/firebase/firebase-config";
+import { useNavigate } from "react-router-dom";
 import PostCategory from "./PostCategory";
 
 const PostNewestItemStyles = styled.article`
@@ -81,6 +84,10 @@ const PostNewestItemStyles = styled.article`
       background-color: currentColor;
       border-radius: 50%;
     }
+
+    &-author {
+      font-weight: 500;
+    }
   }
 
   /* Responsive */
@@ -96,6 +103,52 @@ const PostNewestItemStyles = styled.article`
 `;
 
 const PostNewestItem = ({ post }) => {
+  const [author, setAuthor] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [categorySlugs, setCategorySlugs] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // fetch author
+    const fetchAuthor = async () => {
+      if (!post?.authorId) return;
+      try {
+        const docRef = doc(db, "users", post.authorId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setAuthor(docSnap.data());
+        }
+      } catch (error) {
+        console.error("Failed to fetch author:", error);
+      }
+    };
+
+    // fetch categories
+    const fetchCategories = async () => {
+      if (!post?.categoryIds?.length) return;
+      try {
+        const results = await Promise.all(
+          post.categoryIds.map(async (catId) => {
+            const catRef = doc(db, "categories", catId);
+            const catSnap = await getDoc(catRef);
+            if (catSnap.exists()) {
+              const data = catSnap.data();
+              return { name: data.name, slug: data.slug };
+            }
+            return { name: "Unknown", slug: "" };
+          })
+        );
+        setCategories(results.map((c) => c.name));
+        setCategorySlugs(results.map((c) => c.slug));
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchAuthor();
+    fetchCategories();
+  }, [post?.authorId, post?.categoryIds]);
+
   if (!post) return null;
 
   return (
@@ -104,10 +157,18 @@ const PostNewestItem = ({ post }) => {
         <img src={post.image} alt={post.title} />
       </a>
       <div className="post-content">
-        {post.categories && post.categories.length > 0 && (
+        {categories.length > 0 && (
           <div className="post-categories">
-            {post.categories.map((cat, index) => (
-              <PostCategory key={index} type="secondary">
+            {categories.map((cat, index) => (
+              <PostCategory
+                key={index}
+                type="secondary"
+                onClick={() => {
+                  if (categorySlugs[index])
+                    navigate(`/category/${categorySlugs[index]}`);
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 {cat}
               </PostCategory>
             ))}
@@ -123,7 +184,7 @@ const PostNewestItem = ({ post }) => {
               : "N/A"}
           </span>
           <span className="post-dot"></span>
-          <span className="post-author">{post.author || "Unknown"}</span>
+          <span className="post-author">{author?.fullname || "Unknown"}</span>
         </div>
       </div>
     </PostNewestItemStyles>

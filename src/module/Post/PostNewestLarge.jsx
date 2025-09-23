@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@services/firebase/firebase-config";
+import { useNavigate } from "react-router-dom";
 import PostCategory from "./PostCategory";
 
 const PostNewestLargeStyles = styled.article`
+  padding-top: 20px;
+
   .post {
     &-image {
       display: block;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
       height: 280px;
       border-radius: ${({ theme }) => theme.radius.lg};
       overflow: hidden;
@@ -28,7 +33,7 @@ const PostNewestLargeStyles = styled.article`
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     &-title {
@@ -36,7 +41,7 @@ const PostNewestLargeStyles = styled.article`
       line-height: 1.4;
       display: block;
       font-size: ${({ theme }) => theme.fontSize.lg};
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       transition: color 0.2s ease;
       color: ${({ theme }) => theme.colors.text};
 
@@ -83,6 +88,52 @@ const PostNewestLargeStyles = styled.article`
 `;
 
 const PostNewestLarge = ({ post }) => {
+  const [author, setAuthor] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [categorySlugs, setCategorySlugs] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // fetch author
+    const fetchAuthor = async () => {
+      if (!post?.authorId) return;
+      try {
+        const docRef = doc(db, "users", post.authorId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setAuthor(docSnap.data());
+        }
+      } catch (error) {
+        console.error("Failed to fetch author:", error);
+      }
+    };
+
+    // fetch category names + slug
+    const fetchCategories = async () => {
+      if (!post?.categoryIds?.length) return;
+      try {
+        const results = await Promise.all(
+          post.categoryIds.map(async (catId) => {
+            const catRef = doc(db, "categories", catId);
+            const catSnap = await getDoc(catRef);
+            if (catSnap.exists()) {
+              const data = catSnap.data();
+              return { name: data.name, slug: data.slug };
+            }
+            return { name: "Unknown", slug: "" };
+          })
+        );
+        setCategories(results.map((c) => c.name));
+        setCategorySlugs(results.map((c) => c.slug));
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchAuthor();
+    fetchCategories();
+  }, [post?.authorId, post?.categoryIds]);
+
   if (!post) return null;
 
   return (
@@ -90,14 +141,26 @@ const PostNewestLarge = ({ post }) => {
       <a href={`/post/${post.slug || post.id}`} className="post-image">
         <img src={post.image} alt={post.title} />
       </a>
-      {post.categories && post.categories.length > 0 && (
+
+      {categories.length > 0 && (
         <div className="post-categories">
-          {post.categories.map((cat, index) => (
-            <PostCategory key={index}>{cat}</PostCategory>
+          {categories.map((cat, index) => (
+            <PostCategory
+              key={index}
+              onClick={() => {
+                if (categorySlugs[index])
+                  navigate(`/category/${categorySlugs[index]}`);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              {cat}
+            </PostCategory>
           ))}
         </div>
       )}
+
       <h3 className="post-title">{post.title}</h3>
+
       <div className="post-info">
         <span className="post-time">
           {post.createdAt
@@ -107,7 +170,7 @@ const PostNewestLarge = ({ post }) => {
             : "N/A"}
         </span>
         <span className="post-dot"></span>
-        <span className="post-author">{post.author || "Unknown"}</span>
+        <span className="post-author">{author?.fullname || "Unknown"}</span>
       </div>
     </PostNewestLargeStyles>
   );
