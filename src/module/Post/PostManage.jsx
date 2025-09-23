@@ -71,7 +71,19 @@ const PostManageStyles = styled.div`
     margin: 0 0 4px 0;
   }
 
-  /* Responsive */
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
   @media (max-width: 1024px) {
     padding: 20px;
     h1.dashboard-heading {
@@ -167,21 +179,27 @@ export default function PostManage() {
       },
     },
     {
-      key: "category",
-      render: (val) =>
+      key: "categoryNames",
+      render: (val, item) =>
         val.length > 0 ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-            {val.map((c, index) => (
+            {val.map((name, index) => (
               <span
-                key={c.id + index}
+                key={index}
                 style={{
                   background: "#f3f4f6",
                   padding: "2px 8px",
                   borderRadius: "6px",
                   fontSize: "0.75rem",
+                  cursor: "pointer",
+                  color: "#0ea5e9",
                 }}
+                onClick={() =>
+                  navigate(`/manage/detail-category/${item.categoryIds[index]}`)
+                }
+                title={`View category: ${name}`}
               >
-                {c.name}
+                {name}
               </span>
             ))}
           </div>
@@ -192,16 +210,18 @@ export default function PostManage() {
     {
       key: "author",
       render: (val, item) => (
-        <span
-          style={{
-            color: "#0ea5e9",
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
+        <div
+          className="author-info"
           onClick={() => navigate(`/manage/detail-user/${item.authorId}`)}
+          style={{ cursor: "pointer" }}
         >
-          {val}
-        </span>
+          <img
+            src={item.avatar || "/fallback-avatar.jpg"}
+            alt={val}
+            className="author-avatar"
+          />
+          <span style={{ color: "#0ea5e9", fontWeight: 500 }}>{val}</span>
+        </div>
       ),
     },
     {
@@ -223,7 +243,6 @@ export default function PostManage() {
               fontSize: "0.8rem",
               fontWeight: 600,
               textTransform: "capitalize",
-              cursor: "pointer",
             }}
             onClick={() => toggleStatus(item.id, val)}
             title="Click to change status"
@@ -283,13 +302,13 @@ export default function PostManage() {
       <div className="header">
         <div className="header-top">
           <h1 className="dashboard-heading">Manage posts</h1>
-          {/* <Button
+          <Button
             className="header-button"
             onClick={() => navigate("/manage/add-post")}
           >
             <Plus size={18} style={{ marginRight: 6 }} />
             New Post
-          </Button> */}
+          </Button>
         </div>
 
         <InputSearch

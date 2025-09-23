@@ -72,70 +72,20 @@ const MyPostStyles = styled.div`
     line-height: 1.4;
     margin: 0 0 4px 0;
   }
-
-  @media (max-width: 1024px) {
-    padding: 20px;
-    h1.dashboard-heading {
-      font-size: 1.5rem;
-    }
-    .table-image {
-      width: 100px;
-      height: 70px;
-    }
-    table th:nth-child(3),
-    table td:nth-child(3),
-    table th:nth-child(5),
-    table td:nth-child(5) {
-      display: none;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 16px;
-    h1.dashboard-heading {
-      font-size: 1.3rem;
-    }
-    table {
-      font-size: 0.85rem;
-    }
-    table th:nth-child(4),
-    table td:nth-child(4) {
-      display: none;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .table-image {
-      width: 80px;
-      height: 60px;
-    }
-    table {
-      font-size: 0.75rem;
-    }
-    table th:nth-child(6),
-    table td:nth-child(6),
-    table th:nth-child(7),
-    table td:nth-child(7) {
-      display: none;
-    }
-  }
 `;
 
 const POSTS_PER_PAGE = 10;
 
 export default function MyPost() {
   const navigate = useNavigate();
-  const { user } = useAuth(); // ✅ user hiện tại
+  const { user } = useAuth();
   const { posts, loading, toggleHot, toggleStatus } = useMyPosts(user?.uid);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter theo search
-  const filteredPosts = posts.filter(
-    (p) =>
-      p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.author?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPosts = posts.filter((p) =>
+    p.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const paginatedPosts = filteredPosts.slice(
@@ -169,21 +119,27 @@ export default function MyPost() {
       },
     },
     {
-      key: "category",
-      render: (val) =>
+      key: "categoryNames",
+      render: (val, item) =>
         val.length > 0 ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-            {val.map((c, index) => (
+            {val.map((name, index) => (
               <span
-                key={c.id + index}
+                key={index}
                 style={{
                   background: "#f3f4f6",
                   padding: "2px 8px",
                   borderRadius: "6px",
                   fontSize: "0.75rem",
+                  cursor: "pointer",
+                  color: "#0ea5e9",
                 }}
+                onClick={() =>
+                  navigate(`/manage/detail-category/${item.categoryIds[index]}`)
+                }
+                title={`View category: ${name}`}
               >
-                {c.name}
+                {name}
               </span>
             ))}
           </div>
@@ -191,7 +147,6 @@ export default function MyPost() {
           <span>—</span>
         ),
     },
-
     {
       key: "status",
       render: (val, item) => {
@@ -237,12 +192,7 @@ export default function MyPost() {
           }}
           title={val ? "Hot post" : "Not hot"}
         >
-          <Flame
-            size={18}
-            style={{
-              color: val ? "#b91c1c" : "#9ca3af",
-            }}
-          />
+          <Flame size={18} style={{ color: val ? "#b91c1c" : "#9ca3af" }} />
         </span>
       ),
     },
@@ -252,7 +202,7 @@ export default function MyPost() {
     {
       type: "view",
       icon: <Eye size={18} />,
-      onClick: (item) => navigate(`/manage/view-post/${item.id}`),
+      onClick: (item) => navigate(`/manage/detail-post/${item.id}`),
     },
     {
       type: "edit",
@@ -286,7 +236,7 @@ export default function MyPost() {
             setSearchTerm(e.target.value);
             setCurrentPage(1);
           }}
-          placeholder="Search by title or author..."
+          placeholder="Search by title..."
         />
       </div>
 

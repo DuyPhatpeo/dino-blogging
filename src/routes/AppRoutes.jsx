@@ -66,7 +66,7 @@ export default function AppRoutes() {
           element={<CategoryDeletePage />}
         />
         <Route
-          path="/manage/view-category/:id"
+          path="/manage/detail-category/:id"
           element={<CategoryViewPage />}
         />
 

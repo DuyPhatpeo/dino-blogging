@@ -262,7 +262,7 @@ export default function CategoryManage() {
       type: "view",
       icon: <Eye size={18} />,
       onClick: (item) => {
-        navigate(`/manage/view-category/${item.id}`);
+        navigate(`/manage/detail-category/${item.id}`);
       },
     },
     {
