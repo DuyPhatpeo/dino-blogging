@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   FileText,
   ChevronDown,
+  UserCircle, // 👈 icon cho Profile
 } from "lucide-react";
 import { db } from "@services/firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
@@ -148,7 +149,6 @@ const UserInfoText = styled.div`
 
   .role {
     font-size: 12px;
-    color: ${(props) => props.theme.colors.textLight || "#64748b"};
     background: ${(props) => props.theme.colors.primary}15;
     color: ${(props) => props.theme.colors.primary};
     padding: 2px 8px;
@@ -301,7 +301,14 @@ const UserMenu = () => {
         </UserInfo>
 
         <MenuItems>
+          {/* Profile luôn hiển thị */}
+          <MenuItem to="/profile" onClick={() => setOpen(false)}>
+            <UserCircle size={18} />
+            Profile
+          </MenuItem>
+
           {renderRoleLink()}
+
           <LogoutMenuItem onClick={handleSignOut}>
             <LogOut size={18} />
             Logout

@@ -35,6 +35,8 @@ const UserEditPage = lazy(() => import("@pages/Manage/User/UserEditPage"));
 const UserDeletePage = lazy(() => import("@pages/Manage/User/UserDeletePage"));
 const UserDetailPage = lazy(() => import("@pages/Manage/User/UserDetailPage"));
 
+const ProfilePage = lazy(() => import("@pages/ProfilePage"));
+
 export default function AppRoutes() {
   return (
     <Suspense fallback={null}>
@@ -75,6 +77,8 @@ export default function AppRoutes() {
         <Route path="/manage/update-user/:id" element={<UserEditPage />} />
         <Route path="/manage/delete-user/:id" element={<UserDeletePage />} />
         <Route path="/manage/detail-user/:id" element={<UserDetailPage />} />
+
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Suspense>
   );
