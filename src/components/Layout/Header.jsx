@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import Logo from "@assets/logo.png";
 import Button from "@components/Button/Button";
 import { useAuth } from "@contexts/authContext";
@@ -164,7 +164,7 @@ const Header = () => {
             </NavLink>
           )}
           <MenuToggle onClick={toggleMenu}>
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            <Menu size={24} />
           </MenuToggle>
         </RightSection>
       </Container>

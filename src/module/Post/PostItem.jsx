@@ -69,6 +69,7 @@ const PostItemStyles = styled.div`
     font-weight: 600;
     color: ${({ theme }) => theme.colors.textLight};
     margin-top: auto;
+    flex-wrap: wrap; /* ✅ đảm bảo nếu quá chật thì xuống hàng đẹp */
   }
 
   .post-dot {
@@ -77,6 +78,39 @@ const PostItemStyles = styled.div`
     height: 4px;
     background-color: currentColor;
     border-radius: 100rem;
+  }
+
+  /* ✅ Responsive */
+  @media screen and (max-width: 1024px) {
+    gap: 16px;
+
+    .post-image {
+      width: 280px;
+      height: 180px;
+    }
+
+    .post-title {
+      font-size: ${({ theme }) => theme.fontSize.sm};
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+
+    .post-image {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    .post-title {
+      font-size: ${({ theme }) => theme.fontSize.base};
+    }
+
+    .post-info {
+      font-size: ${({ theme }) => theme.fontSize.xs};
+    }
   }
 `;
 

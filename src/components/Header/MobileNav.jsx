@@ -74,19 +74,20 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 60px;
+  height: 60px;
   border: none;
   background: transparent;
   border-radius: 12px;
   cursor: pointer;
   color: ${(props) => props.theme.colors.textLight || "#64748b"};
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 
   &:hover {
     background: ${(props) =>
       props.theme.colors.backgroundLight || "rgba(0, 0, 0, 0.05)"};
     color: ${(props) => props.theme.colors.text};
+    transform: rotate(90deg); /* hiệu ứng xoay nhẹ */
   }
 `;
 
@@ -222,7 +223,7 @@ const MobileNav = ({ close }) => {
         <MobileNavHeader>
           <h2>Menu</h2>
           <CloseButton onClick={close}>
-            <X size={20} />
+            <X /> {/* icon to hơn */}
           </CloseButton>
         </MobileNavHeader>
 
