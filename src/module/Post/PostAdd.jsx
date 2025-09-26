@@ -221,8 +221,8 @@ const PostAdd = () => {
             name="image"
             label="Upload post thumbnail"
             shape="rectangle"
-            width="600px"
-            height="400px"
+            width="1200px"
+            height="600px"
           />
           <FormError message={errors.image?.message} />
           {uploadProgress > 0 && (
