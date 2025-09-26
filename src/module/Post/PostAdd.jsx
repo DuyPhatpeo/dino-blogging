@@ -2,8 +2,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Controller } from "react-hook-form";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
 
@@ -241,40 +239,20 @@ const PostAdd = () => {
           <Controller
             control={control}
             name="content"
-            render={({ field: { value, onChange } }) => (
-              <div style={{ width: "100%", margin: "0 auto" }}>
-                <CKEditor
-                  editor={ClassicEditor}
-                  config={{
-                    toolbar: [
-                      "heading",
-                      "|",
-                      "bold",
-                      "italic",
-                      "link",
-                      "|",
-                      "bulletedList",
-                      "numberedList",
-                      "|",
-                      "undo",
-                      "redo",
-                      "uploadImage",
-                    ],
-                    image: {
-                      toolbar: [
-                        "imageTextAlternative",
-                        "imageStyle:full",
-                        "imageStyle:side",
-                      ],
-                    },
-                  }}
-                  data={value || ""}
-                  onChange={(event, editor) => {
-                    const data = editor.getData();
-                    onChange(data);
-                  }}
-                />
-              </div>
+            render={({ field }) => (
+              <textarea
+                {...field}
+                rows={10}
+                placeholder="Enter post content..."
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  fontSize: "14px",
+                  resize: "vertical",
+                }}
+              />
             )}
           />
           <FormError message={errors.content?.message} />
