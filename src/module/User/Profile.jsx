@@ -1,10 +1,27 @@
-// Profile.jsx
-import React, { useEffect, useState } from "react";
-import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@services/firebase/firebase-config";
-import { useAuth } from "@contexts/authContext";
+// pages/Profile.jsx
+import React from "react";
 import styled from "styled-components";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useAuth } from "@contexts/authContext";
+import { toast } from "react-toastify";
 import LoadingSpinner from "@components/Loading/LoadingSpinner";
+import ImageUpload from "@components/ImageUpload/ImageUpload";
+import { useProfileEdit } from "@hooks/useProfileEdit";
+
+// ✅ Yup validation schema
+const schema = yup.object({
+  fullname: yup.string().required("Full name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  username: yup
+    .string()
+    .required("Username is required")
+    .matches(
+      /^[a-zA-Z0-9._-]+$/,
+      "Only letters, numbers, dot, dash, underscore allowed"
+    ),
+});
 
 // ========== Styled ==========
 const Wrapper = styled.div`
@@ -19,29 +36,10 @@ const Wrapper = styled.div`
 const AvatarSection = styled.div`
   text-align: center;
   margin-bottom: 20px;
-`;
-
-const Avatar = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #e2e8f0;
-  margin-bottom: 12px;
-`;
-
-const AvatarPlaceholder = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
-  margin: 0 auto 12px;
 `;
 
 const FullName = styled.h2`
@@ -67,6 +65,7 @@ const Label = styled.label`
   color: #718096;
   margin-bottom: 6px;
   font-weight: 500;
+  text-align: left;
 `;
 
 const Input = styled.input`
@@ -84,115 +83,56 @@ const Input = styled.input`
   }
 `;
 
-const InfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f1f5f9;
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const InfoLabel = styled.span`
-  color: #718096;
-  font-size: 0.9rem;
-`;
-
-const InfoValue = styled.span`
-  font-weight: 600;
-  color: #2d3748;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-`;
-
 const Button = styled.button`
-  flex: 1;
+  width: 100%;
+  margin-top: 20px;
   padding: 12px;
   border-radius: 10px;
   border: none;
   font-weight: 600;
   cursor: pointer;
   transition: 0.2s;
-  ${(p) =>
-    p.primary
-      ? `
-    background: #667eea;
-    color: #fff;
-    &:hover { background: #5a67d8; }
-  `
-      : `
-    background: #edf2f7;
-    color: #2d3748;
-    &:hover { background: #e2e8f0; }
-  `}
+  background: #667eea;
+  color: #fff;
+  &:hover {
+    background: #5a67d8;
+  }
+`;
+
+const Error = styled.p`
+  font-size: 0.8rem;
+  color: red;
+  margin-top: 4px;
 `;
 
 // ========== Component ==========
 const Profile = () => {
   const { user } = useAuth();
-  const [profile, setProfile] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState({});
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (!user?.uid) return;
+  const form = useForm({
+    mode: "onChange",
+    resolver: yupResolver(schema),
+    defaultValues: {
+      avatar: "",
+      username: "",
+      email: "",
+      fullname: "",
+    },
+  });
 
-    const fetchUser = async () => {
-      try {
-        const ref = doc(db, "users", user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setProfile(snap.data());
-          setForm(snap.data());
-        }
-      } catch (err) {
-        console.error("🔥 Fetch user error:", err);
-      }
-    };
+  const { control, handleSubmit, reset, register, getValues, formState } = form;
+  const { errors } = formState;
 
-    fetchUser();
-  }, [user]);
+  const { profile, saving, updateProfile } = useProfileEdit(user, reset);
 
-  const handleChange = (e) =>
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSave = async () => {
-    if (!user?.uid) return;
-    setSaving(true);
+  const onSubmit = async (values) => {
     try {
-      const ref = doc(db, "users", user.uid);
-      await updateDoc(ref, {
-        avatar: form.avatar || "",
-        username: form.username || "",
-        email: form.email || "",
-        fullname: form.fullname || "",
-        updatedAt: serverTimestamp(),
-      });
-      setProfile({ ...form, updatedAt: new Date() });
-      setEditMode(false);
-    } catch (err) {
-      console.error("🔥 Update user error:", err);
-    } finally {
-      setSaving(false);
+      await updateProfile(values);
+      toast.success("Cập nhật profile thành công!");
+    } catch {
+      toast.error("Không thể cập nhật profile");
     }
   };
-
-  const getInitials = (name) =>
-    name
-      ? name
-          .split(" ")
-          .map((n) => n[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2)
-      : "U";
 
   if (!profile) {
     return (
@@ -204,88 +144,42 @@ const Profile = () => {
 
   return (
     <Wrapper>
-      <AvatarSection>
-        {profile.avatar ? (
-          <Avatar src={profile.avatar} alt="Avatar" />
-        ) : (
-          <AvatarPlaceholder>
-            {getInitials(profile.fullname || profile.username)}
-          </AvatarPlaceholder>
-        )}
-        <FullName>{profile.fullname || "Unknown User"}</FullName>
-        <Username>@{profile.username || "user"}</Username>
-      </AvatarSection>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <AvatarSection>
+          <ImageUpload
+            control={control}
+            name="avatar"
+            width="120px"
+            height="120px"
+            shape="circle"
+            defaultValue={getValues("avatar")}
+          />
+          <FullName>{getValues("fullname") || "Unknown User"}</FullName>
+          <Username>@{getValues("username") || "user"}</Username>
+        </AvatarSection>
 
-      {editMode ? (
-        <>
-          <InfoGroup>
-            <Label>Avatar URL</Label>
-            <Input
-              type="url"
-              name="avatar"
-              value={form.avatar || ""}
-              onChange={handleChange}
-            />
-          </InfoGroup>
-          <InfoGroup>
-            <Label>Username</Label>
-            <Input
-              type="text"
-              name="username"
-              value={form.username || ""}
-              onChange={handleChange}
-            />
-          </InfoGroup>
-          <InfoGroup>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              name="email"
-              value={form.email || ""}
-              onChange={handleChange}
-            />
-          </InfoGroup>
-          <InfoGroup>
-            <Label>Full Name</Label>
-            <Input
-              type="text"
-              name="fullname"
-              value={form.fullname || ""}
-              onChange={handleChange}
-            />
-          </InfoGroup>
-        </>
-      ) : (
-        <>
-          <InfoRow>
-            <InfoLabel>Email</InfoLabel>
-            <InfoValue>{profile.email || "-"}</InfoValue>
-          </InfoRow>
-          <InfoRow>
-            <InfoLabel>Full Name</InfoLabel>
-            <InfoValue>{profile.fullname || "-"}</InfoValue>
-          </InfoRow>
-          <InfoRow>
-            <InfoLabel>Username</InfoLabel>
-            <InfoValue>@{profile.username || "-"}</InfoValue>
-          </InfoRow>
-        </>
-      )}
+        <InfoGroup>
+          <Label>Username</Label>
+          <Input {...register("username")} type="text" />
+          {errors.username && <Error>{errors.username.message}</Error>}
+        </InfoGroup>
 
-      <ButtonGroup>
-        {editMode ? (
-          <>
-            <Button primary onClick={handleSave} disabled={saving}>
-              {saving ? "Saving..." : "Save"}
-            </Button>
-            <Button onClick={() => setEditMode(false)}>Cancel</Button>
-          </>
-        ) : (
-          <Button primary onClick={() => setEditMode(true)}>
-            Edit Profile
-          </Button>
-        )}
-      </ButtonGroup>
+        <InfoGroup>
+          <Label>Email</Label>
+          <Input {...register("email")} type="email" />
+          {errors.email && <Error>{errors.email.message}</Error>}
+        </InfoGroup>
+
+        <InfoGroup>
+          <Label>Full Name</Label>
+          <Input {...register("fullname")} type="text" />
+          {errors.fullname && <Error>{errors.fullname.message}</Error>}
+        </InfoGroup>
+
+        <Button type="submit" disabled={saving}>
+          {saving ? "Saving..." : "Cập nhật"}
+        </Button>
+      </form>
     </Wrapper>
   );
 };
